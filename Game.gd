@@ -20,6 +20,11 @@ onready var Piece = preload("res://Piece.tscn")
 
 
 
+func get_opposite_color(color):
+	if color == "white":
+		return "black"
+	return "white"
+
 class Table:
 	# Represents a table of cells. Cells can be marked with the strings
 	# "black", "white" or "". To indicate if a black/white piece is located in the specified
@@ -301,7 +306,7 @@ func get_valid_rook_moves(table: Table, pieces, piece):
 	for target in table.get_cells_forward(pos, INF):
 		moves.append(Move.new(pos, target))
 	# Move to an occupied cell moving forward
-	var occupied_target = table.get_first_occupied_cell_moving_forward(pos, "white" if piece.color == "black" else "black")
+	var occupied_target = table.get_first_occupied_cell_moving_forward(pos, get_opposite_color(piece.color))
 	if occupied_target != null:
 		moves.append(Move.new(pos, occupied_target))
 		
@@ -309,7 +314,7 @@ func get_valid_rook_moves(table: Table, pieces, piece):
 	for target in table.get_cells_backward(pos, INF):
 		moves.append(Move.new(pos, target))
 	# Moves backward with collision
-	occupied_target = table.get_first_occupied_cell_moving_backward(pos, "white" if piece.color == "black" else "black")
+	occupied_target = table.get_first_occupied_cell_moving_backward(pos, get_opposite_color(piece.color))
 	if occupied_target != null:
 		moves.append(Move.new(pos, occupied_target))
 		
@@ -318,10 +323,10 @@ func get_valid_rook_moves(table: Table, pieces, piece):
 		moves.append(Move.new(pos, target))
 	for target in table.get_cells_right(pos, INF):
 		moves.append(Move.new(pos, target))
-	occupied_target = table.get_first_occupied_cell_moving_left(pos, "white" if piece.color == "black" else "black")
+	occupied_target = table.get_first_occupied_cell_moving_left(pos, get_opposite_color(piece.color))
 	if occupied_target != null:
 		moves.append(Move.new(pos, occupied_target))
-	occupied_target = table.get_first_occupied_cell_moving_right(pos, "white" if piece.color == "black" else "black")
+	occupied_target = table.get_first_occupied_cell_moving_right(pos, get_opposite_color(piece.color))
 	if occupied_target != null:
 		moves.append(Move.new(pos, occupied_target))
 	
