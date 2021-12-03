@@ -63,6 +63,19 @@ class Table:
 			steps += 1
 		return moves
 		
+	func get_first_occupied_cell_moving_forward(pos, color):
+		# Get the first cell starting from the given position which is occupied with a piece
+		# of the specified color. Returns null if no cells were hit moving forward or hit a piece
+		# with opposite color.
+		pos += Vector2.DOWN
+		while self.in_bounds(pos) and not self.get_cell(pos):
+			pos += Vector2.DOWN
+		if self.in_bounds(pos) and self.get_cell(pos) == color:
+			return pos
+		return null
+		
+		
+		
 	func get_cells_backward(pos, max_steps):
 		var moves = []
 		pos += Vector2.UP
@@ -73,6 +86,59 @@ class Table:
 			pos += Vector2.UP
 			steps += 1
 		return moves
+		
+	func get_first_occupied_cell_moving_backward(pos, color):
+			pos += Vector2.UP
+			while self.in_bounds(pos) and not self.get_cell(pos):
+				pos += Vector2.UP
+			if self.in_bounds(pos) and self.get_cell(pos) == color:
+				return pos
+			return null
+			
+
+	func get_cells_left(pos, max_steps):
+		var moves = []
+		pos += Vector2.LEFT
+		var steps = 1
+		
+		while steps <= max_steps and self.in_bounds(pos) and not self.get_cell(pos):
+			moves.append(pos)
+			pos += Vector2.LEFT
+			steps += 1
+		return moves
+		
+
+	func get_first_occupied_cell_moving_left(pos, color):
+			pos += Vector2.LEFT
+			while self.in_bounds(pos) and not self.get_cell(pos):
+				pos += Vector2.LEFT
+			if self.in_bounds(pos) and self.get_cell(pos) == color:
+				return pos
+			return null
+		
+
+	func get_cells_right(pos, max_steps):
+		var moves = []
+		pos += Vector2.RIGHT
+		var steps = 1
+		
+		while steps <= max_steps and self.in_bounds(pos) and not self.get_cell(pos):
+			moves.append(pos)
+			pos += Vector2.RIGHT
+			steps += 1
+		return moves
+		
+		
+	func get_first_occupied_cell_moving_right(pos, color):
+			pos += Vector2.RIGHT
+			while self.in_bounds(pos) and not self.get_cell(pos):
+				pos += Vector2.RIGHT
+			if self.in_bounds(pos) and self.get_cell(pos) == color:
+				return pos
+			return null
+	
+
+	
 	
 	
 func create_table(pieces):
@@ -108,12 +174,12 @@ func get_initial_pieces():
 	# Finally, color should be white and black.
 	# Create white pawns.
 	var pieces = []
-	for x in range(1, 9):
-		pieces.append(["pawn", "white", x, 2])
-	
-	# Create black pawns.
-	for x in range(1, 9):
-		pieces.append(["pawn", "black", x, 7])
+#	for x in range(1, 9):
+#		pieces.append(["pawn", "white", x, 2])
+#
+#	# Create black pawns.
+#	for x in range(1, 9):
+#		pieces.append(["pawn", "black", x, 7])
 		
 	# Create rooks
 	pieces.append(["rook", "white", A, 1])
@@ -224,9 +290,44 @@ func get_valid_knight_moves(table, pieces, piece):
 	var moves = []
 	for target in jumps:
 		if table.in_bounds(target) and table.get_cell(target) != piece.color:
-			moves.append(Move.new(pos, target))
+			moves.append(Move.new(pos, target))	
+	return moves
+
+
+func get_valid_rook_moves(table: Table, pieces, piece):
+	var moves = []
+	var pos = piece.board_position
+	# Moves forward without collision
+	for target in table.get_cells_forward(pos, INF):
+		moves.append(Move.new(pos, target))
+	# Move to an occupied cell moving forward
+	var occupied_target = table.get_first_occupied_cell_moving_forward(pos, "white" if piece.color == "black" else "black")
+	if occupied_target != null:
+		moves.append(Move.new(pos, occupied_target))
+		
+	# Moves forward without collision
+	for target in table.get_cells_backward(pos, INF):
+		moves.append(Move.new(pos, target))
+	# Moves backward with collision
+	occupied_target = table.get_first_occupied_cell_moving_backward(pos, "white" if piece.color == "black" else "black")
+	if occupied_target != null:
+		moves.append(Move.new(pos, occupied_target))
+		
+	# Moves left/right without collision
+	for target in table.get_cells_left(pos, INF):
+		moves.append(Move.new(pos, target))
+	for target in table.get_cells_right(pos, INF):
+		moves.append(Move.new(pos, target))
+	occupied_target = table.get_first_occupied_cell_moving_left(pos, "white" if piece.color == "black" else "black")
+	if occupied_target != null:
+		moves.append(Move.new(pos, occupied_target))
+	occupied_target = table.get_first_occupied_cell_moving_right(pos, "white" if piece.color == "black" else "black")
+	if occupied_target != null:
+		moves.append(Move.new(pos, occupied_target))
 	
 	return moves
+
+
 
 
 func get_valid_moves(pieces, prev_moves, piece):
@@ -239,6 +340,8 @@ func get_valid_moves(pieces, prev_moves, piece):
 		return get_valid_pawn_moves(table, prev_moves, piece)
 	if piece.kind == "knight": 
 		return get_valid_knight_moves(table, pieces, piece)
+	elif piece.kind == "rook":
+		return get_valid_rook_moves(table, pieces, piece)
 	return []
 	
 func is_check_mate(_pieces) -> bool:
