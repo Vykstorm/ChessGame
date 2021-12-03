@@ -82,12 +82,12 @@ class Move:
 	# Represents a piece move
 	var from  # Position where the moving piece is located at
 	var to 	  # Target position of the moving piece
-	var piece_killed # Piece killed by the move if any
+	var piece_to_kill
 	
-	func _init(from, to, piece_killed=null):
+	func _init(from, to, piece_to_kill=null):
 		self.from = from
 		self.to = to
-		self.piece_killed = piece_killed
+		self.piece_to_kill = piece_to_kill
 
 
 
@@ -173,12 +173,12 @@ func get_valid_pawn_moves(table, prev_moves, piece) -> Array:
 		# Pawn can move diagonally also!)
 		var target = pos+DIAG135
 		if table.get_cell(target) == "black":
-			moves.append(Move.new(pos, target, target))
+			moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+LEFT, "black"):
 			moves.append(Move.new(pos, target, pos+LEFT))
 		target = pos+DIAG45
 		if table.get_cell(target) == "black":
-			moves.append(Move.new(pos, target, target))
+			moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+RIGHT, "black"):
 			moves.append(Move.new(pos, target, pos+RIGHT))
 	else:
@@ -187,20 +187,27 @@ func get_valid_pawn_moves(table, prev_moves, piece) -> Array:
 			
 		var target = pos+DIAG225
 		if table.get_cell(target) == "white":
-			moves.append(Move.new(pos, target, target))
+			moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+LEFT, "white"):
 			moves.append(Move.new(pos, target, pos+LEFT))
 			
 		target = pos+DIAG315
 		if table.get_cell(target) == "white":
-			moves.append(Move.new(pos, target, target))
+			moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+RIGHT, "white"):
 			moves.append(Move.new(pos, target, pos+RIGHT))
 	return moves
 
 
-func get_valid_knight_moves(pieces, piece):
-	pass
+func get_valid_knight_moves(table, pieces, piece):
+	var targets = []
+	var pos = piece.board_position
+	var moves = []
+	for target in targets:
+		if table.in_bounds(target) and table.get_cell(target) != piece.color:
+			moves.append(Move.new(pos, target))
+	
+	return moves
 
 
 func get_valid_moves(pieces, prev_moves, piece):
@@ -212,7 +219,7 @@ func get_valid_moves(pieces, prev_moves, piece):
 	if piece.kind == "pawn": # Possible moves for a pawn
 		return get_valid_pawn_moves(table, prev_moves, piece)
 	if piece.kind == "knight": 
-		return get_valid_knight_moves(pieces, piece)
+		return get_valid_knight_moves(table, pieces, piece)
 	return []
 	
 func is_check_mate(_pieces) -> bool:

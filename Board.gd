@@ -68,7 +68,7 @@ func do_move(move):
 	# Do the given movement.
 	var piece_to_move = get_piece_in_cell(move.from)
 	assert(piece_to_move != null)
-	var piece_to_remove = get_piece_in_cell(move.piece_killed)
+	var piece_to_remove = get_piece_in_cell(move.piece_to_kill) if move.piece_to_kill else get_piece_in_cell(move.to)
 	if piece_to_remove != null:
 		piece_to_remove.queue_free()
 	piece_to_move.board_position = move.to
