@@ -4,18 +4,16 @@ export var kind = "king" setget set_kind
 export var color = "black" setget set_color
 export (Vector2) var board_position setget set_board_position, get_board_position
 
-# A reference to the board
-var board = null
+onready var board = get_node("../../")
 
 func set_board_position(pos):
-	var y = 8-pos.y
-	var x = pos.x-1
-	position = board.position + board.map_to_world(Vector2(x,y))
-	board_position = pos
+	board_position = Vector2(pos.x-1,8-pos.y)
 
 func get_board_position():
 	return board_position
 
+func update_position():
+	position = board.map_to_world(board_position) + board.position
 
 func update_picture():
 	var piece_kinds = [ "queen", "king", "rook", "knight", "bishop", "pawn" ]
@@ -26,12 +24,9 @@ func update_picture():
 
 func set_kind(x):
 	kind = x
-	update_picture()
 
 func set_color(x):
 	color = x
-	update_picture()
-	
 
 
 # Called when the node enters the scene tree for the first time.
@@ -39,3 +34,4 @@ func _ready():
 	# Assign the texture properly depending on the
 	# piece color and kind
 	texture = texture.duplicate()
+	update_picture()

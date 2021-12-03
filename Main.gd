@@ -5,6 +5,7 @@ signal on_piece_selected
 signal on_piece_deselected
 
 onready var board = $Board
+onready var game = $Game
 
 
 
@@ -17,6 +18,11 @@ var current_piece_selected = null
 # Current turn "white" or "black"
 var current_turn = "white"
 
+
+func populate_board():
+	# This function creates all the initial pieces.
+	for piece in game.get_initial_pieces():
+		board.add_piece(piece)
 
 
 func get_valid_moves(piece) -> Array:
@@ -40,7 +46,8 @@ func _on_piece_mouse_exited(piece):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	board.reset()
+	# Add pieces to board
+	populate_board()
 	# Capture piece mouse enter/exit events
 	for piece in board.get_pieces():
 		piece.get_node("Area2D").connect("mouse_entered", self, "_on_piece_mouse_entered", [ piece ])
