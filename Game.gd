@@ -7,6 +7,14 @@ const DIAG225 = Vector2(-1, -1)
 const DIAG315 = Vector2(1, -1)
 const LEFT = Vector2.LEFT
 const RIGHT = Vector2.RIGHT
+const JUMP_UPLEFT = Vector2(-1, 2)
+const JUMP_LEFTUP = Vector2(-2, 1)
+const JUMP_UPRIGHT = Vector2(1, 2)
+const JUMP_RIGHTUP = Vector2(2, 1)
+const JUMP_DOWNLEFT = Vector2(-1, -2)
+const JUMP_LEFTDOWN = Vector2(-2, -1)
+const JUMP_DOWNRIGHT = Vector2(1, -2)
+const JUMP_RIGHTDOWN = Vector2(2, -1)
 
 onready var Piece = preload("res://Piece.tscn")
 
@@ -200,10 +208,21 @@ func get_valid_pawn_moves(table, prev_moves, piece) -> Array:
 
 
 func get_valid_knight_moves(table, pieces, piece):
-	var targets = []
+	# Returns all possible moves for the given knight
+	
+	var jumps = []
 	var pos = piece.board_position
+	jumps.append(pos+JUMP_UPLEFT)
+	jumps.append(pos+JUMP_LEFTUP)
+	jumps.append(pos+JUMP_UPRIGHT)
+	jumps.append(pos+JUMP_RIGHTUP)
+	jumps.append(pos+JUMP_DOWNLEFT)
+	jumps.append(pos+JUMP_LEFTDOWN)
+	jumps.append(pos+JUMP_DOWNRIGHT)
+	jumps.append(pos+JUMP_RIGHTDOWN)
+	
 	var moves = []
-	for target in targets:
+	for target in jumps:
 		if table.in_bounds(target) and table.get_cell(target) != piece.color:
 			moves.append(Move.new(pos, target))
 	
