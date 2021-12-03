@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Board.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Main.gd" type="Script" id=3]
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 3 )
+
+[node name="Board" parent="." instance=ExtResource( 2 )]
+position = Vector2( 0, 20 )
+cell_size = Vector2( 60, 60 )
+[connection signal="on_piece_clicked" from="." to="." method="on_piece_clicked"]
+[connection signal="on_piece_deselected" from="." to="." method="_on_piece_deselected"]
+[connection signal="on_piece_selected" from="." to="." method="_on_piece_selected"]
