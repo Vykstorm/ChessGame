@@ -13,6 +13,6 @@ cell_size = Vector2( 60, 60 )
 
 [node name="Game" type="Node" parent="."]
 script = ExtResource( 1 )
-[connection signal="on_piece_clicked" from="." to="." method="on_piece_clicked"]
-[connection signal="on_piece_deselected" from="." to="." method="_on_piece_deselected"]
-[connection signal="on_piece_selected" from="." to="." method="_on_piece_selected"]
+[connection signal="piece_deselected" from="." to="." method="_on_piece_deselected"]
+[connection signal="cell_clicked" from="Board" to="." method="_on_board_cell_clicked"]
+[connection signal="piece_clicked" from="Board" to="." method="_on_piece_clicked"]

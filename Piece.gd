@@ -3,17 +3,19 @@ extends Sprite
 export var kind = "king" setget set_kind
 export var color = "black" setget set_color
 export (Vector2) var board_position setget set_board_position, get_board_position
+var _board_position = null
 
 onready var board = get_node("../../")
 
 func set_board_position(pos):
-	board_position = Vector2(pos.x-1,8-pos.y)
+	_board_position = Vector2(pos.x-1,8-pos.y)
+	board_position = pos
 
 func get_board_position():
 	return board_position
 
 func update_position():
-	position = board.map_to_world(board_position) + board.position
+	position = board.map_to_world(_board_position) + board.position
 
 func update_picture():
 	var piece_kinds = [ "queen", "king", "rook", "knight", "bishop", "pawn" ]
