@@ -7,12 +7,23 @@
 [node name="Main" type="Node2D"]
 script = ExtResource( 3 )
 
+[node name="Restart" type="ToolButton" parent="."]
+margin_right = 57.0
+margin_bottom = 22.0
+text = "Restart"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Board" parent="." instance=ExtResource( 2 )]
 position = Vector2( 0, 20 )
 cell_size = Vector2( 60, 60 )
 
 [node name="Game" type="Node" parent="."]
 script = ExtResource( 1 )
+[connection signal="check" from="." to="." method="_on_check"]
+[connection signal="checkmate" from="." to="." method="_on_checkmate"]
 [connection signal="piece_deselected" from="." to="." method="_on_piece_deselected"]
+[connection signal="button_down" from="Restart" to="." method="_on_Restart_button_down"]
 [connection signal="cell_clicked" from="Board" to="." method="_on_board_cell_clicked"]
 [connection signal="piece_clicked" from="Board" to="." method="_on_piece_clicked"]

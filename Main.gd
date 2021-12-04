@@ -2,11 +2,13 @@ extends Node2D
 
 signal piece_selected
 signal piece_deselected
-signal checkmated
+signal checkmate
+signal check
 signal piece_moved
 
 onready var board = $Board
 onready var game = $Game
+onready var Piece = preload("res://Piece.tscn")
 
 
 # Current piece being dragged by user
@@ -24,7 +26,11 @@ var moves = null
 
 func populate_board():
 	# This function creates all the initial pieces.
-	for piece in game.get_initial_pieces():
+	for piece_info in game.get_initial_pieces():
+		var piece = Piece.instance()
+		piece.board_position = piece_info.board_position
+		piece.color = piece_info.color
+		piece.kind = piece_info.kind
 		board.add_piece(piece)
 
 func next_turn():
@@ -95,17 +101,21 @@ func _on_board_cell_clicked(selected_cell):
 			moves.append(move)
 			board.do_move(move)
 			emit_signal("piece_moved", current_piece_selected, selected_cell)
-
-
-			# Query check mate
-			if game.is_check_mate(board.get_pieces(), moves, game.get_opposite_color(current_turn)):
-				emit_signal("checkmated", current_turn)
-				return
+			
+			# Query check/ check mate
+			var pieces = board.get_pieces()
+			if game.is_check(pieces, game.get_opposite_color(current_turn)):
+				if game.is_check_mate(board.get_pieces(), moves, game.get_opposite_color(current_turn)):
+					emit_signal("checkmate", current_turn)
+					return
+				else:
+					emit_signal("check", current_turn)
 			else:
-				# Continue game 
-				# Change turn
-				next_turn()
-				break
+				pass
+			# Continue game 
+			# Change turn
+			next_turn()
+			break
 	
 	# Deselect current piece and do nothing more
 	emit_signal("piece_deselected", current_piece_selected)
@@ -123,3 +133,20 @@ func _ready():
 	
 	connect("piece_selected", self, "_on_piece_selected")
 	connect("piece_deselected", self, "_on_piece_deselected")
+
+
+func _on_checkmate(_color):
+	print("Check mate!")
+
+
+func _on_check(_color):
+	print("Check!")
+
+
+func _on_Restart_button_down():
+	board.reset()
+	moves = []
+	current_piece_selected = null
+	current_piece_selected_possible_moves = null
+	current_turn = "white"
+	populate_board()

@@ -15,15 +15,40 @@ const JUMP_DOWNLEFT = Vector2(-1, -2)
 const JUMP_LEFTDOWN = Vector2(-2, -1)
 const JUMP_DOWNRIGHT = Vector2(1, -2)
 const JUMP_RIGHTDOWN = Vector2(2, -1)
-
-onready var Piece = preload("res://Piece.tscn")
-
-
+const FORWARD=Vector2(0, 1)
+const BACKWARD=Vector2(0, -1)
 
 func get_opposite_color(color):
 	if color == "white":
 		return "black"
 	return "white"
+
+
+
+class Move:
+	# Represents a piece move
+	var from  # Position where the moving piece is located at
+	var to 	  # Target position of the moving piece
+	var piece_to_kill
+	
+	func _init(from, to, piece_to_kill=null):
+		self.from = from
+		self.to = to
+		self.piece_to_kill = piece_to_kill
+
+
+
+class Piece:
+	var kind: String
+	var color: String
+	var board_position: Vector2
+	
+	func _init(kind: String, color: String, board_position: Vector2):
+		self.kind = kind
+		self.color = color
+		self.board_position = board_position
+	
+
 
 class Table:
 	# Represents a table of cells. Cells can be marked with the strings
@@ -41,11 +66,22 @@ class Table:
 		for _i in range(0, n*m):
 			self.cells.append(["", ""])
 		for piece in pieces:
-			self.set_cell(piece.board_position, piece.kind, piece.color)
+			self.add_piece(piece)
 		
-	func set_cell(pos: Vector2, kind: String, color: String):
-		# Set the cell (x,y) value
-		self.cells[int(pos.x)-1+(int(pos.y)-1)*self.num_cols] = [kind, color]
+	func add_piece(piece):
+		# Add a new piece to the table.
+		var pos = piece.board_position
+		self.cells[int(pos.x)-1+(int(pos.y)-1)*self.num_cols] = [piece.kind, piece.color]
+		
+	func clear_cell(pos: Vector2):
+		# Remove any piece in the given (x,y) cell if any. If there was a piece on it, also return
+		# it, otherwise return null
+		var k = int(pos.x)-1+(int(pos.y)-1)*self.num_cols
+		var cell = self.cells[k]
+		self.cells[k] = ["", ""]
+		if cell[0] == "":
+			return null
+		return Piece.new(cell[0], cell[1], pos)
 		
 	func _get_cell(pos: Vector2):
 		return self.cells[int(pos.x)-1+(int(pos.y)-1)*self.num_cols]
@@ -54,7 +90,7 @@ class Table:
 		# Get the color of the piece located at (x, y) cell or "" if it's empty.
 		return self._get_cell(pos)[1]
 		
-	func get_piece_kind(pos: Vector2) -> String:
+	func get_kind(pos: Vector2) -> String:
 		# Get the type of piece located at (x, y) cell or "" if it's empty.
 		return self._get_cell(pos)[0]
 		
@@ -62,106 +98,129 @@ class Table:
 		# Check if cell located at (x,y) is empty.
 		return self._get_cell(pos)[0] == ""
 		
+	func get_piece(pos: Vector2):
+		# Get the piece at the given position. An object with properties kind, color and
+		# board_position. Returns null if no piece occupies the given position.
+		var cell_info = self._get_cell(pos)
+		if cell_info == null:
+			return null
+		var piece = Piece.new(cell_info[0], cell_info[1], pos)
+		return piece
+		
+		
+	func get_pieces() -> Array:
+		# Get all the pieces on the board.
+		var k = 0
+		var pieces = []
+		for cell in self.cells:
+			var kind = cell[0]
+			var color = cell[1]
+			var pos = Vector2(k % self.num_cols + 1, int(k / self.num_cols) + 1)
+			k += 1
+			if kind != "":
+				pieces.append(Piece.new(kind, color, pos))
+		return pieces
+		
+		
 	func in_bounds(pos: Vector2) -> bool:
 		# Returns true if the given position is inside of the bound of this table.
 		return pos.x >= 1 and pos.x <= self.num_cols and pos.y >= 1 and pos.y <= self.num_rows
 		
 		
-	func get_cells_forward(pos: Vector2, max_steps) -> Array:
-		# Get the cells moving forward from (x,y):  (x,y+1), (x,y+2), ...
-		# Until we reached `max_steps` moves, went out of the table bounds or hit
-		# an occupied cell.
+	func get_free_cells_moving_to(pos: Vector2, max_steps, direction: Vector2):
+		# Get all the free cells moving in the specified direction starting from an initial position
+		# in the board ntil we reached `max_steps` moves or went out of the table bounds.
 		var moves = []
-		pos += Vector2.DOWN
+		pos += direction
 		var steps = 1
 		while steps <= max_steps and self.in_bounds(pos) and self.is_empty(pos):
 			moves.append(pos)
-			pos += Vector2.DOWN
+			pos += direction
 			steps += 1
 		return moves
 		
-	func get_first_occupied_cell_moving_forward(pos: Vector2, color: String):
-		# Get the first cell starting from the given position which is occupied with a piece
-		# of the specified color. Returns null if no cells were hit moving forward or hit a piece
+	func get_first_occupied_cell_moving_to(pos: Vector2, color: String, direction: Vector2):
+		# Get the first cell starting from the given position and moving in a specified direction
+		# which is occupie by a piece of the specified color. Returns null if no cells were hit or hit a piece
 		# with opposite color.
-		pos += Vector2.DOWN
+		pos += direction
 		while self.in_bounds(pos) and self.is_empty(pos):
-			pos += Vector2.DOWN
+			pos += direction
 		if self.in_bounds(pos) and self.get_color(pos) == color:
 			return pos
 		return null
 		
 		
-		
-	func get_cells_backward(pos: Vector2, max_steps) -> Array:
-		var moves = []
-		pos += Vector2.UP
-		var steps = 1
-		
-		while steps <= max_steps and self.in_bounds(pos) and self.is_empty(pos):
-			moves.append(pos)
-			pos += Vector2.UP
-			steps += 1
-		return moves
-		
-	func get_first_occupied_cell_moving_backward(pos: Vector2, color: String):
-			pos += Vector2.UP
-			while self.in_bounds(pos) and self.is_empty(pos):
-				pos += Vector2.UP
-			if self.in_bounds(pos) and self.get_color(pos) == color:
-				return pos
-			return null
-			
+	func get_free_cells_moving_forward(pos: Vector2, max_steps) -> Array:
+		return self.get_free_cells_moving_to(pos, max_steps, FORWARD)
 
-	func get_cells_left(pos: Vector2, max_steps) -> Array:
-		var moves = []
-		pos += Vector2.LEFT
-		var steps = 1
-		
-		while steps <= max_steps and self.in_bounds(pos) and self.is_empty(pos):
-			moves.append(pos)
-			pos += Vector2.LEFT
-			steps += 1
-		return moves
-		
-
-	func get_first_occupied_cell_moving_left(pos: Vector2, color: String):
-			pos += Vector2.LEFT
-			while self.in_bounds(pos) and self.is_empty(pos):
-				pos += Vector2.LEFT
-			if self.in_bounds(pos) and self.get_color(pos) == color:
-				return pos
-			return null
-		
-
-	func get_cells_right(pos: Vector2, max_steps) -> Array:
-		var moves = []
-		pos += Vector2.RIGHT
-		var steps = 1
-		
-		while steps <= max_steps and self.in_bounds(pos) and self.is_empty(pos):
-			moves.append(pos)
-			pos += Vector2.RIGHT
-			steps += 1
-		return moves
-		
-		
-	func get_first_occupied_cell_moving_right(pos: Vector2, color: String):
-			pos += Vector2.RIGHT
-			while self.in_bounds(pos) and self.is_empty(pos):
-				pos += Vector2.RIGHT
-			if self.in_bounds(pos) and self.get_color(pos) == color:
-				return pos
-			return null
+	func get_free_cells_moving_backward(pos: Vector2, max_steps) -> Array:
+		return self.get_free_cells_moving_to(pos, max_steps, BACKWARD)
 	
+	func get_free_cells_moving_left(pos: Vector2, max_steps) -> Array:
+		return self.get_free_cells_moving_to(pos, max_steps, LEFT)
+
+	func get_free_cells_moving_right(pos: Vector2, max_steps) -> Array:
+		return self.get_free_cells_moving_to(pos, max_steps, RIGHT)
+	
+	func get_free_cells_moving_diag45(pos: Vector2, max_steps) -> Array:
+		return self.get_free_cells_moving_to(pos, max_steps, DIAG45)
+		
+	func get_free_cells_moving_diag135(pos: Vector2, max_steps) -> Array:
+		return self.get_free_cells_moving_to(pos, max_steps, DIAG135)
+	
+	func get_free_cells_moving_diag225(pos: Vector2, max_steps) -> Array:
+		return self.get_free_cells_moving_to(pos, max_steps, DIAG225)
+
+	func get_free_cells_moving_diag315(pos: Vector2, max_steps) -> Array:
+		return self.get_free_cells_moving_to(pos, max_steps, DIAG315)
+		
+	
+	func get_first_occupied_cell_moving_forward(pos: Vector2, color: String):
+		return self.get_first_occupied_cell_moving_to(pos, color, FORWARD)
+
+	func get_first_occupied_cell_moving_backward(pos: Vector2, color: String):
+		return self.get_first_occupied_cell_moving_to(pos, color, BACKWARD)
+	
+	func get_first_occupied_cell_moving_left(pos: Vector2, color: String):
+		return self.get_first_occupied_cell_moving_to(pos, color, LEFT)
+
+	func get_first_occupied_cell_moving_right(pos: Vector2, color: String):
+		return self.get_first_occupied_cell_moving_to(pos, color, RIGHT)
+		
+		
+	func get_first_occupied_cell_moving_diag45(pos: Vector2, color: String) -> Array:
+		return self.get_first_occupied_cell_moving_to(pos, color, DIAG45)
+		
+	func get_first_occupied_cell_moving_diag135(pos: Vector2, color: String) -> Array:
+		return self.get_first_occupied_cell_moving_to(pos, color, DIAG135)
+	
+	func get_first_occupied_cell_moving_diag225(pos: Vector2, color: String) -> Array:
+		return self.get_first_occupied_cell_moving_to(pos, color, DIAG225)
+
+	func get_first_occupied_cell_moving_diag315(pos: Vector2, color: String) -> Array:
+		return self.get_first_occupied_cell_moving_to(pos, color, DIAG315)
+		
 	
 	func duplicate() -> Table:
-		return self
+		return Table.new(self.num_rows, self.num_cols, self.get_pieces())
+			
 
 	func apply_move(move: Move) -> Table:
 		# Returns a new table configuration as a result of applying the given movement
-		return self.duplicate()
-	
+		
+		var table_after_move = self.duplicate()
+		
+		# Get attacking piece and remove it from its current cell position
+		var attacking_piece = table_after_move.clear_cell(move.from)
+		
+		# Clear target cell (if any o  othther piece is in there)
+		table_after_move.clear_cell(move.to)
+		
+		# Move piece to the target cell
+		attacking_piece.board_position = move.to
+		table_after_move.add_piece(attacking_piece)
+		return table_after_move
 	
 	
 	
@@ -174,19 +233,6 @@ func create_table(pieces: Array) -> Table:
 
 
 
-class Move:
-	# Represents a piece move
-	var from  # Position where the moving piece is located at
-	var to 	  # Target position of the moving piece
-	var piece_to_kill
-	
-	func _init(from, to, piece_to_kill=null):
-		self.from = from
-		self.to = to
-		self.piece_to_kill = piece_to_kill
-
-
-
 
 func get_initial_pieces():
 	# Returns a list of items, one for each initial
@@ -196,13 +242,13 @@ func get_initial_pieces():
 	# Finally, color should be white and black.
 	# Create white pawns.
 	var pieces = []
-#	for x in range(1, 9):
-#		pieces.append(["pawn", "white", x, 2])
+	for x in range(1, 9):
+		pieces.append(["pawn", "white", x, 2])
 #
-#	# Create black pawns.
-#	for x in range(1, 9):
-#		pieces.append(["pawn", "black", x, 7])
-		
+	# Create black pawns.
+	for x in range(1, 9):
+		pieces.append(["pawn", "black", x, 7])
+
 	# Create rooks
 	pieces.append(["rook", "white", A, 1])
 	pieces.append(["rook", "white", H, 1])
@@ -217,27 +263,24 @@ func get_initial_pieces():
 	pieces.append(["knight", "black", G, 8])
 	
 	# Create bishops
-	pieces.append(["bishop", "white", C, 1])
-	pieces.append(["bishop", "white", F, 1])
-	pieces.append(["bishop", "black", C, 8])
-	pieces.append(["bishop", "black", F, 8])
+#	pieces.append(["bishop", "white", C, 1])
+#	pieces.append(["bishop", "white", F, 1])
+#	pieces.append(["bishop", "black", C, 8])
+#	pieces.append(["bishop", "black", F, 8])
 
 	# Create queens
-	pieces.append(["queen", "white", D, 1])
-	pieces.append(["queen", "black", E, 8])
+#	pieces.append(["queen", "white", D, 1])
+#	pieces.append(["queen", "black", E, 8])
 	
 	# Create kings
 	pieces.append(["king", "white", E, 1])
 	pieces.append(["king", "black", D, 8])
 	
-	var instances = []
+	var result = []
 	for info in pieces:
-		var instance = Piece.instance()
-		instance.kind = info[0]
-		instance.color = info[1]
-		instance.board_position = Vector2(info[2], info[3])
-		instances.append(instance)
-	return instances
+		# TODO
+		result.append(Piece.new(info[0], info[1], Vector2(info[2], info[3])))
+	return result
 
 func en_passant_move_on(table, prev_moves, pos, color):
 	# Check if there is a pawn with the specified color at the given position which moved the last turn 2 positions forward.
@@ -257,38 +300,38 @@ func en_passant_move_on(table, prev_moves, pos, color):
 	return false
 	
 
-func get_valid_pawn_moves(table, prev_moves, piece) -> Array:
+func get_valid_pawn_moves(table: Table, prev_moves, piece) -> Array:
 	# Get valid moves for a pawn
 	var pos = piece.board_position
 	var moves = []
 	var diag_moves = []
 	if piece.color == "white":
-		for target in table.get_cells_forward(pos, 2 if pos.y == 2 else 1):
+		for target in table.get_free_cells_moving_forward(pos, 2 if pos.y == 2 else 1):
 			moves.append(Move.new(pos, target))
 		
 		# Pawn can move diagonally also!)
 		var target = pos+DIAG135
-		if table.get_cell(target) == "black":
+		if table.get_color(target) == "black":
 			moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+LEFT, "black"):
 			moves.append(Move.new(pos, target, pos+LEFT))
 		target = pos+DIAG45
-		if table.get_cell(target) == "black":
+		if table.get_color(target) == "black":
 			moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+RIGHT, "black"):
 			moves.append(Move.new(pos, target, pos+RIGHT))
 	else:
-		for target in table.get_cells_backward(pos, 2 if pos.y == 7 else 1):
+		for target in table.get_free_cells_moving_backward(pos, 2 if pos.y == 7 else 1):
 			moves.append(Move.new(pos, target))
 			
 		var target = pos+DIAG225
-		if table.get_cell(target) == "white":
+		if table.get_color(target) == "white":
 			moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+LEFT, "white"):
 			moves.append(Move.new(pos, target, pos+LEFT))
 			
 		target = pos+DIAG315
-		if table.get_cell(target) == "white":
+		if table.get_color(target) == "white":
 			moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+RIGHT, "white"):
 			moves.append(Move.new(pos, target, pos+RIGHT))
@@ -320,15 +363,15 @@ func get_valid_rook_moves(table: Table, pieces, piece):
 	var moves = []
 	var pos = piece.board_position
 	# Moves forward without collision
-	for target in table.get_cells_forward(pos, INF):
+	for target in table.get_free_cells_moving_forward(pos, INF):
 		moves.append(Move.new(pos, target))
 	# Move to an occupied cell moving forward
 	var occupied_target = table.get_first_occupied_cell_moving_forward(pos, get_opposite_color(piece.color))
 	if occupied_target != null:
 		moves.append(Move.new(pos, occupied_target))
 		
-	# Moves forward without collision
-	for target in table.get_cells_backward(pos, INF):
+	# Moves backward without collision
+	for target in table.get_free_cells_moving_backward(pos, INF):
 		moves.append(Move.new(pos, target))
 	# Moves backward with collision
 	occupied_target = table.get_first_occupied_cell_moving_backward(pos, get_opposite_color(piece.color))
@@ -336,9 +379,9 @@ func get_valid_rook_moves(table: Table, pieces, piece):
 		moves.append(Move.new(pos, occupied_target))
 		
 	# Moves left/right without collision
-	for target in table.get_cells_left(pos, INF):
+	for target in table.get_free_cells_moving_left(pos, INF):
 		moves.append(Move.new(pos, target))
-	for target in table.get_cells_right(pos, INF):
+	for target in table.get_free_cells_moving_right(pos, INF):
 		moves.append(Move.new(pos, target))
 	occupied_target = table.get_first_occupied_cell_moving_left(pos, get_opposite_color(piece.color))
 	if occupied_target != null:
@@ -346,21 +389,35 @@ func get_valid_rook_moves(table: Table, pieces, piece):
 	occupied_target = table.get_first_occupied_cell_moving_right(pos, get_opposite_color(piece.color))
 	if occupied_target != null:
 		moves.append(Move.new(pos, occupied_target))
+	return moves
+
+
+func get_valid_bishop_moves(table: Table, piece):
+	var moves = []
 	
+
+
+
+func get_valid_king_moves(table: Table, piece):
+	# Get all valid moves of the king
+	var directions = [
+		LEFT, RIGHT,
+		FORWARD, BACKWARD,
+		DIAG45, DIAG135, DIAG225, DIAG315
+	]
+	var moves = []
+	for direction in directions:
+		var target = piece.board_position+direction
+		if table.in_bounds(target) and (table.is_empty(target) or table.get_color(target) != piece.color):
+			moves.append(Move.new(piece.board_position, target))
 	return moves
 
 
 
-
-
-func _is_check(table: Table, color: String) -> bool:
-	return false
-
-
-func get_valid_moves(pieces, prev_moves, piece):
-	# Returns a list of all valid moves for the given piece.
-	# Each valid move is represented as a position indicating the cell where the
-	# piece can move.
+func get_valid_moves(pieces, prev_moves, piece, check_absolute_pins:bool=true):
+	# Returns a list of all valid moves for the given piece given the current board configuration.
+	# if `check_absolute_pins` is true (default), discard moves which threats the king with the same
+	# color as the moving piece after the move (the moving piece is pinned)
 	var table = create_table(pieces)
 	var moves = []
 	
@@ -370,16 +427,33 @@ func get_valid_moves(pieces, prev_moves, piece):
 		moves += get_valid_knight_moves(table, pieces, piece)
 	elif piece.kind == "rook":
 		moves += get_valid_rook_moves(table, pieces, piece)
+	elif piece.kind == "king":
+		moves += get_valid_king_moves(table, piece)
 	
 	var valid_moves = []
 	for move in moves:
 		var table_after_move = table.apply_move(move)
-		if not _is_check(table_after_move, piece.color):
+		if not check_absolute_pins or not _is_check(table_after_move, piece.color):
 			valid_moves.append(move)
 	return valid_moves
 	
-	
 
+
+func _is_check(table: Table, color: String) -> bool:
+	var pieces = table.get_pieces()
+	for piece in pieces:
+		if piece.color == color:
+			# Only pieces of the opposite color can check the king
+			continue
+		# Piece is checking the king if it has a valid move which targets
+		# the cell's king
+		var moves = get_valid_moves(pieces, [], piece, false)
+		for move in moves:
+			var target = move.to
+			if table.get_kind(target) == "king":
+				return true
+	return false
+	
 	
 func is_check(pieces: Array, color: String) -> bool:
 	# Returns true if the king of the given color is in check, false otherwise.
