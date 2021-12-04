@@ -98,7 +98,7 @@ func _on_board_cell_clicked(selected_cell):
 
 
 			# Query check mate
-			if game.is_check_mate(board.get_pieces()):
+			if game.is_check_mate(board.get_pieces(), moves, game.get_opposite_color(current_turn)):
 				emit_signal("checkmated", current_turn)
 				return
 			else:
