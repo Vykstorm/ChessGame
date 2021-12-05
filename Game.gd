@@ -139,13 +139,15 @@ class Table:
 			steps += 1
 		return moves
 		
-	func get_first_occupied_cell_moving_to(pos: Vector2, color: String, direction: Vector2):
+	func get_first_occupied_cell_moving_to(pos: Vector2, color: String, direction: Vector2, max_steps=INF):
 		# Get the first cell starting from the given position and moving in a specified direction
 		# which is occupie by a piece of the specified color. Returns null if no cells were hit or hit a piece
 		# with opposite color.
 		pos += direction
-		while self.in_bounds(pos) and self.is_empty(pos):
+		var steps = 1
+		while steps < max_steps and self.in_bounds(pos) and self.is_empty(pos):
 			pos += direction
+			steps += 1
 		if self.in_bounds(pos) and self.get_color(pos) == color:
 			return pos
 		return null
@@ -176,31 +178,70 @@ class Table:
 		return self.get_free_cells_moving_to(pos, max_steps, DIAG315)
 		
 	
-	func get_first_occupied_cell_moving_forward(pos: Vector2, color: String):
-		return self.get_first_occupied_cell_moving_to(pos, color, FORWARD)
+	func get_first_occupied_cell_moving_forward(pos: Vector2, color: String, max_steps=INF):
+		return self.get_first_occupied_cell_moving_to(pos, color, FORWARD, max_steps)
 
-	func get_first_occupied_cell_moving_backward(pos: Vector2, color: String):
-		return self.get_first_occupied_cell_moving_to(pos, color, BACKWARD)
+	func get_first_occupied_cell_moving_backward(pos: Vector2, color: String, max_steps=INF):
+		return self.get_first_occupied_cell_moving_to(pos, color, BACKWARD, max_steps)
 	
-	func get_first_occupied_cell_moving_left(pos: Vector2, color: String):
-		return self.get_first_occupied_cell_moving_to(pos, color, LEFT)
+	func get_first_occupied_cell_moving_left(pos: Vector2, color: String, max_steps=INF):
+		return self.get_first_occupied_cell_moving_to(pos, color, LEFT, max_steps)
 
-	func get_first_occupied_cell_moving_right(pos: Vector2, color: String):
-		return self.get_first_occupied_cell_moving_to(pos, color, RIGHT)
+	func get_first_occupied_cell_moving_right(pos: Vector2, color: String, max_steps=INF):
+		return self.get_first_occupied_cell_moving_to(pos, color, RIGHT, max_steps)
 		
 		
-	func get_first_occupied_cell_moving_diag45(pos: Vector2, color: String) -> Array:
-		return self.get_first_occupied_cell_moving_to(pos, color, DIAG45)
+	func get_first_occupied_cell_moving_diag45(pos: Vector2, color: String, max_steps=INF) -> Array:
+		return self.get_first_occupied_cell_moving_to(pos, color, DIAG45, max_steps)
 		
-	func get_first_occupied_cell_moving_diag135(pos: Vector2, color: String) -> Array:
-		return self.get_first_occupied_cell_moving_to(pos, color, DIAG135)
+	func get_first_occupied_cell_moving_diag135(pos: Vector2, color: String, max_steps=INF) -> Array:
+		return self.get_first_occupied_cell_moving_to(pos, color, DIAG135, max_steps)
 	
-	func get_first_occupied_cell_moving_diag225(pos: Vector2, color: String) -> Array:
-		return self.get_first_occupied_cell_moving_to(pos, color, DIAG225)
+	func get_first_occupied_cell_moving_diag225(pos: Vector2, color: String, max_steps=INF) -> Array:
+		return self.get_first_occupied_cell_moving_to(pos, color, DIAG225, max_steps)
 
-	func get_first_occupied_cell_moving_diag315(pos: Vector2, color: String) -> Array:
-		return self.get_first_occupied_cell_moving_to(pos, color, DIAG315)
+	func get_first_occupied_cell_moving_diag315(pos: Vector2, color: String, max_steps=INF) -> Array:
+		return self.get_first_occupied_cell_moving_to(pos, color, DIAG315, max_steps)
 		
+	func get_free_cells_moving_horizontally(pos: Vector2, max_steps) -> Array:
+		var directions = [FORWARD, BACKWARD, LEFT, RIGHT]
+		var cells = []
+		for direction in directions:
+			cells += self.get_free_cells_moving_to(pos, max_steps, direction)
+		return cells
+	
+	func get_free_cells_moving_vertically(pos: Vector2, max_steps) -> Array:
+		var directions = [DIAG45, DIAG135, DIAG225, DIAG315]
+		var cells = []
+		for direction in directions:
+			cells += self.get_free_cells_moving_to(pos, max_steps, direction)
+		return cells
+	
+	func get_free_cells_moving_any_direction(pos: Vector2, max_steps=INF) -> Array:
+		var directions = [LEFT, RIGHT, FORWARD, BACKWARD, DIAG45, DIAG135, DIAG225, DIAG315]
+		var cells = []
+		for direction in directions:
+			cells += self.get_free_cells_moving_to(pos, max_steps, direction)
+		return cells
+		
+	func get_first_occupied_cells_moving_horizontally(pos: Vector2, color: String, max_steps=INF) -> Array:
+		var directions = [FORWARD, BACKWARD, LEFT, RIGHT]
+		var cells = []
+		for direction in directions:
+			var cell = self.get_first_occupied_cell_moving_to(pos, color, direction, max_steps)
+			if cell != null:
+				cells.append(cell)
+		return cells
+		
+	func get_first_occupied_cells_moving_any_direction(pos: Vector2, color: String, max_steps=INF) -> Array:
+		var directions = [LEFT, RIGHT, FORWARD, BACKWARD, DIAG45, DIAG135, DIAG225, DIAG315]
+		var cells = []
+		for direction in directions:
+			var cell = self.get_first_occupied_cell_moving_to(pos, color, direction, max_steps)
+			if cell != null:
+				cells.append(cell)
+		return cells
+
 	
 	func duplicate() -> Table:
 		return Table.new(self.num_rows, self.num_cols, self.get_pieces())
@@ -362,54 +403,31 @@ func get_valid_knight_moves(table, pieces, piece):
 func get_valid_rook_moves(table: Table, pieces, piece):
 	var moves = []
 	var pos = piece.board_position
-	# Moves forward without collision
-	for target in table.get_free_cells_moving_forward(pos, INF):
+	
+	# Horizontal moves without collision
+	for target in table.get_free_cells_moving_horizontally(pos, INF):
 		moves.append(Move.new(pos, target))
-	# Move to an occupied cell moving forward
-	var occupied_target = table.get_first_occupied_cell_moving_forward(pos, get_opposite_color(piece.color))
-	if occupied_target != null:
-		moves.append(Move.new(pos, occupied_target))
+	# Horizontal moves with collision
+	for target in table.get_first_occupied_cells_moving_horizontally(pos, get_opposite_color(piece.color)):
+		moves.append(Move.new(pos, target))
 		
-	# Moves backward without collision
-	for target in table.get_free_cells_moving_backward(pos, INF):
-		moves.append(Move.new(pos, target))
-	# Moves backward with collision
-	occupied_target = table.get_first_occupied_cell_moving_backward(pos, get_opposite_color(piece.color))
-	if occupied_target != null:
-		moves.append(Move.new(pos, occupied_target))
-		
-	# Moves left/right without collision
-	for target in table.get_free_cells_moving_left(pos, INF):
-		moves.append(Move.new(pos, target))
-	for target in table.get_free_cells_moving_right(pos, INF):
-		moves.append(Move.new(pos, target))
-	occupied_target = table.get_first_occupied_cell_moving_left(pos, get_opposite_color(piece.color))
-	if occupied_target != null:
-		moves.append(Move.new(pos, occupied_target))
-	occupied_target = table.get_first_occupied_cell_moving_right(pos, get_opposite_color(piece.color))
-	if occupied_target != null:
-		moves.append(Move.new(pos, occupied_target))
 	return moves
 
 
 func get_valid_bishop_moves(table: Table, piece):
 	var moves = []
-	
-
-
+	return moves
 
 func get_valid_king_moves(table: Table, piece):
-	# Get all valid moves of the king
-	var directions = [
-		LEFT, RIGHT,
-		FORWARD, BACKWARD,
-		DIAG45, DIAG135, DIAG225, DIAG315
-	]
+	# Get all valid moves for the king
+	var pos = piece.board_position
 	var moves = []
-	for direction in directions:
-		var target = piece.board_position+direction
-		if table.in_bounds(target) and (table.is_empty(target) or table.get_color(target) != piece.color):
-			moves.append(Move.new(piece.board_position, target))
+	# Horizontal moves without collision
+	for target in table.get_free_cells_moving_any_direction(pos, 1):
+		moves.append(Move.new(pos, target))
+	# Horizontal moves with collision
+	for target in table.get_first_occupied_cells_moving_any_direction(pos, get_opposite_color(piece.color), 1):
+		moves.append(Move.new(pos, target))
 	return moves
 
 
