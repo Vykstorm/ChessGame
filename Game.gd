@@ -210,7 +210,7 @@ class Table:
 			cells += self.get_free_cells_moving_to(pos, max_steps, direction)
 		return cells
 	
-	func get_free_cells_moving_vertically(pos: Vector2, max_steps) -> Array:
+	func get_free_cells_moving_diagonally(pos: Vector2, max_steps) -> Array:
 		var directions = [DIAG45, DIAG135, DIAG225, DIAG315]
 		var cells = []
 		for direction in directions:
@@ -226,6 +226,15 @@ class Table:
 		
 	func get_first_occupied_cells_moving_horizontally(pos: Vector2, color: String, max_steps=INF) -> Array:
 		var directions = [FORWARD, BACKWARD, LEFT, RIGHT]
+		var cells = []
+		for direction in directions:
+			var cell = self.get_first_occupied_cell_moving_to(pos, color, direction, max_steps)
+			if cell != null:
+				cells.append(cell)
+		return cells
+	
+	func get_first_occupied_cells_moving_diagonally(pos: Vector2, color: String, max_steps=INF) -> Array:
+		var directions = [DIAG45, DIAG135, DIAG225, DIAG315]
 		var cells = []
 		for direction in directions:
 			var cell = self.get_first_occupied_cell_moving_to(pos, color, direction, max_steps)
@@ -304,14 +313,14 @@ func get_initial_pieces():
 	pieces.append(["knight", "black", G, 8])
 	
 	# Create bishops
-#	pieces.append(["bishop", "white", C, 1])
-#	pieces.append(["bishop", "white", F, 1])
-#	pieces.append(["bishop", "black", C, 8])
-#	pieces.append(["bishop", "black", F, 8])
+	pieces.append(["bishop", "white", C, 1])
+	pieces.append(["bishop", "white", F, 1])
+	pieces.append(["bishop", "black", C, 8])
+	pieces.append(["bishop", "black", F, 8])
 
 	# Create queens
-#	pieces.append(["queen", "white", D, 1])
-#	pieces.append(["queen", "black", E, 8])
+	pieces.append(["queen", "white", D, 1])
+	pieces.append(["queen", "black", E, 8])
 	
 	# Create kings
 	pieces.append(["king", "white", E, 1])
@@ -415,7 +424,15 @@ func get_valid_rook_moves(table: Table, pieces, piece):
 
 
 func get_valid_bishop_moves(table: Table, piece):
+	# Get all valid moves for a bishop.
+	var pos = piece.board_position
 	var moves = []
+	# Diagonal moves without collision
+	for target in table.get_free_cells_moving_diagonally(pos, INF):
+		moves.append(Move.new(pos, target))
+	# Diagonal moves with collision
+	for target in table.get_first_occupied_cells_moving_diagonally(pos, get_opposite_color(piece.color), 1):
+		moves.append(Move.new(pos, target))
 	return moves
 
 func get_valid_king_moves(table: Table, piece):
@@ -427,6 +444,19 @@ func get_valid_king_moves(table: Table, piece):
 		moves.append(Move.new(pos, target))
 	# Horizontal moves with collision
 	for target in table.get_first_occupied_cells_moving_any_direction(pos, get_opposite_color(piece.color), 1):
+		moves.append(Move.new(pos, target))
+	return moves
+	
+	
+func get_valid_queen_moves(table: Table, piece):
+	# Get all valid moves for the queen
+	var pos = piece.board_position
+	var moves = []
+	# Horizontal moves without collision
+	for target in table.get_free_cells_moving_any_direction(pos, INF):
+		moves.append(Move.new(pos, target))
+	# Horizontal moves with collision
+	for target in table.get_first_occupied_cells_moving_any_direction(pos, get_opposite_color(piece.color), INF):
 		moves.append(Move.new(pos, target))
 	return moves
 
@@ -447,6 +477,10 @@ func get_valid_moves(pieces, prev_moves, piece, check_absolute_pins:bool=true):
 		moves += get_valid_rook_moves(table, pieces, piece)
 	elif piece.kind == "king":
 		moves += get_valid_king_moves(table, piece)
+	elif piece.kind == "bishop":
+		moves += get_valid_bishop_moves(table, piece)
+	elif piece.kind == "queen":
+		moves += get_valid_queen_moves(table, piece)
 	
 	var valid_moves = []
 	for move in moves:
