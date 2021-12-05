@@ -431,7 +431,7 @@ func get_valid_bishop_moves(table: Table, piece):
 	for target in table.get_free_cells_moving_diagonally(pos, INF):
 		moves.append(Move.new(pos, target))
 	# Diagonal moves with collision
-	for target in table.get_first_occupied_cells_moving_diagonally(pos, get_opposite_color(piece.color), 1):
+	for target in table.get_first_occupied_cells_moving_diagonally(pos, get_opposite_color(piece.color), INF):
 		moves.append(Move.new(pos, target))
 	return moves
 
