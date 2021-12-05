@@ -283,54 +283,82 @@ func create_table(pieces: Array) -> Table:
 
 
 
+# Test 1: Only black 
 
-func get_initial_pieces():
-	# Returns a list of items, one for each initial
-	# piece that should be added to the board:
-	# Each item is: (piece, color, x, y). (x,y) is the position
-	# where piece is the label indicating the piece kind.
-	# Finally, color should be white and black.
-	# Create white pawns.
+
+func get_initial_pawns():
 	var pieces = []
+	# Create white pawns.
 	for x in range(1, 9):
-		pieces.append(["pawn", "white", x, 2])
-#
+		pieces.append(Piece.new("pawn", "white", Vector2(x, 2)))
+
 	# Create black pawns.
 	for x in range(1, 9):
-		pieces.append(["pawn", "black", x, 7])
+		pieces.append(Piece.new("pawn", "black", Vector2(x, 7)))
+	return pieces
+	
+func get_initial_rooks():
+	var pieces = [
+		Piece.new("rook", "white", Vector2(A, 1)),
+		Piece.new("rook", "white", Vector2(H, 1)),
+		Piece.new("rook", "black", Vector2(A, 8)),
+		Piece.new("rook", "black", Vector2(H, 8))
+	]
+	return pieces
+	
+func get_initial_knights():
+	return [
+		Piece.new("knight", "white", Vector2(B, 1)),
+		Piece.new("knight", "white", Vector2(G, 1)),
+		Piece.new("knight", "black", Vector2(B, 8)),
+		Piece.new("knight", "black", Vector2(G, 8))
+	]
+	
+func get_initial_bishops():
+	return [
+		Piece.new("bishop", "white", Vector2(C, 1)),
+		Piece.new("bishop", "white", Vector2(F, 1)),
+		Piece.new("bishop", "black", Vector2(C, 8)),
+		Piece.new("bishop", "black", Vector2(F, 8))
+	]
+
+func get_initial_queens():
+	return [
+		Piece.new("queen", "white", Vector2(D, 1)),
+		Piece.new("queen", "black", Vector2(E, 8))
+	]
+	
+func get_initial_kings():
+	return [
+		Piece.new("king", "white", Vector2(E, 1)),
+		Piece.new("king", "black", Vector2(D, 8))
+	]
+	
+
+func get_initial_pieces():
+	# Get all initial pieces that should be in a board
+	
+	var pieces = []
+	# Create pawns
+	pieces += get_initial_pawns()
 
 	# Create rooks
-	pieces.append(["rook", "white", A, 1])
-	pieces.append(["rook", "white", H, 1])
-	pieces.append(["rook", "black", A, 8])
-	pieces.append(["rook", "black", H, 8])
-	
+	pieces += get_initial_rooks()
+
 	# Create knights
-	
-	pieces.append(["knight", "white", B, 1])
-	pieces.append(["knight", "white", G, 1])
-	pieces.append(["knight", "black", B, 8])
-	pieces.append(["knight", "black", G, 8])
+	pieces += get_initial_knights()
 	
 	# Create bishops
-	pieces.append(["bishop", "white", C, 1])
-	pieces.append(["bishop", "white", F, 1])
-	pieces.append(["bishop", "black", C, 8])
-	pieces.append(["bishop", "black", F, 8])
-
+	pieces += get_initial_bishops()
+	
 	# Create queens
-	pieces.append(["queen", "white", D, 1])
-	pieces.append(["queen", "black", E, 8])
-	
+	pieces += get_initial_queens()
+
 	# Create kings
-	pieces.append(["king", "white", E, 1])
-	pieces.append(["king", "black", D, 8])
+	pieces += get_initial_kings()
 	
-	var result = []
-	for info in pieces:
-		# TODO
-		result.append(Piece.new(info[0], info[1], Vector2(info[2], info[3])))
-	return result
+	return pieces
+	
 
 func en_passant_move_on(table, prev_moves, pos, color):
 	# Check if there is a pawn with the specified color at the given position which moved the last turn 2 positions forward.
