@@ -121,6 +121,13 @@ class Table:
 				pieces.append(Piece.new(kind, color, pos))
 		return pieces
 		
+	func get_pieces_of_color(color: String) -> Array:
+		# Returns all the pieces in the board with the given color
+		var pieces = []
+		for piece in self.get_pieces():
+			if piece.color == color:
+				pieces.append(piece)
+		return pieces
 		
 	func in_bounds(pos: Vector2) -> bool:
 		# Returns true if the given position is inside of the bound of this table.
@@ -283,9 +290,6 @@ func create_table(pieces: Array) -> Table:
 
 
 
-# Test 1: Only black 
-
-
 func get_initial_pawns():
 	var pieces = []
 	# Create white pawns.
@@ -340,22 +344,25 @@ func get_initial_pieces():
 	
 	var pieces = []
 	# Create pawns
-	pieces += get_initial_pawns()
+#	pieces += get_initial_pawns()
 
 	# Create rooks
-	pieces += get_initial_rooks()
+#	pieces += get_initial_rooks()
 
 	# Create knights
-	pieces += get_initial_knights()
-	
+#	pieces += get_initial_knights()
+
 	# Create bishops
-	pieces += get_initial_bishops()
-	
+#	pieces += get_initial_bishops()
+
 	# Create queens
-	pieces += get_initial_queens()
+#	pieces += get_initial_queens()
 
 	# Create kings
 	pieces += get_initial_kings()
+	
+	pieces.append(Piece.new("queen", "white", Vector2(1, 1)))
+	pieces.append(Piece.new("queen", "white", Vector2(8, 1)))
 	
 	return pieces
 	
@@ -553,6 +560,17 @@ func is_check_mate(pieces, prev_moves, color) -> bool:
 			var table_after_move = table.apply_move(move)
 			if not _is_check(table_after_move, color):
 				return false
+	return true
+	
+
+func is_stale_mate(pieces, prev_moves, color) -> bool:
+	# Returns true in case of stalemate: The king of the given color can't move to any
+	# other cell nor any other piece of the same color can't move.
+	# Precondition: King of the given color is not in check.
+	var table = create_table(pieces)
+	for piece in table.get_pieces_of_color(color):
+		if len(get_valid_moves(pieces, prev_moves, piece)) > 0:
+			return false 
 	return true
 
 # Called when the node enters the scene tree for the first time.

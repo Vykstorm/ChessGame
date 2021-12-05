@@ -2,6 +2,7 @@ extends Node2D
 
 signal piece_selected
 signal piece_deselected
+signal stalemate
 signal checkmate
 signal check
 signal piece_moved
@@ -105,13 +106,21 @@ func _on_board_cell_clicked(selected_cell):
 			# Query check/ check mate
 			var pieces = board.get_pieces()
 			if game.is_check(pieces, game.get_opposite_color(current_turn)):
-				if game.is_check_mate(board.get_pieces(), moves, game.get_opposite_color(current_turn)):
+				# Opposite king in check
+				
+				# Check mate?
+				if game.is_check_mate(pieces, moves, game.get_opposite_color(current_turn)):
 					emit_signal("checkmate", current_turn)
 					return
 				else:
 					emit_signal("check", current_turn)
 			else:
-				pass
+				# Opposite not in check
+				# Stale mate?
+				if game.is_stale_mate(pieces, moves, game.get_opposite_color(current_turn)):
+					emit_signal("stalemate", current_turn)
+					return
+				
 			# Continue game 
 			# Change turn
 			next_turn()
@@ -137,7 +146,9 @@ func _ready():
 
 func _on_checkmate(_color):
 	print("Check mate!")
-
+	
+func _on_stalemate(_color):
+	print("Stale mate!")
 
 func _on_check(_color):
 	print("Check!")
