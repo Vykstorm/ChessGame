@@ -18,11 +18,11 @@ const JUMP_RIGHTDOWN = Vector2(2, -1)
 const FORWARD=Vector2(0, 1)
 const BACKWARD=Vector2(0, -1)
 
+
 func get_opposite_color(color):
 	if color == "white":
 		return "black"
 	return "white"
-
 
 
 class Move:
@@ -128,6 +128,21 @@ class Table:
 			if piece.color == color:
 				pieces.append(piece)
 		return pieces
+		
+	func get_piece_of_kind(kind: String) -> Array:
+		# Returns all the pieces in the board of the type specified
+		var pieces = []
+		for piece in self.get_pieces():
+			if piece.kind == kind:
+				pieces.append(piece)
+		return pieces
+		
+	func get_king(color: String) -> Piece:
+		# Returns the king the given color
+		for piece in self.get_pieces():
+			if piece.kind == "king" and piece.color == color:
+				return piece
+		return null
 		
 	func in_bounds(pos: Vector2) -> bool:
 		# Returns true if the given position is inside of the bound of this table.
@@ -258,6 +273,26 @@ class Table:
 				cells.append(cell)
 		return cells
 
+
+	func get_movement_step(from: Vector2, to: Vector2) -> Vector2:
+		# Given a source and target positions, returns a vector direction which represents
+		# the small cell movement of a piece from source to target.
+		var difference = to - from
+		return Vector2(sign(difference.x), sign(difference.y))
+		
+
+	func get_first_occupied_cell_between(from: Vector2, to: Vector2):
+		# Returns the first cell occupied by a piece between the given cells (excluding them). 
+		# Precondition: The given cells must share the same diagonal/row or column, also they are
+		# valid cells within the board.
+		var direction = self.get_movement_step(from, to)
+		var pos = from + direction
+		while pos != to and self.is_empty(pos):
+			pos += direction
+		if pos != to:
+			return pos
+		return null
+		
 	
 	func duplicate() -> Table:
 		return Table.new(self.num_rows, self.num_cols, self.get_pieces())
@@ -347,22 +382,19 @@ func get_initial_pieces():
 #	pieces += get_initial_pawns()
 
 	# Create rooks
-#	pieces += get_initial_rooks()
+	pieces += get_initial_rooks()
 
 	# Create knights
-#	pieces += get_initial_knights()
+	pieces += get_initial_knights()
 
 	# Create bishops
-#	pieces += get_initial_bishops()
+	pieces += get_initial_bishops()
 
 	# Create queens
-#	pieces += get_initial_queens()
+	pieces += get_initial_queens()
 
 	# Create kings
 	pieces += get_initial_kings()
-	
-	pieces.append(Piece.new("queen", "white", Vector2(1, 1)))
-	pieces.append(Piece.new("queen", "white", Vector2(8, 1)))
 	
 	return pieces
 	
@@ -496,10 +528,60 @@ func get_valid_queen_moves(table: Table, piece):
 	return moves
 
 
+	
 
-func get_valid_moves(pieces, prev_moves, piece, check_absolute_pins:bool=true):
+func placed_in_same_row_or_column(piece_a, piece_b) -> bool:
+	# Check if two pieces are located in the same row/column
+	var difference = piece_a.board_position - piece_b.board_position
+	var diffx = abs(int(difference.x))
+	var diffy = abs(int(difference.y))
+	return diffx == 0 or diffy == 0
+	
+func placed_in_same_diagonal(piece_a, piece_b) -> bool:
+	# Check if two pieces are located in the same diagoal.
+	var difference = piece_a.board_position - piece_b.board_position
+	var diffx = abs(int(difference.x))
+	var diffy = abs(int(difference.y))
+	return diffx == diffy
+	
+
+func is_pinned(table: Table, piece) -> bool:
+	# Check if the given piece is absolutely pinned. It is pinned if it cannot move without exposing its
+	# king to a check.
+	
+	# A piece cannot be absolutely pinned if it's not placed in the same row/column or diagonal as the king
+	var king = table.get_king(piece.color)
+	if not placed_in_same_diagonal(king, piece) and not placed_in_same_row_or_column(king, piece):
+		return false
+	
+	# Search another piece pinning the given piece.
+	var direction = table.get_movement_step(king.board_position, piece.board_position)
+	var cell = piece.board_position + direction
+	while table.in_bounds(cell) and table.is_empty(cell):
+		cell += direction
+	if table.in_bounds(cell):
+		# We found a piece sharing a diagonal/row or column with the king and the piece.
+		var pinning_piece = table.get_piece(cell)
+		if pinning_piece.color == piece.color:
+			return false
+		# And is an enemy piece...
+		
+		# If we are in the same row/column, only rooks & queens can be the pinning piece.
+		if int(direction.x) == 0 or int(direction.y) == 0:
+			return pinning_piece.kind in ["queen", "rook"]
+		# If we are in the same diagonal, only queens and bishops can be the pinning piece...
+		return pinning_piece.kind in ["queen", "bishop"]
+		
+	else:
+		return false
+	
+	# Check if the given piece and its king are in a common row / column or diagonal.
+	return false
+
+
+func get_valid_moves(pieces, prev_moves, piece, check_pins:bool=true):
 	# Returns a list of all valid moves for the given piece given the current board configuration.
-	# if `check_absolute_pins` is true (default), discard moves which threats the king with the same
+	# if `check_pins` is true (default), discard moves which threats the king with the same
 	# color as the moving piece after the move (the moving piece is pinned)
 	var table = create_table(pieces)
 	var moves = []
@@ -519,26 +601,113 @@ func get_valid_moves(pieces, prev_moves, piece, check_absolute_pins:bool=true):
 	
 	var valid_moves = []
 	for move in moves:
+		# If the moving piece is absolutely pinned it's an invalid move...
+#		if piece.kind != "king":
+#			if check_pins and is_pinned(table, piece):
+#				continue
+
+		# The piece cannot do a move which leaves the it's king threatened.
 		var table_after_move = table.apply_move(move)
-		if not check_absolute_pins or not _is_check(table_after_move, piece.color):
-			valid_moves.append(move)
+		if _is_check(table_after_move, piece.color):
+			continue
+		valid_moves.append(move)
 	return valid_moves
+
+
+func is_piece_being_threatened_by_knight(piece, knight) -> bool:
+	var pos = piece.board_position
+	var attacker_pos = knight.board_position
+	var diff = attacker_pos - pos
+	for jump in [
+		JUMP_DOWNLEFT, JUMP_DOWNRIGHT, JUMP_LEFTDOWN, JUMP_LEFTUP,
+		JUMP_RIGHTDOWN, JUMP_RIGHTUP, JUMP_UPLEFT, JUMP_UPRIGHT]:
+		if diff == jump:
+			return true
+	return false
+
+func is_piece_being_threatened_by_pawn(piece, pawn) -> bool:
+	var attacker_pos = pawn.board_position
+	var target_cells
+	if pawn.color == "white":
+		target_cells = [
+			attacker_pos+DIAG45,
+			attacker_pos+DIAG135
+		]
+	else:
+		target_cells = [
+			attacker_pos-DIAG45,
+			attacker_pos-DIAG135
+		]
+	for target_cell in target_cells:
+		if target_cell == piece.board_position:
+			return true
+	return false
+	
+func is_piece_being_threatened_by_rook(table: Table, piece, rook) -> bool:
+	# Rook and piece on the same row or column?
+	if not placed_in_same_row_or_column(piece, rook):
+		return false
+	# Check if there is not another piece between the attacker and the target piece.
+	return table.get_first_occupied_cell_between(piece.board_position, rook.board_position) == null
+
+func is_piece_being_threatened_by_queen(table: Table, piece, queen) -> bool:
+	# Queen and piece on the same row, column or diagonal?
+	if not placed_in_same_row_or_column(piece, queen) and not placed_in_same_diagonal(piece, queen):
+		return false
+	# Check if there is not another piece between the attacker and the target piece.
+	return table.get_first_occupied_cell_between(piece.board_position, queen.board_position) == null
+
+
+func is_piece_being_threatened_by_bishop(table: Table, piece, bishop) -> bool:
+	# Bishop and piece on the same diagonal?
+	if not placed_in_same_diagonal(piece, bishop):
+		return false
+	# Check if there is not another piece between the attacker and the target piece.
+	return table.get_first_occupied_cell_between(piece.board_position, bishop.board_position) == null
+
+
+func is_piece_being_threatened_by_king(piece, king) -> bool:
+	var diff = piece.board_position - king.board_position
+	return int(abs(diff.x)) <= 1 and int(abs(diff.y)) <= 1
+
+	
+
+func is_piece_being_theatened(table: Table, piece, attacker) -> bool:
+	# Returns true if the given piece is being threatened by another piece, assuming both have
+	# different colors.
+	
+	if attacker.kind == "knight":
+		return is_piece_being_threatened_by_knight(piece, attacker)
+		
+	elif attacker.kind == "pawn":
+		return is_piece_being_threatened_by_pawn(piece, attacker)
+
+	elif attacker.kind == "rook":
+		return is_piece_being_threatened_by_rook(table, piece, attacker)
+		
+	elif attacker.kind == "bishop":
+		return is_piece_being_threatened_by_bishop(table, piece, attacker)
+		
+	elif attacker.kind == "queen":
+		return is_piece_being_threatened_by_queen(table, piece, attacker)
+	
+	elif attacker.kind == "king":
+		return is_piece_being_threatened_by_king(piece, attacker)
+	return false
 	
 
 
 func _is_check(table: Table, color: String) -> bool:
 	var pieces = table.get_pieces()
+	var king = table.get_king(color)
 	for piece in pieces:
 		if piece.color == color:
 			# Only pieces of the opposite color can check the king
 			continue
 		# Piece is checking the king if it has a valid move which targets
 		# the cell's king
-		var moves = get_valid_moves(pieces, [], piece, false)
-		for move in moves:
-			var target = move.to
-			if table.get_kind(target) == "king":
-				return true
+		if is_piece_being_theatened(table, king, piece):
+			return true
 	return false
 	
 	
