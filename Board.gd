@@ -17,7 +17,9 @@ var current_piece_under_mouse = null
 func hightlight_cell(cell):
 	var y = 8-cell.y
 	var x = cell.x-1
-	highlighted_cells.set_cell(x, y, 0)
+	# Only highlght cells not occupied by pieces
+	if get_piece_in_cell(cell) == null:
+		highlighted_cells.set_cell(x, y, 0)
 
 func highlight_cells(cells):
 	# Hightlight the given cells
