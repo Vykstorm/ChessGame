@@ -91,11 +91,21 @@ func do_move(move):
 		var rook_to_move = get_piece_in_cell(move.get_rook_source_pos())
 		rook_to_move.board_position = move.get_rook_target_pos()
 		rook_to_move.update_position()
+	
+	elif move is game.PromotionMove:
+		var pawn_to_move = get_piece_in_cell(move.from)
+		var piece_to_remove = get_piece_in_cell(move.to)
+		if piece_to_remove != null:
+			piece_to_remove.queue_free()
+		pawn_to_move.board_position = move.to
+		pawn_to_move.update_position()
 		
+		pawn_to_move.kind =  move.promotion
+		pawn_to_move.update_picture()
 	else:
 		var piece_to_move = get_piece_in_cell(move.from)
 		assert(piece_to_move != null)
-		var piece_to_remove = get_piece_in_cell(move.piece_to_kill) if move.piece_to_kill else get_piece_in_cell(move.to)
+		var piece_to_remove = get_piece_in_cell(move.piece_to_kill) if move.piece_to_kill != null else get_piece_in_cell(move.to)
 		if piece_to_remove != null:
 			piece_to_remove.queue_free()
 		piece_to_move.board_position = move.to

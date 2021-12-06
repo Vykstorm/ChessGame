@@ -35,6 +35,18 @@ class Move:
 		self.from = from
 		self.to = to
 		self.piece_to_kill = piece_to_kill
+		
+
+class PromotionMove:
+	# Represents a pawn promotion move
+	var from
+	var to
+	var promotion # The kind of piece that replaces the pawn
+	
+	func _init(from, to, promotion=null):
+		self.from = from
+		self.to = to
+		self.promotion = promotion
 
 
 class CastlingMove:
@@ -443,7 +455,9 @@ func get_initial_pieces():
 	
 	var pieces = []
 	# Create pawns
-	pieces += get_initial_pawns()
+#	pieces += get_initial_pawns()
+	pieces.append(Piece.new("pawn","white", Vector2(A, 7)))
+	pieces.append(Piece.new("pawn","black", Vector2(A, 2)))
 
 	# Create rooks
 #	pieces += get_initial_rooks()
@@ -488,32 +502,51 @@ func get_valid_pawn_moves(table: Table, prev_moves, piece) -> Array:
 	var diag_moves = []
 	if piece.color == "white":
 		for target in table.get_free_cells_moving_forward(pos, 2 if pos.y == 2 else 1):
-			moves.append(Move.new(pos, target))
+			if target.y == 8:
+				moves.append(PromotionMove.new(pos, target))
+			else:
+				moves.append(Move.new(pos, target))
 		
 		# Pawn can move diagonally also!)
 		var target = pos+DIAG135
 		if table.get_color(target) == "black":
-			moves.append(Move.new(pos, target))
+			if target.y == 8:
+				moves.append(PromotionMove.new(pos, target))
+			else:
+				moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+LEFT, "black"):
 			moves.append(Move.new(pos, target, pos+LEFT))
 		target = pos+DIAG45
 		if table.get_color(target) == "black":
-			moves.append(Move.new(pos, target))
+			if target.y == 8:
+				moves.append(PromotionMove.new(pos, target))
+			else:
+				moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+RIGHT, "black"):
 			moves.append(Move.new(pos, target, pos+RIGHT))
-	else:
+	else: # Black pawns
 		for target in table.get_free_cells_moving_backward(pos, 2 if pos.y == 7 else 1):
-			moves.append(Move.new(pos, target))
+			if target.y == 1:
+				moves.append(PromotionMove.new(pos, target))
+			else:
+				moves.append(Move.new(pos, target))
 			
 		var target = pos+DIAG225
 		if table.get_color(target) == "white":
-			moves.append(Move.new(pos, target))
+			if target.y == 1:
+				moves.append(PromotionMove.new(pos, target))
+			else:
+				moves.append(Move.new(pos, target))
 		elif en_passant_move_on(table, prev_moves, pos+LEFT, "white"):
 			moves.append(Move.new(pos, target, pos+LEFT))
 			
 		target = pos+DIAG315
 		if table.get_color(target) == "white":
-			moves.append(Move.new(pos, target))
+			if target.y == 1:
+				moves.append(PromotionMove.new(pos, target))
+			else:
+				moves.append(Move.new(pos, target))
+			
 		elif en_passant_move_on(table, prev_moves, pos+RIGHT, "white"):
 			moves.append(Move.new(pos, target, pos+RIGHT))
 	return moves

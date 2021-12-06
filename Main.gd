@@ -10,6 +10,7 @@ signal piece_moved
 onready var board = $Board
 onready var game = $Game
 onready var Piece = preload("res://Piece.tscn")
+onready var promotion_dialog = $PromotionDialog
 
 
 # Current piece being dragged by user
@@ -103,6 +104,12 @@ func _on_board_cell_clicked(selected_cell):
 		if move.to == selected_cell:
 			# Move piece
 			moves.append(move)
+			
+			# If move is a promotion, ask the player the kind of piece to replace the pawn
+			if move is game.PromotionMove:
+				promotion_dialog.popup()
+				move.promotion = "queen"
+			
 			board.do_move(move)
 			emit_signal("piece_moved", current_piece_selected, selected_cell)
 			
@@ -145,7 +152,6 @@ func _ready():
 	
 	connect("piece_selected", self, "_on_piece_selected")
 	connect("piece_deselected", self, "_on_piece_deselected")
-
 
 func _on_checkmate(_color):
 	print("Check mate!")
