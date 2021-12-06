@@ -6,6 +6,7 @@ signal piece_clicked
 
 onready var pieces = $Pieces
 onready var Piece = preload("res://Piece.tscn")
+onready var game = preload("res://Game.gd")
 
 # Current piece located under the user's mouse
 var current_piece_under_mouse = null
@@ -66,13 +67,26 @@ func clear_pieces():
 
 func do_move(move):
 	# Do the given movement.
-	var piece_to_move = get_piece_in_cell(move.from)
-	assert(piece_to_move != null)
-	var piece_to_remove = get_piece_in_cell(move.piece_to_kill) if move.piece_to_kill else get_piece_in_cell(move.to)
-	if piece_to_remove != null:
-		piece_to_remove.queue_free()
-	piece_to_move.board_position = move.to
-	piece_to_move.update_position()
+	
+	if move is game.CastlingMove:
+		# Move the king
+		var king_to_move = get_piece_in_cell(move.get_king_source_pos())
+		king_to_move.board_position = move.get_king_target_pos()
+		king_to_move.update_position()
+		
+		# Move the rook
+		var rook_to_move = get_piece_in_cell(move.get_rook_source_pos())
+		rook_to_move.board_position = move.get_rook_target_pos()
+		rook_to_move.update_position()
+		
+	else:
+		var piece_to_move = get_piece_in_cell(move.from)
+		assert(piece_to_move != null)
+		var piece_to_remove = get_piece_in_cell(move.piece_to_kill) if move.piece_to_kill else get_piece_in_cell(move.to)
+		if piece_to_remove != null:
+			piece_to_remove.queue_free()
+		piece_to_move.board_position = move.to
+		piece_to_move.update_position()
 	
 func reset():
 	# Reset board cell colors and remove all the pieces

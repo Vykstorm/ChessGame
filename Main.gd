@@ -79,7 +79,10 @@ func _on_piece_selected(piece):
 	# Highlight cells which are valid moves
 	var cells_to_highlight = []
 	for move in current_piece_selected_possible_moves:
-		cells_to_highlight.append(move.to)
+		if move is game.CastlingMove:
+			cells_to_highlight.append(move.get_king_target_pos())
+		else:
+			cells_to_highlight.append(move.to)
 	board.highlight_cells(cells_to_highlight)
 
 func _on_piece_deselected(piece):

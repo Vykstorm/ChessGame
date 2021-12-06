@@ -37,6 +37,67 @@ class Move:
 		self.piece_to_kill = piece_to_kill
 
 
+class CastlingMove:
+	var king_from: Vector2
+	var king_to: Vector2
+	var rook_from: Vector2
+	var rook_to: Vector2
+	var from: Vector2
+	var to: Vector2
+	# Represents a castling move
+	func _init(color: String, kind: String):
+		# color specifies the king's color which does the move and kind is either
+		# 'kingside' or 'queenside' to indicate the type of castling.
+		var king_pos
+		var rook_pos: Vector2
+		if color == "white":
+			king_pos = Vector2(5, 1)
+			rook_pos.y = 1
+		else:
+			king_pos = Vector2(5, 8)
+			rook_pos.y = 8
+		if kind == "kingside":
+			rook_pos.x = 8
+		else:
+			rook_pos.x = 1
+			
+		# Get target rook & king positions
+		var king_target_pos
+		var rook_target_pos
+		if kind == "kingside":
+			king_target_pos = Vector2(king_pos.x + 2, king_pos.y)
+			rook_target_pos = Vector2(rook_pos.x - 2, rook_pos.y)
+		else:
+			king_target_pos = Vector2(king_pos.x - 2, king_pos.y)
+			rook_target_pos = Vector2(rook_pos.x + 3, rook_pos.y)
+	
+		self.king_from = king_pos
+		self.king_to = king_target_pos
+		self.rook_from = rook_pos
+		self.rook_to = rook_target_pos
+		self.from = king_pos
+		self.to = king_target_pos
+		
+		
+	func get_king_source_pos():
+		return self.king_from
+	
+	func get_king_target_pos():
+		return self.king_to
+	
+	func get_rook_source_pos():
+		return self.rook_from
+		
+	func get_rook_target_pos():
+		return self.rook_to
+	
+	func get_color():
+		if get_king_source_pos().y == 1:
+			return "white"
+		return "black"
+
+
+
 
 class Piece:
 	var kind: String
@@ -298,21 +359,24 @@ class Table:
 		return Table.new(self.num_rows, self.num_cols, self.get_pieces())
 			
 
-	func apply_move(move: Move) -> Table:
+	func apply_move(move) -> Table:
 		# Returns a new table configuration as a result of applying the given movement
-		
-		var table_after_move = self.duplicate()
-		
-		# Get attacking piece and remove it from its current cell position
-		var attacking_piece = table_after_move.clear_cell(move.from)
-		
-		# Clear target cell (if any o  othther piece is in there)
-		table_after_move.clear_cell(move.to)
-		
-		# Move piece to the target cell
-		attacking_piece.board_position = move.to
-		table_after_move.add_piece(attacking_piece)
-		return table_after_move
+		if move is CastlingMove:
+			var table_after_move = self.apply_move(Move.new(move.get_king_source_pos(), move.get_king_target_pos()))
+			table_after_move.apply_move(Move.new(move.get_rook_source_pos(), move.get_rook_target_pos()))
+			return table_after_move
+		else:
+			var table_after_move = self.duplicate()
+			# Get attacking piece and remove it from its current cell position
+			var moving_piece = table_after_move.clear_cell(move.from)
+			
+			# Clear target cell (if any other piece is in there)
+			table_after_move.clear_cell(move.to)
+			
+			# Move piece to the target cell
+			moving_piece.board_position = move.to
+			table_after_move.add_piece(moving_piece)
+			return table_after_move
 	
 	
 	
@@ -364,13 +428,13 @@ func get_initial_bishops():
 func get_initial_queens():
 	return [
 		Piece.new("queen", "white", Vector2(D, 1)),
-		Piece.new("queen", "black", Vector2(E, 8))
+		Piece.new("queen", "black", Vector2(D, 8))
 	]
 	
 func get_initial_kings():
 	return [
 		Piece.new("king", "white", Vector2(E, 1)),
-		Piece.new("king", "black", Vector2(D, 8))
+		Piece.new("king", "black", Vector2(E, 8))
 	]
 	
 
@@ -385,13 +449,13 @@ func get_initial_pieces():
 	pieces += get_initial_rooks()
 
 	# Create knights
-	pieces += get_initial_knights()
+#	pieces += get_initial_knights()
 
 	# Create bishops
-	pieces += get_initial_bishops()
+#	pieces += get_initial_bishops()
 
 	# Create queens
-	pieces += get_initial_queens()
+#	pieces += get_initial_queens()
 
 	# Create kings
 	pieces += get_initial_kings()
@@ -502,7 +566,7 @@ func get_valid_bishop_moves(table: Table, piece):
 		moves.append(Move.new(pos, target))
 	return moves
 
-func get_valid_king_moves(table: Table, piece):
+func get_valid_king_moves(table: Table, prev_moves, piece):
 	# Get all valid moves for the king
 	var pos = piece.board_position
 	var moves = []
@@ -512,6 +576,8 @@ func get_valid_king_moves(table: Table, piece):
 	# Horizontal moves with collision
 	for target in table.get_first_occupied_cells_moving_any_direction(pos, get_opposite_color(piece.color), 1):
 		moves.append(Move.new(pos, target))
+	# Castling
+	moves += get_valid_castling_moves(table, prev_moves, piece.color)
 	return moves
 	
 	
@@ -526,6 +592,77 @@ func get_valid_queen_moves(table: Table, piece):
 	for target in table.get_first_occupied_cells_moving_any_direction(pos, get_opposite_color(piece.color), INF):
 		moves.append(Move.new(pos, target))
 	return moves
+	
+	
+func piece_at_cell_not_moved_yet(prev_moves: Array, cell: Vector2):
+	for move in prev_moves:
+		if move.from == cell:
+			return false
+	return true
+	
+	
+	
+func get_valid_castling_moves(table: Table, prev_moves, color: String) -> Array:
+	# Is king on check?
+	if _is_check(table, color):
+		return []
+	
+	# There was any castling move already?
+	for move in prev_moves:
+		if move is CastlingMove and color == move.get_color():
+			return []
+	
+	# No castling moves done yet?
+	# The king moved a cell already?
+	var king_initial_pos
+	if color == "white":
+		king_initial_pos = Vector2(5, 1)
+	else:
+		king_initial_pos = Vector2(5, 8)
+	if not piece_at_cell_not_moved_yet(prev_moves, king_initial_pos):
+		return []
+	
+	# kingside rook moved already?
+	var kingside_rook_initial_pos: Vector2
+	var queenside_rook_initial_pos: Vector2
+	kingside_rook_initial_pos.x = 8
+	kingside_rook_initial_pos.y = 1 if color == "white" else 8
+	queenside_rook_initial_pos.x = 1
+	queenside_rook_initial_pos.y = kingside_rook_initial_pos.y
+	
+	var moves = []
+	if piece_at_cell_not_moved_yet(prev_moves, kingside_rook_initial_pos):
+		moves.append(CastlingMove.new(color, "kingside"))
+	if piece_at_cell_not_moved_yet(prev_moves, queenside_rook_initial_pos):
+		moves.append(CastlingMove.new(color, "queenside"))
+		
+	# castling cannot be done if king is in check after the move or would be in check if king is placed in any cell
+	# between it's current and final positions.
+	var valid_moves = []
+	for castling_move in moves:
+		var king_target_pos = castling_move.get_king_target_pos()
+		var direction = castling_move.get_king_target_pos() - king_initial_pos
+		direction.x = sign(direction.x)
+		
+		# Are there any pieces between rook and king?
+		if table.get_first_occupied_cell_between(king_initial_pos, king_target_pos) != null:
+			continue
+		
+		
+		var pos: Vector2 = king_initial_pos
+		var table_after_move = table.apply_move(Move.new(pos, pos+direction))
+		pos += direction
+		while pos != castling_move.get_king_target_pos() and not _is_check(table_after_move, color):
+			table_after_move = table_after_move.apply_move(Move.new(pos, pos+direction))
+			pos += direction
+		
+		if _is_check(table_after_move, color):
+			continue
+		# Castling can be done!
+		valid_moves.append(castling_move)
+		
+	
+	return valid_moves
 
 
 	
@@ -593,7 +730,7 @@ func get_valid_moves(pieces, prev_moves, piece, check_pins:bool=true):
 	elif piece.kind == "rook":
 		moves += get_valid_rook_moves(table, pieces, piece)
 	elif piece.kind == "king":
-		moves += get_valid_king_moves(table, piece)
+		moves += get_valid_king_moves(table, prev_moves, piece)
 	elif piece.kind == "bishop":
 		moves += get_valid_bishop_moves(table, piece)
 	elif piece.kind == "queen":
