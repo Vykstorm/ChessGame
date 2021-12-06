@@ -7,6 +7,7 @@ signal piece_clicked
 onready var pieces = $Pieces
 onready var Piece = preload("res://Piece.tscn")
 onready var game = preload("res://Game.gd")
+onready var highlighted_cells = $HighlightedCells
 
 # Current piece located under the user's mouse
 var current_piece_under_mouse = null
@@ -16,7 +17,7 @@ var current_piece_under_mouse = null
 func hightlight_cell(cell):
 	var y = 8-cell.y
 	var x = cell.x-1
-	set_cell(x, y, 2)
+	highlighted_cells.set_cell(x, y, 0)
 
 func highlight_cells(cells):
 	# Hightlight the given cells
@@ -30,7 +31,12 @@ func reset_highlighted_cells():
 func reset_cell_colors():
 	for y in range(0, 8):
 		for x in range(0, 8):
-			set_cell(x, y, (1-x%2+y)%2 )
+			highlighted_cells.set_cell(x, y, -1 )
+			
+func paint_board_squares():
+	for y in range(0, 8):
+		for x in range(0, 8):
+			set_cell(x, y, (1-x%2+y)%2)
 			
 			
 func add_piece(piece):
@@ -97,6 +103,7 @@ func reset():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	reset_cell_colors()
+	paint_board_squares()
 
 
 func _on_piece_mouse_entered(piece):
