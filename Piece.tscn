@@ -16,6 +16,7 @@ texture = SubResource( 1 )
 centered = false
 script = ExtResource( 2 )
 kind = "rook"
+threat_color = Color( 0.145098, 0.843137, 0.0666667, 1 )
 
 [node name="Area2D" type="Area2D" parent="."]
 

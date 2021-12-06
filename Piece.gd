@@ -3,6 +3,7 @@ extends Sprite
 export var kind = "king" setget set_kind
 export var color = "black" setget set_color
 export (Vector2) var board_position setget set_board_position, get_board_position
+export (Color) var threat_color
 var _board_position = null
 
 onready var board = get_node("../../")
@@ -29,7 +30,17 @@ func set_kind(x):
 
 func set_color(x):
 	color = x
-
+	
+	
+func set_display_color(kind):
+	# Set piece display color.
+	# kind can be "normal" or "threat"
+	if kind == "normal":
+		self.modulate = Color.white
+	elif kind == "threat":
+		self.modulate = threat_color
+		
+ 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

@@ -18,8 +18,11 @@ func hightlight_cell(cell):
 	var y = 8-cell.y
 	var x = cell.x-1
 	# Only highlght cells not occupied by pieces
-	if get_piece_in_cell(cell) == null:
+	var piece = get_piece_in_cell(cell)
+	if piece == null:
 		highlighted_cells.set_cell(x, y, 0)
+	else:
+		piece.set_display_color("threat")
 
 func highlight_cells(cells):
 	# Hightlight the given cells
@@ -29,6 +32,8 @@ func highlight_cells(cells):
 func reset_highlighted_cells():
 	# Unhighlight all the cells
 	reset_cell_colors()
+	for piece in get_pieces():
+		piece.set_display_color("normal")
 	
 func reset_cell_colors():
 	for y in range(0, 8):
