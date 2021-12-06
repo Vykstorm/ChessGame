@@ -443,10 +443,10 @@ func get_initial_pieces():
 	
 	var pieces = []
 	# Create pawns
-#	pieces += get_initial_pawns()
+	pieces += get_initial_pawns()
 
 	# Create rooks
-	pieces += get_initial_rooks()
+#	pieces += get_initial_rooks()
 
 	# Create knights
 #	pieces += get_initial_knights()
@@ -631,9 +631,9 @@ func get_valid_castling_moves(table: Table, prev_moves, color: String) -> Array:
 	queenside_rook_initial_pos.y = kingside_rook_initial_pos.y
 	
 	var moves = []
-	if piece_at_cell_not_moved_yet(prev_moves, kingside_rook_initial_pos):
+	if table.get_kind(kingside_rook_initial_pos) == "rook" and piece_at_cell_not_moved_yet(prev_moves, kingside_rook_initial_pos):
 		moves.append(CastlingMove.new(color, "kingside"))
-	if piece_at_cell_not_moved_yet(prev_moves, queenside_rook_initial_pos):
+	if table.get_kind(queenside_rook_initial_pos) == "rook" and piece_at_cell_not_moved_yet(prev_moves, queenside_rook_initial_pos):
 		moves.append(CastlingMove.new(color, "queenside"))
 		
 	# castling cannot be done if king is in check after the move or would be in check if king is placed in any cell
@@ -743,7 +743,7 @@ func get_valid_moves(pieces, prev_moves, piece, check_pins:bool=true):
 #			if check_pins and is_pinned(table, piece):
 #				continue
 
-		# The piece cannot do a move which leaves the it's king threatened.
+		# The piece cannot do a move which leaves it's king threatened.
 		var table_after_move = table.apply_move(move)
 		if _is_check(table_after_move, piece.color):
 			continue
