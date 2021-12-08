@@ -95,6 +95,7 @@ script = ExtResource( 1 )
 [connection signal="check" from="." to="." method="_on_check"]
 [connection signal="checkmate" from="." to="." method="_on_checkmate"]
 [connection signal="piece_deselected" from="." to="." method="_on_piece_deselected"]
+[connection signal="promoted" from="." to="." method="_on_promoted"]
 [connection signal="stalemate" from="." to="." method="_on_stalemate"]
 [connection signal="button_down" from="Restart" to="." method="_on_Restart_button_down"]
 [connection signal="cell_clicked" from="Board" to="." method="_on_board_cell_clicked"]

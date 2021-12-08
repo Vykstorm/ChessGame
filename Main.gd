@@ -6,6 +6,7 @@ signal stalemate
 signal checkmate
 signal check
 signal piece_moved
+signal promoted
 
 onready var board = $Board
 onready var game = $Game
@@ -183,6 +184,10 @@ func _on_stalemate(_color):
 func _on_check(_color):
 	print("Check!")
 
+func _on_promoted(kind):
+	print("Promoted to ", kind)
+
+
 
 func _on_Restart_button_down():
 	board.reset()
@@ -202,6 +207,8 @@ func _on_PromotionDialog_piece_selected(kind):
 	var piece = board.get_piece_in_cell(move.to)
 	piece.kind = kind
 	piece.update_picture()
+	
+	emit_signal("promoted", kind)
 	
 	# Re-evaluate board state
 	evaluate_board_state()
