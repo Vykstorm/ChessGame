@@ -127,7 +127,7 @@ func do_move(move):
 	
 	# If move is a promotion, ask the player the kind of piece to replace the pawn
 	if move is game.PromotionMove:
-		promotion_dialog.popup()
+		promotion_dialog.show_popup(current_turn)
 	
 	board.do_move(move)
 	emit_signal("piece_moved", current_piece_selected, move.to)
@@ -199,8 +199,6 @@ func _on_Restart_button_down():
 
 
 func _on_PromotionDialog_piece_selected(kind):
-	# Hide promotion dialog
-	promotion_dialog.hide()
 	# Change piece pawn with the selected piece
 	var move = moves[-1]
 	move.promotion = kind
