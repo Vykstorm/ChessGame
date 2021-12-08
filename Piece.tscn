@@ -12,6 +12,7 @@ region = Rect2( 0, 0, 60, 60 )
 extents = Vector2( 30, 30 )
 
 [node name="Piece" type="Sprite"]
+scale = Vector2( 0.9, 0.9 )
 texture = SubResource( 1 )
 centered = false
 script = ExtResource( 2 )
