@@ -25,6 +25,495 @@
 [node name="Main" type="Node2D"]
 script = ExtResource( 3 )
 
+[node name="Decoratives" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 0.28493
+margin_right = 480.285
+margin_bottom = 720.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Labels" type="Control" parent="Decoratives"]
+margin_top = 120.0
+margin_right = 27.0
+margin_bottom = 600.0
+rect_scale = Vector2( 0.9, 0.9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Rows" type="Control" parent="Decoratives/Labels"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Left" type="Control" parent="Decoratives/Labels/Rows"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="8" type="Label" parent="Decoratives/Labels/Rows/Left"]
+margin_left = 0.10553
+margin_top = -0.164169
+margin_right = 25.1055
+margin_bottom = 59.8358
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( -151.111, 26.6667 )
+text = "8"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="7" type="Label" parent="Decoratives/Labels/Rows/Left"]
+margin_left = 0.10553
+margin_top = 60.0411
+margin_right = 25.1055
+margin_bottom = 120.041
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( -151.111, 26.6667 )
+text = "7"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="6" type="Label" parent="Decoratives/Labels/Rows/Left"]
+margin_left = 0.10553
+margin_top = 120.246
+margin_right = 25.1055
+margin_bottom = 180.246
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( -151.111, 26.6667 )
+text = "6"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="5" type="Label" parent="Decoratives/Labels/Rows/Left"]
+margin_left = 0.10553
+margin_top = 180.451
+margin_right = 25.1055
+margin_bottom = 240.451
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( -151.111, 26.6667 )
+text = "5"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="4" type="Label" parent="Decoratives/Labels/Rows/Left"]
+margin_left = 0.21106
+margin_top = 240.657
+margin_right = 25.2111
+margin_bottom = 300.657
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( -151.111, 26.6667 )
+text = "4"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="3" type="Label" parent="Decoratives/Labels/Rows/Left"]
+margin_left = 0.10553
+margin_top = 300.862
+margin_right = 25.1055
+margin_bottom = 360.862
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( -151.111, 26.6667 )
+text = "3"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2" type="Label" parent="Decoratives/Labels/Rows/Left"]
+margin_left = 0.10553
+margin_top = 361.067
+margin_right = 25.1055
+margin_bottom = 421.067
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( -151.111, 26.6667 )
+text = "2"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="1" type="Label" parent="Decoratives/Labels/Rows/Left"]
+margin_left = 0.10553
+margin_top = 421.272
+margin_right = 25.1055
+margin_bottom = 481.272
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( -151.111, 26.6667 )
+text = "1"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Right" type="Control" parent="Decoratives/Labels/Rows"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="8" type="Label" parent="Decoratives/Labels/Rows/Right"]
+margin_left = 506.667
+margin_right = 531.667
+margin_bottom = 60.0
+rect_rotation = 180.0
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( 12.5, 30 )
+text = "8"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="7" type="Label" parent="Decoratives/Labels/Rows/Right"]
+margin_left = 506.667
+margin_top = 60.0411
+margin_right = 531.667
+margin_bottom = 120.041
+rect_rotation = 180.0
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( 12.5, 30 )
+text = "7"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="6" type="Label" parent="Decoratives/Labels/Rows/Right"]
+margin_left = 506.667
+margin_top = 120.246
+margin_right = 531.667
+margin_bottom = 180.246
+rect_rotation = 180.0
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( 12.5, 30 )
+text = "6"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="5" type="Label" parent="Decoratives/Labels/Rows/Right"]
+margin_left = 506.667
+margin_top = 180.287
+margin_right = 531.667
+margin_bottom = 240.287
+rect_rotation = 180.0
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( 12.5, 30 )
+text = "5"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="4" type="Label" parent="Decoratives/Labels/Rows/Right"]
+margin_left = 506.667
+margin_top = 240.0
+margin_right = 531.667
+margin_bottom = 300.0
+rect_rotation = 180.0
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( 12.5, 30 )
+text = "4"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="3" type="Label" parent="Decoratives/Labels/Rows/Right"]
+margin_left = 506.667
+margin_top = 300.698
+margin_right = 531.667
+margin_bottom = 360.698
+rect_rotation = 180.0
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( 12.5, 30 )
+text = "3"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2" type="Label" parent="Decoratives/Labels/Rows/Right"]
+margin_left = 506.667
+margin_top = 360.903
+margin_right = 531.667
+margin_bottom = 420.903
+rect_rotation = 180.0
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( 12.5, 30 )
+text = "2"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="1" type="Label" parent="Decoratives/Labels/Rows/Right"]
+margin_left = 506.667
+margin_top = 421.108
+margin_right = 531.667
+margin_bottom = 481.108
+rect_rotation = 180.0
+rect_scale = Vector2( 1.0007, 1.00616 )
+rect_pivot_offset = Vector2( 12.5, 30 )
+text = "1"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Cols" type="Control" parent="Decoratives/Labels"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Top" type="Control" parent="Decoratives/Labels/Cols"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="A" type="Label" parent="Decoratives/Labels/Cols/Top"]
+margin_left = 27.0
+margin_top = -26.6667
+margin_right = 87.0
+margin_bottom = -1.66667
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 30, 12.5 )
+text = "A"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="B" type="Label" parent="Decoratives/Labels/Cols/Top"]
+margin_left = 86.6667
+margin_top = -26.6667
+margin_right = 146.667
+margin_bottom = -1.66667
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 30, 12.5 )
+text = "B"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="C" type="Label" parent="Decoratives/Labels/Cols/Top"]
+margin_left = 146.667
+margin_top = -26.6667
+margin_right = 206.667
+margin_bottom = -1.66665
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 30, 12.5 )
+text = "C"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="D" type="Label" parent="Decoratives/Labels/Cols/Top"]
+margin_left = 206.667
+margin_top = -26.6667
+margin_right = 266.667
+margin_bottom = -1.66667
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 30, 12.5 )
+text = "D"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="E" type="Label" parent="Decoratives/Labels/Cols/Top"]
+margin_left = 266.667
+margin_top = -26.6667
+margin_right = 326.667
+margin_bottom = -1.66667
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 30, 12.5 )
+text = "E"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="F" type="Label" parent="Decoratives/Labels/Cols/Top"]
+margin_left = 326.667
+margin_top = -26.6667
+margin_right = 386.667
+margin_bottom = -1.66667
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 30, 12.5 )
+text = "F"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="G" type="Label" parent="Decoratives/Labels/Cols/Top"]
+margin_left = 386.667
+margin_top = -26.6667
+margin_right = 446.667
+margin_bottom = -1.66667
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 30, 12.5 )
+text = "G"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="H" type="Label" parent="Decoratives/Labels/Cols/Top"]
+margin_left = 446.667
+margin_top = -26.6667
+margin_right = 506.667
+margin_bottom = -1.66665
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 30, 12.5 )
+text = "H"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Bottom" type="Control" parent="Decoratives/Labels/Cols"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="A" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
+margin_left = 26.6667
+margin_top = 480.0
+margin_right = 86.6667
+margin_bottom = 505.0
+text = "A"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="B" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
+margin_left = 86.6667
+margin_top = 480.0
+margin_right = 146.667
+margin_bottom = 505.0
+text = "B"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="C" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
+margin_left = 146.667
+margin_top = 480.0
+margin_right = 206.667
+margin_bottom = 505.0
+text = "C"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="D" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
+margin_left = 206.667
+margin_top = 480.0
+margin_right = 266.667
+margin_bottom = 505.0
+text = "D"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="E" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
+margin_left = 266.667
+margin_top = 480.0
+margin_right = 326.667
+margin_bottom = 505.0
+text = "E"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="F" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
+margin_left = 326.667
+margin_top = 480.0
+margin_right = 386.667
+margin_bottom = 505.0
+text = "F"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="G" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
+margin_left = 386.667
+margin_top = 480.0
+margin_right = 446.667
+margin_bottom = 505.0
+text = "G"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="H" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
+margin_left = 446.667
+margin_top = 480.0
+margin_right = 506.667
+margin_bottom = 505.0
+text = "H"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Restart" type="ToolButton" parent="."]
 margin_right = 57.0
 margin_bottom = 22.0
