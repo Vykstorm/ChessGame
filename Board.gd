@@ -100,8 +100,8 @@ func do_move(move):
 		pawn_to_move.board_position = move.to
 		pawn_to_move.update_position()
 		
-		pawn_to_move.kind =  move.promotion
-		pawn_to_move.update_picture()
+#		pawn_to_move.kind =  move.promotion
+#		pawn_to_move.update_picture()
 	else:
 		var piece_to_move = get_piece_in_cell(move.from)
 		assert(piece_to_move != null)

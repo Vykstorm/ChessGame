@@ -91,6 +91,58 @@ func _on_piece_deselected(piece):
 	board.reset_highlighted_cells()
 
 
+func evaluate_board_state():
+	# Given the current state of the board, evaluate check / checkmates and stalemates.
+	# Returns:
+	# "checkmate" if king of the opposite color is in a checkmate situation
+	# "check" if king of the oppositve color is in not in checkmate but in check.
+	# "stalemate" returned when king is in a stalemate situation.
+	# Otherwise, return true.
+	var pieces = board.get_pieces()
+	if game.is_check(pieces, game.get_opposite_color(current_turn)):
+		# Opposite king in check
+		
+		# Check mate?
+		if game.is_check_mate(pieces, moves, game.get_opposite_color(current_turn)):
+			emit_signal("checkmate", current_turn)
+			return "checkmate"
+		else:
+			emit_signal("check", current_turn)
+			return "check"
+	else:
+		# Opposite not in check
+		# Stale mate?
+		if game.is_stale_mate(pieces, moves, game.get_opposite_color(current_turn)):
+			emit_signal("stalemate", current_turn)
+			return "stalemate"
+	return true
+	
+
+
+func do_move(move):
+	# Do the given piece movement (update the board and evaluate the checks, checkmate and stalemate situations)
+	# Move piece
+	moves.append(move)
+	
+	# If move is a promotion, ask the player the kind of piece to replace the pawn
+	if move is game.PromotionMove:
+		promotion_dialog.popup()
+	
+	board.do_move(move)
+	emit_signal("piece_moved", current_piece_selected, move.to)
+	
+	# Query check/ check mate
+	if not (move is game.PromotionMove):
+		var board_state = evaluate_board_state()
+		if board_state in ["checkmate", "stalemate"]:
+			return
+	
+	# If a pawn is promoted, wait for the user to select the promotion piece.
+	# Otherwise, next turn.
+	if not (move is game.PromotionMove):
+		# Change turn
+		next_turn()
+
 
 func _on_board_cell_clicked(selected_cell):
 	# Called when user clicks a cell
@@ -102,38 +154,7 @@ func _on_board_cell_clicked(selected_cell):
 	# Check if clicked cell is one of the possible moves of the currently selected piece
 	for move in current_piece_selected_possible_moves:
 		if move.to == selected_cell:
-			# Move piece
-			moves.append(move)
-			
-			# If move is a promotion, ask the player the kind of piece to replace the pawn
-			if move is game.PromotionMove:
-				promotion_dialog.popup()
-				move.promotion = "queen"
-			
-			board.do_move(move)
-			emit_signal("piece_moved", current_piece_selected, selected_cell)
-			
-			# Query check/ check mate
-			var pieces = board.get_pieces()
-			if game.is_check(pieces, game.get_opposite_color(current_turn)):
-				# Opposite king in check
-				
-				# Check mate?
-				if game.is_check_mate(pieces, moves, game.get_opposite_color(current_turn)):
-					emit_signal("checkmate", current_turn)
-					return
-				else:
-					emit_signal("check", current_turn)
-			else:
-				# Opposite not in check
-				# Stale mate?
-				if game.is_stale_mate(pieces, moves, game.get_opposite_color(current_turn)):
-					emit_signal("stalemate", current_turn)
-					return
-				
-			# Continue game 
-			# Change turn
-			next_turn()
+			do_move(move)
 			break
 	
 	# Deselect current piece and do nothing more
@@ -170,3 +191,21 @@ func _on_Restart_button_down():
 	current_piece_selected_possible_moves = null
 	current_turn = "white"
 	populate_board()
+
+
+func _on_PromotionDialog_piece_selected(kind):
+	# Hide promotion dialog
+	promotion_dialog.hide()
+	# Change piece pawn with the selected piece
+	var move = moves[-1]
+	move.promotion = kind
+	var piece = board.get_piece_in_cell(move.to)
+	piece.kind = kind
+	piece.update_picture()
+	
+	# Re-evaluate board state
+	evaluate_board_state()
+	
+	# Next turn!
+	next_turn()
+	

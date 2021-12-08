@@ -456,8 +456,8 @@ func get_initial_pieces():
 	var pieces = []
 	# Create pawns
 #	pieces += get_initial_pawns()
-	pieces.append(Piece.new("pawn","white", Vector2(A, 7)))
-	pieces.append(Piece.new("pawn","black", Vector2(A, 2)))
+	pieces.append(Piece.new("pawn","white", Vector2(B, 7)))
+	pieces.append(Piece.new("pawn","black", Vector2(B, 2)))
 
 	# Create rooks
 #	pieces += get_initial_rooks()
@@ -469,7 +469,7 @@ func get_initial_pieces():
 #	pieces += get_initial_bishops()
 
 	# Create queens
-#	pieces += get_initial_queens()
+	pieces += get_initial_queens()
 
 	# Create kings
 	pieces += get_initial_kings()
