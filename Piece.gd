@@ -48,4 +48,3 @@ func _ready():
 	# piece color and kind
 	texture = texture.duplicate()
 	update_picture()
-	scale = board.scale

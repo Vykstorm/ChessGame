@@ -389,7 +389,7 @@ class Table:
 			moving_piece.board_position = move.to
 			table_after_move.add_piece(moving_piece)
 			return table_after_move
-	
+	 
 	
 	
 func create_table(pieces: Array) -> Table:
@@ -397,8 +397,22 @@ func create_table(pieces: Array) -> Table:
 	# the given pieces are located.
 	var table = Table.new(8, 8, pieces)
 	return table
+	
 
-
+func get_pieces_removed_count(pieces, color: String) -> Array:
+	# Returns the number of pieces removed from the table of the given color
+	var kinds = ["queen", "rook", "bishop", "knight", "pawn"]
+	var counters = [1, 2, 2, 2, 8]
+	
+	for piece in pieces:
+		if piece.kind == "king" or piece.color != color:
+			continue
+		counters[kinds.find(piece.kind)] -= 1
+	
+	var result = []
+	for i in range(0, len(counters)):
+		result.append([ kinds[i], counters[i] ])
+	return result
 
 
 func get_initial_pawns():
@@ -455,18 +469,16 @@ func get_initial_pieces():
 	
 	var pieces = []
 	# Create pawns
-#	pieces += get_initial_pawns()
-	pieces.append(Piece.new("pawn","white", Vector2(B, 7)))
-	pieces.append(Piece.new("pawn","black", Vector2(B, 2)))
+	pieces += get_initial_pawns()
 
 	# Create rooks
-#	pieces += get_initial_rooks()
+	pieces += get_initial_rooks()
 
 	# Create knights
-#	pieces += get_initial_knights()
+	pieces += get_initial_knights()
 
 	# Create bishops
-#	pieces += get_initial_bishops()
+	pieces += get_initial_bishops()
 
 	# Create queens
 	pieces += get_initial_queens()

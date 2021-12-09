@@ -12,6 +12,8 @@ onready var board = $Board
 onready var game = $Game
 onready var Piece = preload("res://Piece.tscn")
 onready var promotion_dialog = $PromotionDialog
+onready var white_trophies = $Decoratives/Trophies/White
+onready var black_trophies = $Decoratives/Trophies/Black
 
 
 # Current piece being dragged by user
@@ -43,54 +45,6 @@ func next_turn():
 	else:
 		current_turn = "white"
 	
-
-
-
-func _on_piece_clicked(piece):
-	# Called when a piece is clicked
-	
-	if piece.is_queued_for_deletion():
-		# Death pieces are no longer clickable.
-		return
-	
-	# Any piece selected currently?
-	if current_piece_selected != null:
-		if piece == current_piece_selected:
-			return
-		# Deselect current selected piece
-		emit_signal("piece_deselected", current_piece_selected)
-		current_piece_selected = null
-		current_piece_selected_possible_moves = null
-	
-	# Check if piece color matches the current player.
-	if piece.color != current_turn:
-		return
-		
-	# Check if piece has valid moves or not.
-	var valid_moves = game.get_valid_moves(board.get_pieces(), moves, piece)
-	if len(valid_moves) == 0:
-		return
-	current_piece_selected_possible_moves = valid_moves
-
-	current_piece_selected = piece
-	emit_signal("piece_selected", piece)
-
-
-
-func _on_piece_selected(piece):
-	# Highlight cells which are valid moves
-	var cells_to_highlight = []
-	for move in current_piece_selected_possible_moves:
-		if move is game.CastlingMove:
-			cells_to_highlight.append(move.get_king_target_pos())
-		else:
-			cells_to_highlight.append(move.to)
-	board.highlight_cells(cells_to_highlight)
-
-func _on_piece_deselected(piece):
-	# Ungighlight cells
-	board.reset_highlighted_cells()
-
 
 func evaluate_board_state():
 	# Given the current state of the board, evaluate check / checkmates and stalemates.
@@ -143,6 +97,60 @@ func do_move(move):
 	if not (move is game.PromotionMove):
 		# Change turn
 		next_turn()
+
+
+func update_trophies():
+#	print( game.get_pieces_removed_count(board.get_pieces(), "black") )
+#	white_trophies.set_trophies(game.get_pieces_removed_count(board.get_pieces(), "black"))
+#	black_trophies.set_trophies(game.get_pieces_removed_count(board.get_pieces(), "white"))
+	pass
+
+func _on_piece_clicked(piece):
+	# Called when a piece is clicked
+	
+	if piece.is_queued_for_deletion():
+		# Death pieces are no longer clickable.
+		return
+	
+	# Any piece selected currently?
+	if current_piece_selected != null:
+		if piece == current_piece_selected:
+			return
+		# Deselect current selected piece
+		emit_signal("piece_deselected", current_piece_selected)
+		current_piece_selected = null
+		current_piece_selected_possible_moves = null
+	
+	# Check if piece color matches the current player.
+	if piece.color != current_turn:
+		return
+		
+	# Check if piece has valid moves or not.
+	var valid_moves = game.get_valid_moves(board.get_pieces(), moves, piece)
+	if len(valid_moves) == 0:
+		return
+	current_piece_selected_possible_moves = valid_moves
+
+	current_piece_selected = piece
+	emit_signal("piece_selected", piece)
+
+
+
+func _on_piece_selected(piece):
+	# Highlight cells which are valid moves
+	var cells_to_highlight = []
+	for move in current_piece_selected_possible_moves:
+		if move is game.CastlingMove:
+			cells_to_highlight.append(move.get_king_target_pos())
+		else:
+			cells_to_highlight.append(move.to)
+	board.highlight_cells(cells_to_highlight)
+
+func _on_piece_deselected(piece):
+	# Ungighlight cells
+	board.reset_highlighted_cells()
+
+
 
 
 func _on_board_cell_clicked(selected_cell):
@@ -214,3 +222,8 @@ func _on_PromotionDialog_piece_selected(kind):
 	# Next turn!
 	next_turn()
 	
+
+
+func _on_piece_moved(_piece, _move):
+	# Update trophies
+	update_trophies()
