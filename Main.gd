@@ -180,14 +180,7 @@ func _on_board_cell_clicked(selected_cell):
 
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	moves = []
-	# Add pieces to board
-	populate_board()
-	
-	connect("piece_selected", self, "_on_piece_selected")
-	connect("piece_deselected", self, "_on_piece_deselected")
+
 
 func _on_checkmate(_color):
 	print("Check mate!")
@@ -210,6 +203,7 @@ func _on_Restart_button_down():
 	current_piece_selected_possible_moves = null
 	current_turn = "white"
 	populate_board()
+	update_trophies()
 
 
 func _on_PromotionDialog_piece_selected(kind):
@@ -233,3 +227,13 @@ func _on_PromotionDialog_piece_selected(kind):
 func _on_piece_moved(_piece, _move):
 	# Update trophies
 	update_trophies()
+	
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	moves = []
+	# Add pieces to board
+	populate_board()
+	update_trophies()
+	
+	connect("piece_selected", self, "_on_piece_selected")
+	connect("piece_deselected", self, "_on_piece_deselected")
