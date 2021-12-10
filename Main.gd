@@ -14,6 +14,7 @@ onready var Piece = preload("res://Piece.tscn")
 onready var promotion_dialog = $PromotionDialog
 onready var white_trophies = $Decoratives/Trophies/White
 onready var black_trophies = $Decoratives/Trophies/Black
+onready var quality_advantage = $Decoratives/QualityAdvantage
 
 
 # Current piece being dragged by user
@@ -108,6 +109,11 @@ func update_trophies():
 
 	white_trophies.set_trophies(white_trophies_count)
 	black_trophies.set_trophies(black_trophies_count)
+	
+	
+func update_quality_advantage():
+	var pieces = board.get_pieces()
+	quality_advantage.set_value(game.get_player_quality(pieces, "white")-game.get_player_quality(pieces, "black"))
 
 
 
@@ -227,6 +233,9 @@ func _on_PromotionDialog_piece_selected(kind):
 func _on_piece_moved(_piece, _move):
 	# Update trophies
 	update_trophies()
+	# Update quality advantages displays
+	update_quality_advantage()
+
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():

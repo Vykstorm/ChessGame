@@ -944,6 +944,23 @@ func get_promoted_pieces_count(pieces: Array, color: String) -> int:
 		if piece.color == color and piece.is_promotion:
 			count += 1
 	return count
+	
+func get_player_quality(pieces: Array, color: String) -> int:
+	# Returns the sum of the quality of the remaining pieces with the given color.
+	var quality = 0
+	for piece in pieces:
+		if piece.color != color:
+			continue
+		var kind = piece.kind
+		if kind == "pawn":
+			quality += 1
+		elif kind in ["bishop", "knight"]:
+			quality += 3
+		elif kind == "rook":
+			quality += 5
+		elif kind == "queen":
+			quality += 9
+	return quality
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

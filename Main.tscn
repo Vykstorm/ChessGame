@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Game.gd" type="Script" id=1]
 [ext_resource path="res://Board.tscn" type="PackedScene" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://PromotionDialog.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Trophies.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Images/pieces.png" type="Texture" id=7]
+[ext_resource path="res://QualityAdvantage.gd" type="Script" id=8]
 
 [sub_resource type="TileSet" id=1]
 0/name = "pieces.png 0"
@@ -618,11 +619,38 @@ position = Vector2( 456.285, 96 )
 scale = Vector2( -0.5, -0.5 )
 tile_set = SubResource( 1 )
 
+[node name="QualityAdvantage" type="Control" parent="Decoratives"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 8 )
+
+[node name="White" type="Label" parent="Decoratives/QualityAdvantage"]
+margin_left = 207.715
+margin_top = 576.0
+margin_right = 237.715
+margin_bottom = 606.0
+rect_pivot_offset = Vector2( 15, 15 )
+text = "+4"
+align = 1
+valign = 1
+
+[node name="Black" type="Label" parent="Decoratives/QualityAdvantage"]
+margin_left = 240.0
+margin_top = 64.0
+margin_right = 270.0
+margin_bottom = 94.0
+rect_rotation = 180.0
+rect_pivot_offset = Vector2( 15, 15 )
+text = "+4"
+align = 1
+valign = 1
+
 [node name="Restart" type="ToolButton" parent="."]
 margin_right = 57.0
 margin_bottom = 22.0
 text = "Restart"
 __meta__ = {
+"_edit_group_": true,
 "_edit_use_anchors_": false
 }
 
