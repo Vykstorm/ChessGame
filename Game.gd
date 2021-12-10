@@ -526,7 +526,7 @@ func get_valid_pawn_moves(table: Table, prev_moves, piece) -> Array:
 				moves.append(PromotionMove.new(pos, target))
 			else:
 				moves.append(Move.new(pos, target))
-		elif en_passant_move_on(table, prev_moves, pos+LEFT, "black"):
+		elif pos.y == 5 and en_passant_move_on(table, prev_moves, pos+LEFT, "black"):
 			moves.append(Move.new(pos, target, pos+LEFT))
 		target = pos+DIAG45
 		if table.get_color(target) == "black":
@@ -534,7 +534,7 @@ func get_valid_pawn_moves(table: Table, prev_moves, piece) -> Array:
 				moves.append(PromotionMove.new(pos, target))
 			else:
 				moves.append(Move.new(pos, target))
-		elif en_passant_move_on(table, prev_moves, pos+RIGHT, "black"):
+		elif pos.y == 5 and en_passant_move_on(table, prev_moves, pos+RIGHT, "black"):
 			moves.append(Move.new(pos, target, pos+RIGHT))
 	else: # Black pawns
 		for target in table.get_free_cells_moving_backward(pos, 2 if pos.y == 7 else 1):
@@ -549,7 +549,7 @@ func get_valid_pawn_moves(table: Table, prev_moves, piece) -> Array:
 				moves.append(PromotionMove.new(pos, target))
 			else:
 				moves.append(Move.new(pos, target))
-		elif en_passant_move_on(table, prev_moves, pos+LEFT, "white"):
+		elif pos.y == 4 and en_passant_move_on(table, prev_moves, pos+LEFT, "white"):
 			moves.append(Move.new(pos, target, pos+LEFT))
 			
 		target = pos+DIAG315
@@ -559,7 +559,7 @@ func get_valid_pawn_moves(table: Table, prev_moves, piece) -> Array:
 			else:
 				moves.append(Move.new(pos, target))
 			
-		elif en_passant_move_on(table, prev_moves, pos+RIGHT, "white"):
+		elif pos.y == 4 and en_passant_move_on(table, prev_moves, pos+RIGHT, "white"):
 			moves.append(Move.new(pos, target, pos+RIGHT))
 	return moves
 

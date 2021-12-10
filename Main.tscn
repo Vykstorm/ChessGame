@@ -8,7 +8,7 @@
 [ext_resource path="res://Trophies.tscn" type="PackedScene" id=6]
 [ext_resource path="res://Images/pieces.png" type="Texture" id=7]
 
-[sub_resource type="TileSet" id=2]
+[sub_resource type="TileSet" id=1]
 0/name = "pieces.png 0"
 0/texture = ExtResource( 7 )
 0/tex_offset = Vector2( 0, 0 )
@@ -94,7 +94,7 @@
 5/shapes = [  ]
 5/z_index = 0
 
-[sub_resource type="TileSet" id=1]
+[sub_resource type="TileSet" id=2]
 0/name = "board.png 0"
 0/texture = ExtResource( 4 )
 0/tex_offset = Vector2( 0, 0 )
@@ -616,7 +616,7 @@ position = Vector2( 24, 576 )
 [node name="Black" parent="Decoratives/Trophies" instance=ExtResource( 6 )]
 position = Vector2( 456.285, 96 )
 scale = Vector2( -0.5, -0.5 )
-tile_set = SubResource( 2 )
+tile_set = SubResource( 1 )
 
 [node name="Restart" type="ToolButton" parent="."]
 margin_right = 57.0
@@ -631,7 +631,7 @@ position = Vector2( 24, 120 )
 cell_custom_transform = Transform2D( 60, 0, 0, 60, 0, 0 )
 
 [node name="HighlightedCells" type="TileMap" parent="Board"]
-tile_set = SubResource( 1 )
+tile_set = SubResource( 2 )
 cell_size = Vector2( 60, 60 )
 format = 1
 
