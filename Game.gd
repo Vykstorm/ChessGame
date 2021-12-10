@@ -115,6 +115,7 @@ class Piece:
 	var kind: String
 	var color: String
 	var board_position: Vector2
+	var is_promotion: bool=false
 	
 	func _init(kind: String, color: String, board_position: Vector2):
 		self.kind = kind
@@ -409,9 +410,9 @@ func get_pieces_removed_count(pieces, color: String) -> Array:
 			continue
 		counters[kinds.find(piece.kind)] -= 1
 	
-	var result = []
+	var result = {}
 	for i in range(0, len(counters)):
-		result.append([ kinds[i], counters[i] ])
+		result[kinds[i]] = counters[i]
 	return result
 
 
@@ -923,6 +924,26 @@ func is_stale_mate(pieces, prev_moves, color) -> bool:
 		if len(get_valid_moves(pieces, prev_moves, piece)) > 0:
 			return false 
 	return true
+	
+	
+	
+func count_promotion_moves(moves, color) -> int:
+	# Counts the number of promotion moves made by the player with the specified color
+	var count = 0
+	for i in range(0 if color == "white" else 1,len(moves),2):
+		var move = moves[i]
+		if move is PromotionMove:
+			count += 1
+	return count 
+	
+func get_promoted_pieces_count(pieces: Array, color: String) -> int:
+	# Returns the number of pieces currently in the board which were pawns before promoting themselves with
+	# the specified color
+	var count = 0
+	for piece in pieces:
+		if piece.color == color and piece.is_promotion:
+			count += 1
+	return count
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

@@ -5,6 +5,7 @@ export var color = "black" setget set_color
 export (Vector2) var board_position setget set_board_position, get_board_position
 export (Color) var threat_color
 var _board_position = null
+var is_promotion = false
 
 onready var board = get_node("../../")
 

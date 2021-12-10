@@ -100,10 +100,16 @@ func do_move(move):
 
 
 func update_trophies():
-#	print( game.get_pieces_removed_count(board.get_pieces(), "black") )
-#	white_trophies.set_trophies(game.get_pieces_removed_count(board.get_pieces(), "black"))
-#	black_trophies.set_trophies(game.get_pieces_removed_count(board.get_pieces(), "white"))
-	pass
+	var pieces = board.get_pieces()
+	var white_trophies_count = game.get_pieces_removed_count(pieces, "black")
+	white_trophies_count["pawn"] -= game.get_promoted_pieces_count(pieces, "black")
+	var black_trophies_count = game.get_pieces_removed_count(pieces, "white")
+	black_trophies_count["pawn"] -= game.get_promoted_pieces_count(pieces, "white")
+
+	white_trophies.set_trophies(white_trophies_count)
+	black_trophies.set_trophies(black_trophies_count)
+
+
 
 func _on_piece_clicked(piece):
 	# Called when a piece is clicked

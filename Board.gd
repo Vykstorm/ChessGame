@@ -69,7 +69,13 @@ func is_cell_occupied(cell):
 	
 func get_pieces():
 	# Returns all the pieces of the board
-	return pieces.get_children()
+	var result = []
+	for child in pieces.get_children():
+		if child.is_queued_for_deletion():
+			continue
+		result.append(child)
+	return result
+
 
 
 func clear_pieces():
@@ -99,6 +105,7 @@ func do_move(move):
 			piece_to_remove.queue_free()
 		pawn_to_move.board_position = move.to
 		pawn_to_move.update_position()
+		pawn_to_move.is_promotion = true
 		
 #		pawn_to_move.kind =  move.promotion
 #		pawn_to_move.update_picture()
