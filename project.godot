@@ -20,8 +20,8 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Chess"
-run/main_scene="res://Main.tscn"
+config/name="ChessFor2"
+run/main_scene="res://Menu.tscn"
 config/icon="res://icon.png"
 
 [display]

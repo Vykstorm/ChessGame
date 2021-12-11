@@ -1,13 +1,28 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Images/menu.png" type="Texture" id=1]
 [ext_resource path="res://Images/background.png" type="Texture" id=2]
+[ext_resource path="res://Fonts/MenuFont.tres" type="DynamicFont" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="StyleBoxEmpty" id=1]
 
 [node name="Menu" type="Control"]
 margin_right = 480.0
 margin_bottom = 720.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Background" type="TextureRect" parent="."]
+modulate = Color( 0.235294, 0.235294, 0.235294, 1 )
 margin_right = 480.0
 margin_bottom = 720.0
 texture = ExtResource( 2 )
@@ -15,50 +30,86 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Title" type="TextureRect" parent="."]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -240.0
-margin_right = 240.0
-margin_bottom = 250.0
+[node name="Image" type="TextureRect" parent="."]
+margin_top = 272.0
+margin_right = 480.0
+margin_bottom = 522.0
 texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="Options" type="VBoxContainer" parent="."]
+[node name="Layout" type="VBoxContainer" parent="."]
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -150.0
-margin_top = -86.0
+margin_top = -94.0
 margin_right = 150.0
-margin_bottom = 86.0
+margin_bottom = 94.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="NewGame" type="Button" parent="Options"]
+[node name="Options" type="VBoxContainer" parent="Layout"]
 margin_right = 300.0
-margin_bottom = 40.0
+margin_bottom = 188.0
+
+[node name="NewGame" type="Button" parent="Layout/Options"]
+margin_right = 300.0
+margin_bottom = 44.0
 rect_min_size = Vector2( 300, 40 )
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 3 )
+custom_styles/focus = SubResource( 4 )
+custom_styles/disabled = SubResource( 5 )
+custom_styles/normal = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "New game"
 
-[node name="LoadGame" type="Button" parent="Options"]
-margin_top = 44.0
+[node name="LoadGame" type="Button" parent="Layout/Options"]
+margin_top = 48.0
 margin_right = 300.0
-margin_bottom = 84.0
+margin_bottom = 92.0
 rect_min_size = Vector2( 300, 40 )
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 3 )
+custom_styles/focus = SubResource( 4 )
+custom_styles/disabled = SubResource( 5 )
+custom_styles/normal = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "Load game"
 
-[node name="Credits" type="Button" parent="Options"]
-margin_top = 88.0
+[node name="Credits" type="Button" parent="Layout/Options"]
+margin_top = 96.0
 margin_right = 300.0
-margin_bottom = 128.0
+margin_bottom = 140.0
 rect_min_size = Vector2( 300, 40 )
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 3 )
+custom_styles/focus = SubResource( 4 )
+custom_styles/disabled = SubResource( 5 )
+custom_styles/normal = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "Credits"
 
-[node name="Exit" type="Button" parent="Options"]
-margin_top = 132.0
+[node name="Exit" type="Button" parent="Layout/Options"]
+margin_top = 144.0
 margin_right = 300.0
-margin_bottom = 172.0
+margin_bottom = 188.0
 rect_min_size = Vector2( 300, 40 )
+custom_styles/hover = SubResource( 2 )
+custom_styles/pressed = SubResource( 3 )
+custom_styles/focus = SubResource( 4 )
+custom_styles/disabled = SubResource( 5 )
+custom_styles/normal = SubResource( 1 )
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "Exit"
+__meta__ = {
+"_edit_use_anchors_": false
+}
