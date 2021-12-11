@@ -612,10 +612,10 @@ __meta__ = {
 }
 
 [node name="White" parent="Decoratives/Trophies" instance=ExtResource( 6 )]
-position = Vector2( 24, 576 )
+position = Vector2( 24.5849, 592 )
 
 [node name="Black" parent="Decoratives/Trophies" instance=ExtResource( 6 )]
-position = Vector2( 456.285, 96 )
+position = Vector2( 456, 80 )
 scale = Vector2( -0.5, -0.5 )
 tile_set = SubResource( 1 )
 
@@ -625,25 +625,31 @@ margin_bottom = 40.0
 script = ExtResource( 8 )
 
 [node name="White" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_left = 207.715
-margin_top = 576.0
-margin_right = 237.715
-margin_bottom = 606.0
+margin_left = 22.7059
+margin_top = 568.0
+margin_right = 52.7059
+margin_bottom = 598.0
 rect_pivot_offset = Vector2( 15, 15 )
 text = "+4"
 align = 1
 valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Black" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_left = 240.0
-margin_top = 64.0
-margin_right = 270.0
-margin_bottom = 94.0
+margin_left = 423.715
+margin_top = 72.0
+margin_right = 453.715
+margin_bottom = 102.0
 rect_rotation = 180.0
 rect_pivot_offset = Vector2( 15, 15 )
 text = "+4"
 align = 1
 valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Restart" type="ToolButton" parent="."]
 margin_right = 57.0

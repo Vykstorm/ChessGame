@@ -18,3 +18,6 @@ func set_value(advantage: int):
 		white.text = ""
 		black.text = number_to_string(-advantage)
 
+func _ready():
+	white.text = ""
+	black.text = ""
