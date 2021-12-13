@@ -186,6 +186,30 @@ func _on_board_cell_clicked(selected_cell):
 
 
 
+func new_game():
+	# Reset internal variables
+	moves = []
+	current_piece_selected = null
+	current_piece_selected_possible_moves = null
+	current_turn = "white"
+	
+	# Clear board
+	board.reset()
+	
+	# Initialize board.
+	populate_board()
+	
+	# Initialize decoratives
+	update_trophies()
+	update_quality_advantage()
+	
+	
+func save_game():
+	pass
+	
+func load_game(file: File):
+	pass
+
 
 
 func _on_checkmate(_color):
@@ -204,13 +228,7 @@ func _on_promoted(kind):
 
 
 func _on_Restart_button_down():
-	board.reset()
-	moves = []
-	current_piece_selected = null
-	current_piece_selected_possible_moves = null
-	current_turn = "white"
-	populate_board()
-	update_trophies()
+	new_game()
 
 
 func _on_PromotionDialog_piece_selected(kind):
@@ -240,10 +258,7 @@ func _on_piece_moved(_piece, _move):
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	moves = []
-	# Add pieces to board
-	populate_board()
-	update_trophies()
-	
 	connect("piece_selected", self, "_on_piece_selected")
 	connect("piece_deselected", self, "_on_piece_deselected")
+	
+	new_game()

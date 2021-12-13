@@ -1,8 +1,11 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Images/menu.png" type="Texture" id=1]
 [ext_resource path="res://Images/background.png" type="Texture" id=2]
+[ext_resource path="res://Menu.gd" type="Script" id=3]
 [ext_resource path="res://Fonts/MenuFont.tres" type="DynamicFont" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=1]
 
 [sub_resource type="StyleBoxEmpty" id=2]
 
@@ -12,11 +15,10 @@
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
-[sub_resource type="StyleBoxEmpty" id=1]
-
 [node name="Menu" type="Control"]
 margin_right = 480.0
 margin_bottom = 720.0
+script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -60,11 +62,11 @@ margin_bottom = 188.0
 margin_right = 300.0
 margin_bottom = 44.0
 rect_min_size = Vector2( 300, 40 )
-custom_styles/hover = SubResource( 2 )
-custom_styles/pressed = SubResource( 3 )
-custom_styles/focus = SubResource( 4 )
-custom_styles/disabled = SubResource( 5 )
-custom_styles/normal = SubResource( 1 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
 custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "New game"
@@ -74,11 +76,11 @@ margin_top = 48.0
 margin_right = 300.0
 margin_bottom = 92.0
 rect_min_size = Vector2( 300, 40 )
-custom_styles/hover = SubResource( 2 )
-custom_styles/pressed = SubResource( 3 )
-custom_styles/focus = SubResource( 4 )
-custom_styles/disabled = SubResource( 5 )
-custom_styles/normal = SubResource( 1 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
 custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "Load game"
@@ -88,11 +90,11 @@ margin_top = 96.0
 margin_right = 300.0
 margin_bottom = 140.0
 rect_min_size = Vector2( 300, 40 )
-custom_styles/hover = SubResource( 2 )
-custom_styles/pressed = SubResource( 3 )
-custom_styles/focus = SubResource( 4 )
-custom_styles/disabled = SubResource( 5 )
-custom_styles/normal = SubResource( 1 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
 custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "Credits"
@@ -102,14 +104,16 @@ margin_top = 144.0
 margin_right = 300.0
 margin_bottom = 188.0
 rect_min_size = Vector2( 300, 40 )
-custom_styles/hover = SubResource( 2 )
-custom_styles/pressed = SubResource( 3 )
-custom_styles/focus = SubResource( 4 )
-custom_styles/disabled = SubResource( 5 )
-custom_styles/normal = SubResource( 1 )
+custom_styles/hover = SubResource( 1 )
+custom_styles/pressed = SubResource( 2 )
+custom_styles/focus = SubResource( 3 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 5 )
 custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "Exit"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+[connection signal="button_down" from="Layout/Options/NewGame" to="." method="_on_NewGame_button_down"]
+[connection signal="button_down" from="Layout/Options/Exit" to="." method="_on_Exit_button_down"]
