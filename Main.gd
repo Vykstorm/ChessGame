@@ -15,7 +15,7 @@ onready var promotion_dialog = $PromotionDialog
 onready var white_trophies = $Decoratives/Trophies/White
 onready var black_trophies = $Decoratives/Trophies/Black
 onready var quality_advantage = $Decoratives/QualityAdvantage
-
+onready var gameover_dialog = $GameOverDialog
 
 # Current piece being dragged by user
 var current_piece_selected = null
@@ -212,11 +212,13 @@ func load_game(file: File):
 
 
 
-func _on_checkmate(_color):
-	print("Check mate!")
+func _on_checkmate(color):
+	$GameOverDialog/VBoxContainer/Message.text = color + " wins!"
+	$GameOverDialog.popup()
 	
 func _on_stalemate(_color):
-	print("Stale mate!")
+	$GameOverDialog/VBoxContainer/Message.text = "Draw!"
+	$GameOverDialog.popup()
 
 func _on_check(_color):
 	print("Check!")
@@ -260,5 +262,4 @@ func _on_piece_moved(_piece, _move):
 func _ready():
 	connect("piece_selected", self, "_on_piece_selected")
 	connect("piece_deselected", self, "_on_piece_deselected")
-	
 	new_game()
