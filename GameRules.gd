@@ -899,12 +899,9 @@ func is_check(pieces: Array, color: String) -> bool:
 	# Returns true if the king of the given color is in check, false otherwise.
 	return _is_check(create_table(pieces), color)
 	
-func is_check_mate(pieces, prev_moves, color) -> bool:
-	# Returns true if the king of the given color is in check mate.
-	# Precondition: King must be in check.
-	# Find a move for any piece of the same color as the king such that applying
-	# that move will make the king go out of the check mate.
-	var table = create_table(pieces)
+
+func _is_check_mate(table: Table, prev_moves, color) -> bool:
+	var pieces = table.get_pieces()
 	for piece in pieces:
 		if piece.color != color:
 			continue
@@ -914,6 +911,15 @@ func is_check_mate(pieces, prev_moves, color) -> bool:
 			if not _is_check(table_after_move, color):
 				return false
 	return true
+	
+func is_check_mate(pieces, prev_moves, color) -> bool:
+	# Returns true if the king of the given color is in check mate.
+	# Precondition: King must be in check.
+	# Find a move for any piece of the same color as the king such that applying
+	# that move will make the king go out of the check mate.
+	var table = create_table(pieces)
+	return _is_check_mate(table, prev_moves, color)
+
 	
 
 func is_stale_mate(pieces, prev_moves, color) -> bool:
