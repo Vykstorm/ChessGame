@@ -8,7 +8,7 @@ func _ready():
 
 func _on_NewGame_button_down():
 	# Create new game
-	get_tree().change_scene_to(preload("res://Main.tscn"))
+	get_tree().change_scene_to(preload("res://Game.tscn"))
 
 
 func _on_Exit_button_down():

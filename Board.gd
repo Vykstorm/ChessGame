@@ -6,7 +6,7 @@ signal piece_clicked
 
 onready var pieces = $Pieces
 onready var Piece = preload("res://Piece.tscn")
-onready var game = preload("res://Game.gd")
+onready var game = preload("res://GameRules.gd")
 onready var highlighted_cells = $HighlightedCells
 
 # Current piece located under the user's mouse
@@ -122,6 +122,9 @@ func reset():
 	# Reset board cell colors and remove all the pieces
 	reset_cell_colors()
 	clear_pieces()
+	
+
+	
 
 
 # Called when the node enters the scene tree for the first time.
