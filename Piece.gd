@@ -17,7 +17,7 @@ func get_board_position():
 	return board_position
 
 func update_position():
-	position = board.map_to_world(_board_position) * board.scale + board.position
+	position = board.map_to_world(_board_position) * board.scale + board.to_global(board.position)
 
 func update_picture():
 	var piece_kinds = [ "queen", "king", "rook", "knight", "bishop", "pawn" ]

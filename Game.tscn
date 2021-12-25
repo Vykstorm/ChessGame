@@ -115,6 +115,7 @@
 0/z_index = 0
 
 [node name="Game" type="Node2D"]
+position = Vector2( 24, 144 )
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_lock_": true
@@ -142,9 +143,9 @@ __meta__ = {
 }
 
 [node name="Labels" type="Control" parent="Decoratives"]
-margin_top = 120.0
-margin_right = 27.0
-margin_bottom = 600.0
+margin_left = -24.0
+margin_right = 3.0
+margin_bottom = 480.0
 rect_scale = Vector2( 0.9, 0.9 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -628,10 +629,10 @@ __meta__ = {
 }
 
 [node name="White" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
-position = Vector2( 24.5849, 592 )
+position = Vector2( 0, 452 )
 
 [node name="Black" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
-position = Vector2( 456, 80 )
+position = Vector2( 432, -30 )
 scale = Vector2( -0.5, -0.5 )
 tile_set = SubResource( 1 )
 
@@ -639,12 +640,14 @@ tile_set = SubResource( 1 )
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="White" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_left = 22.7059
-margin_top = 568.0
-margin_right = 52.7059
-margin_bottom = 598.0
+margin_top = 480.0
+margin_right = 30.0
+margin_bottom = 510.0
 rect_pivot_offset = Vector2( 15, 15 )
 text = "+4"
 align = 1
@@ -654,10 +657,10 @@ __meta__ = {
 }
 
 [node name="Black" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_left = 423.715
-margin_top = 72.0
-margin_right = 453.715
-margin_bottom = 102.0
+margin_left = 399.715
+margin_top = -92.0
+margin_right = 429.715
+margin_bottom = -62.0
 rect_rotation = 180.0
 rect_pivot_offset = Vector2( 15, 15 )
 text = "+4"
@@ -678,7 +681,6 @@ __meta__ = {
 }
 
 [node name="Board" parent="." instance=ExtResource( 11 )]
-position = Vector2( 24, 120 )
 cell_custom_transform = Transform2D( 60, 0, 0, 60, 0, 0 )
 
 [node name="HighlightedCells" type="TileMap" parent="Board"]

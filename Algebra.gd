@@ -12,12 +12,6 @@ func get_cell_name(pos):
 	return get_column_name(pos.x) + String(int(pos.y))
 	
 
-func get_moves_from_algebra(algebra):
-	var moves = [
-		game.Move.new(Vector2(5, 2), Vector2(5,4)),
-	]
-	return moves
-
 
 func desambiguate_source_cell_name(table, move) -> String:
 	# Parameters: The board and a move is passed. ( The moving piece cannot be a pawn )
@@ -128,3 +122,13 @@ func get_algebra_from_moves(moves):
 		algebra.append(get_algebra_for_last_move(table, table_after_move, moves_done))
 		table = table_after_move
 	return algebra
+
+
+
+
+func get_moves_from_algebra(algebra):
+	# Returns a sequence of moves specified by the given algebra notation.
+	var moves = [
+		game.Move.new(Vector2(5, 2), Vector2(5,4)),
+	]
+	return moves
