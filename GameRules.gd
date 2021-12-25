@@ -203,7 +203,7 @@ class Table:
 				pieces.append(piece)
 		return pieces
 		
-	func get_piece_of_kind(kind: String) -> Array:
+	func get_pieces_of_kind(kind: String) -> Array:
 		# Returns all the pieces in the board of the type specified
 		var pieces = []
 		for piece in self.get_pieces():
@@ -968,6 +968,29 @@ func get_player_quality(pieces: Array, color: String) -> int:
 		elif kind == "queen":
 			quality += 9
 	return quality
+	
+func count_pieces_on_column_of_kind(table: Table, kind: String, color: String, column) -> int:
+	# Count the number of pieces of the kind specified in the given column.
+	var count = 0
+	for piece in table.get_pieces_of_kind(kind):
+		if piece.color != color or piece.board_position.x != column:
+			continue
+		count += 1
+	return count
+
+func count_pieces_on_row_of_kind(table: Table, kind: String, color: String, row) -> int:
+	# Count the number of pieces of the kind specified in the given row
+	var count = 0
+	for piece in table.get_pieces_of_kind(kind):
+		if piece.color != color or piece.board_position.y != row:
+			continue
+		count += 1
+	return count
+	
+	
+func can_piece_move_to(table: Table, piece, target: Vector2) -> bool:
+	# Returns True if the piece located at the given position can move to a target pos.
+	return true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
