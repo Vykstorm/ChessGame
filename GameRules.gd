@@ -714,16 +714,16 @@ func get_valid_castling_moves(table: Table, prev_moves, color: String) -> Array:
 
 	
 
-func placed_in_same_row_or_column(piece_a, piece_b) -> bool:
-	# Check if two pieces are located in the same row/column
-	var difference = piece_a.board_position - piece_b.board_position
+func placed_in_same_row_or_column(pos_a, pos_b) -> bool:
+	# Check if two cells are located in the same row/column
+	var difference = pos_a - pos_b
 	var diffx = abs(int(difference.x))
 	var diffy = abs(int(difference.y))
 	return diffx == 0 or diffy == 0
 	
-func placed_in_same_diagonal(piece_a, piece_b) -> bool:
-	# Check if two pieces are located in the same diagoal.
-	var difference = piece_a.board_position - piece_b.board_position
+func placed_in_same_diagonal(pos_a, pos_b) -> bool:
+	# Check if two cells are located in the same diagoal.
+	var difference = pos_a - pos_b
 	var diffx = abs(int(difference.x))
 	var diffy = abs(int(difference.y))
 	return diffx == diffy
@@ -798,10 +798,9 @@ func get_valid_moves(pieces, prev_moves, piece, check_pins:bool=true):
 	return valid_moves
 
 
-func is_piece_being_threatened_by_knight(piece, knight) -> bool:
-	var pos = piece.board_position
-	var attacker_pos = knight.board_position
-	var diff = attacker_pos - pos
+func can_knight_move_to(knight, target: Vector2) -> bool:
+	# Returns true if the knight can move to the specified target
+	var diff = knight.board_position - target
 	for jump in [
 		JUMP_DOWNLEFT, JUMP_DOWNRIGHT, JUMP_LEFTDOWN, JUMP_LEFTUP,
 		JUMP_RIGHTDOWN, JUMP_RIGHTUP, JUMP_UPLEFT, JUMP_UPRIGHT]:
@@ -809,77 +808,86 @@ func is_piece_being_threatened_by_knight(piece, knight) -> bool:
 			return true
 	return false
 
-func is_piece_being_threatened_by_pawn(piece, pawn) -> bool:
-	var attacker_pos = pawn.board_position
+
+func can_pawn_move_to(pawn, target: Vector2) -> bool:
+	# Returns true if the pawn can move to the specified target. It is assumed that there is
+	# a piece of the opposite color in the target cell.
 	var target_cells
+	var pos = pawn.board_position
 	if pawn.color == "white":
 		target_cells = [
-			attacker_pos+DIAG45,
-			attacker_pos+DIAG135
+			pos+DIAG45,
+			pos+DIAG135
 		]
 	else:
 		target_cells = [
-			attacker_pos-DIAG45,
-			attacker_pos-DIAG135
+			pos-DIAG45,
+			pos-DIAG135
 		]
 	for target_cell in target_cells:
-		if target_cell == piece.board_position:
+		if target_cell == target:
 			return true
 	return false
 	
-func is_piece_being_threatened_by_rook(table: Table, piece, rook) -> bool:
-	# Rook and piece on the same row or column?
-	if not placed_in_same_row_or_column(piece, rook):
+	
+func can_rook_move_to(table: Table, rook, target: Vector2) -> bool:
+	# Rook and target cell on the same row or column?
+	if not placed_in_same_row_or_column(rook.board_position, target):
 		return false
 	# Check if there is not another piece between the attacker and the target piece.
-	return table.get_first_occupied_cell_between(piece.board_position, rook.board_position) == null
+	return table.get_first_occupied_cell_between(target, rook.board_position) == null
 
-func is_piece_being_threatened_by_queen(table: Table, piece, queen) -> bool:
-	# Queen and piece on the same row, column or diagonal?
-	if not placed_in_same_row_or_column(piece, queen) and not placed_in_same_diagonal(piece, queen):
+func can_queen_move_to(table: Table, queen, target: Vector2) -> bool:
+	# Queen and target on the same row, column or diagonal?
+	if not placed_in_same_row_or_column(target, queen.board_position) and not placed_in_same_diagonal(target, queen.board_position):
 		return false
 	# Check if there is not another piece between the attacker and the target piece.
-	return table.get_first_occupied_cell_between(piece.board_position, queen.board_position) == null
+	return table.get_first_occupied_cell_between(target, queen.board_position) == null
 
 
-func is_piece_being_threatened_by_bishop(table: Table, piece, bishop) -> bool:
+func can_bishop_move_to(table: Table, bishop, target: Vector2) -> bool:
 	# Bishop and piece on the same diagonal?
-	if not placed_in_same_diagonal(piece, bishop):
+	if not placed_in_same_diagonal(target, bishop.board_position):
 		return false
 	# Check if there is not another piece between the attacker and the target piece.
-	return table.get_first_occupied_cell_between(piece.board_position, bishop.board_position) == null
+	return table.get_first_occupied_cell_between(target, bishop.board_position) == null
 
 
-func is_piece_being_threatened_by_king(piece, king) -> bool:
-	var diff = piece.board_position - king.board_position
+func can_king_move_to(king, target: Vector2) -> bool:
+	var diff = target - king.board_position
 	return int(abs(diff.x)) <= 1 and int(abs(diff.y)) <= 1
 
+
+
+func can_piece_move_to(table: Table, piece, target):
+	# Returns True if the piece located at the given position can move to a target pos.
+	# It is assumed that a piece of the opposite color is placed on the target cell.
+	if piece.kind == "knight":
+		return can_knight_move_to(piece, target)
+		
+	elif piece.kind == "pawn":
+		return can_pawn_move_to(piece, target)
+
+	elif piece.kind == "rook":
+		return can_rook_move_to(table, piece, target)
+		
+	elif piece.kind == "bishop":
+		return can_bishop_move_to(table, piece, target)
+		
+	elif piece.kind == "queen":
+		return can_queen_move_to(table, piece, target)
+	
+	elif piece.kind == "king":
+		return can_king_move_to(piece, target)
+	return false
 	
 
 func is_piece_being_theatened(table: Table, piece, attacker) -> bool:
 	# Returns true if the given piece is being threatened by another piece, assuming both have
 	# different colors.
-	
-	if attacker.kind == "knight":
-		return is_piece_being_threatened_by_knight(piece, attacker)
-		
-	elif attacker.kind == "pawn":
-		return is_piece_being_threatened_by_pawn(piece, attacker)
+	return can_piece_move_to(table, attacker, piece.board_position)
 
-	elif attacker.kind == "rook":
-		return is_piece_being_threatened_by_rook(table, piece, attacker)
-		
-	elif attacker.kind == "bishop":
-		return is_piece_being_threatened_by_bishop(table, piece, attacker)
-		
-	elif attacker.kind == "queen":
-		return is_piece_being_threatened_by_queen(table, piece, attacker)
 	
-	elif attacker.kind == "king":
-		return is_piece_being_threatened_by_king(piece, attacker)
-	return false
-	
-
 
 func _is_check(table: Table, color: String) -> bool:
 	var pieces = table.get_pieces()
@@ -969,6 +977,7 @@ func get_player_quality(pieces: Array, color: String) -> int:
 			quality += 9
 	return quality
 	
+	
 func count_pieces_on_column_of_kind(table: Table, kind: String, color: String, column) -> int:
 	# Count the number of pieces of the kind specified in the given column.
 	var count = 0
@@ -977,6 +986,7 @@ func count_pieces_on_column_of_kind(table: Table, kind: String, color: String, c
 			continue
 		count += 1
 	return count
+
 
 func count_pieces_on_row_of_kind(table: Table, kind: String, color: String, row) -> int:
 	# Count the number of pieces of the kind specified in the given row
@@ -988,9 +998,6 @@ func count_pieces_on_row_of_kind(table: Table, kind: String, color: String, row)
 	return count
 	
 	
-func can_piece_move_to(table: Table, piece, target: Vector2) -> bool:
-	# Returns True if the piece located at the given position can move to a target pos.
-	return true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
