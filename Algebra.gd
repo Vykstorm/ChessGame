@@ -64,7 +64,11 @@ func get_algebra_for_last_move(table, table_after_move, moves) -> String:
 			notation = "O-O-O"
 		
 	elif move is game.PromotionMove:
-		pass
+		# Notation for promotion moves.
+		# e.g: e8=Q
+		var promotion = "queen" if move.promotion == null else move.promotion
+		notation = get_cell_name(target_pos) + "=" + get_piece_id(promotion)
+		
 	
 	else:
 		if moving_piece == "pawn":

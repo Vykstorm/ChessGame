@@ -228,6 +228,7 @@ func _on_check(_color):
 func _on_promoted(kind):
 	print("Promoted to ", kind)
 	update_quality_advantage()
+	print(Algebra.get_algebra_from_moves(moves))
 
 
 
