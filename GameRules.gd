@@ -464,10 +464,22 @@ func get_initial_kings():
 		Piece.new("king", "black", Vector2(E, 8))
 	]
 	
+func get_initial_pieces_for_algebra_notation_desambiguation_testing():
+	return [
+		Piece.new("rook", "black", Vector2(D, 8)),
+		Piece.new("rook", "black", Vector2(H, 8)),
+		Piece.new("rook", "white", Vector2(A, 5)),
+		Piece.new("rook", "white", Vector2(A, 1)),
+		Piece.new("queen", "white", Vector2(H, 4)),
+		Piece.new("queen", "white", Vector2(H, 1)),
+		Piece.new("queen", "white", Vector2(E, 4)),
+		Piece.new("king", "white", Vector2(G, 1)),
+		Piece.new("king", "black", Vector2(C, 7))
+	]
 
 func get_initial_pieces():
 	# Get all initial pieces that should be in a board
-	
+#	return get_initial_pieces_for_algebra_notation_desambiguation_testing()
 	var pieces = []
 	# Create pawns
 	pieces += get_initial_pawns()
@@ -486,7 +498,7 @@ func get_initial_pieces():
 
 	# Create kings
 	pieces += get_initial_kings()
-	
+
 	return pieces
 	
 
@@ -652,20 +664,21 @@ func get_valid_castling_moves(table: Table, prev_moves, color: String) -> Array:
 	# Is king on check?
 	if _is_check(table, color):
 		return []
-	
+
 	# There was any castling move already?
 	for move in prev_moves:
 		if move is CastlingMove and color == move.get_color():
 			return []
 	
-	# No castling moves done yet?
+	# No castling moves done yet? King moved already?
 	# The king moved a cell already?
 	var king_initial_pos
 	if color == "white":
 		king_initial_pos = Vector2(5, 1)
 	else:
 		king_initial_pos = Vector2(5, 8)
-	if not piece_at_cell_not_moved_yet(prev_moves, king_initial_pos):
+		
+	if table.get_kind(king_initial_pos) != "king" or not piece_at_cell_not_moved_yet(prev_moves, king_initial_pos):
 		return []
 	
 	# kingside rook moved already?
