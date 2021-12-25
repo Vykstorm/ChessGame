@@ -109,7 +109,7 @@ func get_algebra_for_last_move(table, table_after_move, moves) -> String:
 	if game._is_check(table_after_move, game.get_opposite_color(color)):
 		notation += "+"
 		if game._is_check_mate(table_after_move, moves, game.get_opposite_color(color)):
-			notation += "+"
+			notation = "#"
 	return notation
 
 
