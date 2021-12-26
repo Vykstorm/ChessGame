@@ -103,11 +103,12 @@ func get_algebra_for_last_move(table, table_after_move, moves) -> String:
 				notation = get_piece_id(moving_piece) + source_cell_name + "x" + get_cell_name(target_pos)
 
 
-	# Add + or ++ if king is on check[mate]
-	if game._is_check(table_after_move, game.get_opposite_color(color)):
-		notation += "+"
+	# Add + or # if king is on check[mate]
+	if game._is_check(table_after_move, game.get_opposite_color(color)):	
 		if game._is_check_mate(table_after_move, moves, game.get_opposite_color(color)):
-			notation = "#"
+			notation += "#"
+		else:
+			notation += "+"
 	return notation
 
 
