@@ -17,6 +17,7 @@ onready var white_trophies = $Decoratives/Trophies/White
 onready var black_trophies = $Decoratives/Trophies/Black
 onready var quality_advantage = $Decoratives/QualityAdvantage
 onready var gameover_dialog = $GameOverDialog
+onready var pgn_exporter = $Pgn
 
 # Current piece being dragged by user
 var current_piece_selected = null
@@ -205,6 +206,15 @@ func new_game():
 	update_quality_advantage()
 	
 	
+func save_game():
+	# Called when game should be saved
+	var algebra = Algebra.get_algebra_from_moves(moves)
+	# Export algebra notation to pgn file
+	var headers = {
+		"White": "Victor",
+		"Black": "AI"
+	}
+	pgn_exporter.export_algebra_to_pgn_file(algebra, "match.pgn", headers)
 
 
 func do_moves(moves: Array):
@@ -228,7 +238,7 @@ func _on_check(_color):
 func _on_promoted(kind):
 	print("Promoted to ", kind)
 	update_quality_advantage()
-	print(Algebra.get_algebra_from_moves(moves))
+	save_game()
 
 
 
@@ -260,7 +270,7 @@ func _on_piece_moved(_piece, _move):
 	# Update quality advantages displays
 	update_quality_advantage()
 	
-	print(Algebra.get_algebra_from_moves(moves))
+	save_game()
 
 
 	

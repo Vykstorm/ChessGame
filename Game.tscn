@@ -671,8 +671,9 @@ __meta__ = {
 }
 
 [node name="Restart" type="ToolButton" parent="."]
+margin_top = -100.0
 margin_right = 57.0
-margin_bottom = 22.0
+margin_bottom = -78.0
 text = "Restart"
 __meta__ = {
 "_edit_group_": true,
@@ -689,6 +690,10 @@ cell_size = Vector2( 60, 60 )
 format = 1
 
 [node name="PromotionDialog" parent="." instance=ExtResource( 9 )]
+margin_left = 145.0
+margin_top = 300.0
+margin_right = 335.0
+margin_bottom = 420.0
 
 [node name="GameOverDialog" parent="." instance=ExtResource( 10 )]
 [connection signal="check" from="." to="." method="_on_check"]
