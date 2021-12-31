@@ -391,6 +391,28 @@ class Table:
 			table_after_move.add_piece(moving_piece)
 			return table_after_move
 	 
+		
+	func find_piece_on_column(kind: String, color: String, column):
+		# Return one piece which the color/kind specified in the given column or null if there aren't any
+		for piece in self.get_pieces_of_kind(kind):
+			if piece.color == color and piece.board_position.x == column:
+				return piece
+		return null
+
+	func find_piece_on_row(kind: String, color: String, row):
+		# Return one piece which the color/kind specified in the given row or null if there aren't any
+		for piece in self.get_pieces_of_kind(kind):
+			if piece.color == color and piece.board_position.y == row:
+				return piece
+		return null
+	
+	func find_piece(kind: String, color: String):
+		# Find a piece with the specified kind and color. null there aren't any
+		for piece in self.get_pieces_of_kind(kind):
+			if piece.color == color:
+				return piece
+		return null
+	
 	
 	
 func create_table(pieces: Array) -> Table:
@@ -1009,7 +1031,6 @@ func count_pieces_on_row_of_kind(table: Table, kind: String, color: String, row)
 			continue
 		count += 1
 	return count
-	
 	
 
 # Called when the node enters the scene tree for the first time.

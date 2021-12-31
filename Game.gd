@@ -17,7 +17,7 @@ onready var white_trophies = $Decoratives/Trophies/White
 onready var black_trophies = $Decoratives/Trophies/Black
 onready var quality_advantage = $Decoratives/QualityAdvantage
 onready var gameover_dialog = $GameOverDialog
-onready var pgn_exporter = $Pgn
+onready var Pgn = $Pgn
 
 # Current piece being dragged by user
 var current_piece_selected = null
@@ -214,7 +214,20 @@ func save_game():
 		"White": "Victor",
 		"Black": "AI"
 	}
-	pgn_exporter.export_algebra_to_pgn_file(algebra, "match.pgn", headers)
+#	Pgn.export_algebra_to_pgn_file(algebra, "match.pgn", headers)
+
+
+func load_game(pgn_file: String):
+	# Initialize board
+	new_game()
+	# Load pgn file
+	var pgn = Pgn.load_algebra_from_pgn_file(pgn_file)
+	var headers = pgn["headers"]
+	# Apply moves
+	moves = Algebra.get_moves_from_algebra(pgn["moves"])
+	for move in moves:
+		board.do_move(move)
+
 
 
 func do_moves(moves: Array):
@@ -276,5 +289,5 @@ func _on_piece_moved(_piece, _move):
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
+#	load_game("user://match.pgn")
 	new_game()
-	

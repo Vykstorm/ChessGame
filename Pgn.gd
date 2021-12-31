@@ -28,5 +28,7 @@ func export_algebra_to_pgn_file(algebra: Array, file_path: String, headers: Dict
 	file.close()
 
 
-func load_algebra_from_pgn_file() -> Array:
-	return []
+func load_algebra_from_pgn_file(file_path: String) -> Dictionary:
+	var moves = ["e4", "d5", "exd5", "Qxd5", "Nf3", "Qd7"]
+	var headers = {}
+	return { "moves": moves, "headers": headers }

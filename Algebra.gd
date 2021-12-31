@@ -2,14 +2,26 @@ extends Node
 
 onready var game = get_node("../GameRules")
 
-func get_column_name(x):
+func get_column_name(x) -> String:
 	return ["a", "b", "c", "d", "e", "f", "g", "h"][x-1]
+	
+func get_column_from_name(x: String) -> int:
+	return "abcdefgh".find(x) + 1
 
-func get_piece_id(piece):
+func get_piece_id(piece: String) -> String:
 	return { "king": "K", "queen": "Q", "rook": "R", "bishop": "B", "knight": "N" }.get(piece)
+	
+func get_piece_name_from_id(id: String) -> String:
+	return { "K": "king", "Q": "queen", "R": "rook", "B": "bishop", "N": "knight" }.get(id)
 
-func get_cell_name(pos):
+func is_piece_id(x: String) -> bool:
+	return x in "KQRBN"
+
+func get_cell_name(pos: Vector2) -> String:
 	return get_column_name(pos.x) + String(int(pos.y))
+	
+func get_cell_from_name(name: String) -> Vector2:
+	return Vector2(get_column_from_name(name[0]), int(name[1]))
 	
 
 
@@ -125,11 +137,140 @@ func get_algebra_from_moves(moves):
 	return algebra
 
 
+func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictionary:
+	# * In case of a regular move...
+	# Returns a dictionary holding the next items:
+	# - type: normal/castling (indicates the kind of move).
+	# - info: A dictionary with the next items. If type=normal ...
+	# 	- source: 		Source position of the piece which is moved
+	# 	- target: 		Target position of the piece
+# 	#   - piece: 		Kind of piece that moves
+	# 	- capture: 		True if the movement is a capture. False otherwise
+	# 	- promotion: 	null if it is not a promotion move. Otherwise, indicates the kind of piece
+	# 					that replaces the pawn in the promotion move (kind=pawn)
+	# 					checkmate: In case this move is a chceckmate, it's set to True
+	# 	If type=castling...
+	# - info:
+	#		- kind: queenside/kingside
+	# Returns null in case of parsing error.
+	
+	if algebra_move in ["O-O", "O-O-O"]:
+		return {
+			"type": "castling",
+			"info": {
+				"kind": "kingside" if algebra_move == "O-O" else "queenside"
+			}
+		}
+	
+	var source_pos
+	var target_pos
+	var piece
+	var promotion = null
+
+	var capture = algebra_move.find("x") != -1
+	
+	# Get source cell position
+	if is_piece_id(algebra_move.substr(0,1)):
+		# Not a pawn move
+		piece = get_piece_name_from_id(algebra_move.substr(0,1))
+		# 4 syntaxis for source cell position:
+		# e, e4, 4 or not specified. e.g: Qd6 Qxd6
+		var target_offset
+		if (not capture and len(algebra_move) == 3) or (capture and len(algebra_move) == 4):
+			source_pos = table.find_piece(piece, color).board_position
+			target_offset = 1
+			
+		elif algebra_move.substr(0,1).is_valid_integer():
+			# Find piece of the given kind in the specified row
+			# 4
+			source_pos = table.find_piece_on_row(piece, color, algebra_move.substr(0,1).to_int()).board_position
+			target_offset = 2
+		
+		elif algebra_move.substr(1,1).is_valid_integer():
+			# Both row and column was specified
+			# e4
+			source_pos = get_cell_from_name(algebra_move.substr(0,2))
+			target_offset = 3
+		else:
+			# Only column was specified
+			source_pos = table.find_piece_on_column(piece, color, get_column_from_name(algebra_move.substr(0,1)) ).board_position
+			target_offset = 2
+		
+		if capture:
+			target_offset += 1
+		target_pos = get_cell_from_name(algebra_move.substr(target_offset, 2))
+
+	else:
+		# Pawn move
+		piece = "pawn"
+		if not capture:
+			# Move without capture
+			# Notation: e4, f3, ...
+			target_pos = get_cell_from_name(algebra_move.substr(0, 2))
+			source_pos = table.find_piece_on_column("pawn", color, target_pos.x).board_position
+			
+		else:
+			# Move with capture
+			# exd5, fxg4, ...
+			target_pos = get_cell_from_name(algebra_move.substr(2, 2))
+			source_pos = table.find_piece_on_column("pawn", color, get_column_from_name(algebra_move.substr(0, 1))).board_position
+		
+		
+	return {
+		"type": "normal",
+		"info": {
+			"source": source_pos,
+			"target": target_pos,
+			"piece": piece,
+			"capture": capture,
+			"promotion": promotion
+		}
+	}
 
 
-func get_moves_from_algebra(algebra):
+func get_moves_from_algebra(algebra_moves: Array):
 	# Returns a sequence of moves specified by the given algebra notation.
-	var moves = [
-		game.Move.new(Vector2(5, 2), Vector2(5,4)),
-	]
+	var moves = []
+	
+	var table = game.create_table(game.get_initial_pieces())
+	var color = "white"
+	
+	for algebra_move in algebra_moves:
+		var parsed_algebra = parse_algebra_move_notation(table, color, algebra_move)
+		var info = parsed_algebra["info"]
+		var move
+		
+		if parsed_algebra["type"] == "castling":
+			# Castling move
+			var castling_type = info["kind"]
+			move = game.CastlingMove.new(color, castling_type)
+		else:
+			# Normal move
+			
+			var kind = info["piece"]
+			var source_pos = info["source"]
+			var target_pos = info["target"]
+			var is_capture = info["capture"]
+			
+			if kind == "pawn":
+				var promotion = info["promotion"]
+				if promotion != null:
+					# Promotion move.
+					move = game.PromotionMove.new(source_pos, target_pos, promotion)
+				else:
+					move = game.Move.new(source_pos, target_pos)
+					if is_capture and table.is_empty(target_pos):
+						# En passant capture
+						if color == "white":
+							move.piece_to_kill = Vector2(target_pos.x, target_pos.y-1)
+						else:
+							move.piece_to_kill = Vector2(target_pos.x, target_pos.y+1)
+			else:
+				# Not a pawn move
+				move = game.Move.new(source_pos, target_pos)
+				
+			
+		table = table.apply_move(move)
+		moves.append(move)
+		color = game.get_opposite_color(color)
 	return moves

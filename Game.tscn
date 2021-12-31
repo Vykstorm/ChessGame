@@ -115,7 +115,7 @@
 0/z_index = 0
 
 [node name="Game" type="Node2D"]
-position = Vector2( 24, 144 )
+position = Vector2( 24, 100 )
 script = ExtResource( 4 )
 __meta__ = {
 "_edit_lock_": true
@@ -285,7 +285,6 @@ __meta__ = {
 margin_left = 506.667
 margin_right = 531.667
 margin_bottom = 60.0
-rect_rotation = 180.0
 rect_scale = Vector2( 1.0007, 1.00616 )
 rect_pivot_offset = Vector2( 12.5, 30 )
 text = "8"
@@ -300,7 +299,6 @@ margin_left = 506.667
 margin_top = 60.0411
 margin_right = 531.667
 margin_bottom = 120.041
-rect_rotation = 180.0
 rect_scale = Vector2( 1.0007, 1.00616 )
 rect_pivot_offset = Vector2( 12.5, 30 )
 text = "7"
@@ -315,7 +313,6 @@ margin_left = 506.667
 margin_top = 120.246
 margin_right = 531.667
 margin_bottom = 180.246
-rect_rotation = 180.0
 rect_scale = Vector2( 1.0007, 1.00616 )
 rect_pivot_offset = Vector2( 12.5, 30 )
 text = "6"
@@ -330,7 +327,6 @@ margin_left = 506.667
 margin_top = 180.287
 margin_right = 531.667
 margin_bottom = 240.287
-rect_rotation = 180.0
 rect_scale = Vector2( 1.0007, 1.00616 )
 rect_pivot_offset = Vector2( 12.5, 30 )
 text = "5"
@@ -345,7 +341,6 @@ margin_left = 506.667
 margin_top = 240.0
 margin_right = 531.667
 margin_bottom = 300.0
-rect_rotation = 180.0
 rect_scale = Vector2( 1.0007, 1.00616 )
 rect_pivot_offset = Vector2( 12.5, 30 )
 text = "4"
@@ -360,7 +355,6 @@ margin_left = 506.667
 margin_top = 300.698
 margin_right = 531.667
 margin_bottom = 360.698
-rect_rotation = 180.0
 rect_scale = Vector2( 1.0007, 1.00616 )
 rect_pivot_offset = Vector2( 12.5, 30 )
 text = "3"
@@ -375,7 +369,6 @@ margin_left = 506.667
 margin_top = 360.903
 margin_right = 531.667
 margin_bottom = 420.903
-rect_rotation = 180.0
 rect_scale = Vector2( 1.0007, 1.00616 )
 rect_pivot_offset = Vector2( 12.5, 30 )
 text = "2"
@@ -390,7 +383,6 @@ margin_left = 506.667
 margin_top = 421.108
 margin_right = 531.667
 margin_bottom = 481.108
-rect_rotation = 180.0
 rect_scale = Vector2( 1.0007, 1.00616 )
 rect_pivot_offset = Vector2( 12.5, 30 )
 text = "1"
@@ -413,7 +405,6 @@ margin_left = 27.0
 margin_top = -26.6667
 margin_right = 87.0
 margin_bottom = -1.66667
-rect_rotation = 180.0
 rect_pivot_offset = Vector2( 30, 12.5 )
 text = "A"
 align = 1
@@ -427,7 +418,6 @@ margin_left = 86.6667
 margin_top = -26.6667
 margin_right = 146.667
 margin_bottom = -1.66667
-rect_rotation = 180.0
 rect_pivot_offset = Vector2( 30, 12.5 )
 text = "B"
 align = 1
@@ -441,7 +431,6 @@ margin_left = 146.667
 margin_top = -26.6667
 margin_right = 206.667
 margin_bottom = -1.66665
-rect_rotation = 180.0
 rect_pivot_offset = Vector2( 30, 12.5 )
 text = "C"
 align = 1
@@ -455,7 +444,6 @@ margin_left = 206.667
 margin_top = -26.6667
 margin_right = 266.667
 margin_bottom = -1.66667
-rect_rotation = 180.0
 rect_pivot_offset = Vector2( 30, 12.5 )
 text = "D"
 align = 1
@@ -469,7 +457,6 @@ margin_left = 266.667
 margin_top = -26.6667
 margin_right = 326.667
 margin_bottom = -1.66667
-rect_rotation = 180.0
 rect_pivot_offset = Vector2( 30, 12.5 )
 text = "E"
 align = 1
@@ -483,7 +470,6 @@ margin_left = 326.667
 margin_top = -26.6667
 margin_right = 386.667
 margin_bottom = -1.66667
-rect_rotation = 180.0
 rect_pivot_offset = Vector2( 30, 12.5 )
 text = "F"
 align = 1
@@ -497,7 +483,6 @@ margin_left = 386.667
 margin_top = -26.6667
 margin_right = 446.667
 margin_bottom = -1.66667
-rect_rotation = 180.0
 rect_pivot_offset = Vector2( 30, 12.5 )
 text = "G"
 align = 1
@@ -511,7 +496,6 @@ margin_left = 446.667
 margin_top = -26.6667
 margin_right = 506.667
 margin_bottom = -1.66665
-rect_rotation = 180.0
 rect_pivot_offset = Vector2( 30, 12.5 )
 text = "H"
 align = 1
@@ -523,6 +507,9 @@ __meta__ = {
 [node name="Bottom" type="Control" parent="Decoratives/Labels/Cols"]
 margin_right = 40.0
 margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="A" type="Label" parent="Decoratives/Labels/Cols/Bottom"]
 margin_left = 26.6667
@@ -630,11 +617,13 @@ __meta__ = {
 
 [node name="White" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
 position = Vector2( 0, 452 )
+tile_data = PoolIntArray( 0, 0, 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 5, 0, 6, 5, 0, 7, 5, 0, 8, 5, 0, 65536, 5, 0 )
 
 [node name="Black" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
 position = Vector2( 432, -30 )
 scale = Vector2( -0.5, -0.5 )
 tile_set = SubResource( 1 )
+tile_data = PoolIntArray( 0, 0, 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 5, 0, 6, 5, 0, 7, 5, 0, 8, 5, 0, 65536, 5, 0 )
 
 [node name="QualityAdvantage" type="Control" parent="Decoratives"]
 margin_right = 40.0
@@ -645,9 +634,10 @@ __meta__ = {
 }
 
 [node name="White" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_top = 480.0
-margin_right = 30.0
-margin_bottom = 510.0
+margin_left = -23.7148
+margin_top = 452.0
+margin_right = 6.28515
+margin_bottom = 482.0
 rect_pivot_offset = Vector2( 15, 15 )
 text = "+4"
 align = 1
@@ -657,11 +647,10 @@ __meta__ = {
 }
 
 [node name="Black" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_left = 399.715
-margin_top = -92.0
-margin_right = 429.715
-margin_bottom = -62.0
-rect_rotation = 180.0
+margin_left = 423.715
+margin_top = -60.0
+margin_right = 453.715
+margin_bottom = -30.0
 rect_pivot_offset = Vector2( 15, 15 )
 text = "+4"
 align = 1
