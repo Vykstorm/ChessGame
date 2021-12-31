@@ -1,5 +1,8 @@
 extends Node2D
 
+export (int) var max_display_moves = 20
+
+
 signal piece_selected
 signal piece_deselected
 signal stalemate
@@ -18,6 +21,7 @@ onready var black_trophies = $Decoratives/Trophies/Black
 onready var quality_advantage = $Decoratives/QualityAdvantage
 onready var gameover_dialog = $GameOverDialog
 onready var Pgn = $Pgn
+onready var moves_display = $Decoratives/Moves
 
 # Current piece being dragged by user
 var current_piece_selected = null
@@ -118,6 +122,19 @@ func update_quality_advantage():
 	quality_advantage.set_value(game.get_player_quality(pieces, "white")-game.get_player_quality(pieces, "black"))
 
 
+func update_moves_display(algebra_moves: Array):
+	var i = 0
+	var text = ""
+	var k = len(algebra_moves)-1
+	var j = int(max(k-max_display_moves+1, 0))
+	for algebra_move in algebra_moves.slice(j, k):
+		text += String(j+i+1) + ". " + algebra_move
+		if i < len(algebra_moves):
+			text += "  "
+		i += 1
+	
+	moves_display.text = text
+
 
 func _on_piece_clicked(piece):
 	# Called when a piece is clicked
@@ -204,11 +221,16 @@ func new_game():
 	# Initialize decoratives
 	update_trophies()
 	update_quality_advantage()
+	update_moves_display([])
 	
 	
 func save_game():
 	# Called when game should be saved
 	var algebra = Algebra.get_algebra_from_moves(moves)
+		
+	# Update move indicator.
+	update_moves_display(algebra)
+	
 	# Export algebra notation to pgn file
 	var headers = {
 		"White": "Victor",

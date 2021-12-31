@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://GameRules.gd" type="Script" id=1]
 [ext_resource path="res://Algebra.gd" type="Script" id=2]
@@ -11,6 +11,8 @@
 [ext_resource path="res://PromotionDialog.tscn" type="PackedScene" id=9]
 [ext_resource path="res://GameOverDialog.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Board.tscn" type="PackedScene" id=11]
+[ext_resource path="res://Fonts/LibreBaskerville-Regular.ttf" type="DynamicFontData" id=12]
+[ext_resource path="res://Fonts/AdvantageMarkerFont.tres" type="DynamicFont" id=13]
 
 [sub_resource type="TileSet" id=1]
 0/name = "pieces.png 0"
@@ -97,6 +99,11 @@
 5/shape_one_way_margin = 0.0
 5/shapes = [  ]
 5/z_index = 0
+
+[sub_resource type="DynamicFont" id=3]
+size = 15
+use_filter = true
+font_data = ExtResource( 12 )
 
 [sub_resource type="TileSet" id=2]
 0/name = "board.png 0"
@@ -616,11 +623,11 @@ __meta__ = {
 }
 
 [node name="White" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
-position = Vector2( 0, 452 )
+position = Vector2( 30, 452 )
 tile_data = PoolIntArray( 0, 0, 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 5, 0, 6, 5, 0, 7, 5, 0, 8, 5, 0, 65536, 5, 0 )
 
 [node name="Black" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
-position = Vector2( 432, -30 )
+position = Vector2( 400, -30 )
 scale = Vector2( -0.5, -0.5 )
 tile_set = SubResource( 1 )
 tile_data = PoolIntArray( 0, 0, 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 5, 0, 6, 5, 0, 7, 5, 0, 8, 5, 0, 65536, 5, 0 )
@@ -634,11 +641,11 @@ __meta__ = {
 }
 
 [node name="White" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_left = -23.7148
 margin_top = 452.0
-margin_right = 6.28515
+margin_right = 30.0
 margin_bottom = 482.0
 rect_pivot_offset = Vector2( 15, 15 )
+custom_fonts/font = ExtResource( 13 )
 text = "+4"
 align = 1
 valign = 1
@@ -647,14 +654,27 @@ __meta__ = {
 }
 
 [node name="Black" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_left = 423.715
+margin_left = 400.0
 margin_top = -60.0
-margin_right = 453.715
+margin_right = 430.0
 margin_bottom = -30.0
 rect_pivot_offset = Vector2( 15, 15 )
+custom_fonts/font = ExtResource( 13 )
 text = "+4"
 align = 1
 valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Moves" type="Label" parent="Decoratives"]
+margin_top = 516.0
+margin_right = 432.0
+margin_bottom = 612.0
+custom_fonts/font = SubResource( 3 )
+text = "1.d4 Nf6 2.c4 g6 3.Nc3 d5 4.cxd5 Nxd5 5.e4 Nxc3 6.bxc3 Bg7 7.Bc4 c5 8.Ne2 O-O 9.h4 cxd4 10.cxd4 Nc6 11.Be3 Qa5+ 12.Kf1 b5 13.Bb3 Bb7 14.h5 Rfd8 15.Rc1 e6 16.hxg6 hxg6 17.Bh6 Bxh6 18.Rxh6 Kg7 19.Rh3 Qb4 20.Rxc6 Bxc6 21.Qc1 Rh8 22.Qxc6 a5 23.Bxe6 Ra6 24.Qxa6 Qb1+ 25.Nc1 Qxc1+ 26.Ke2 Qc2+ 27.Kf3 Qd3+ 28.Kf4 Qxd4 29.Rxh8 Qxf2+ 30.Ke5 Qg3+ 31.Kd5 Qd3+ 32.Kc5 Qc3+ 33.Kxb5 fxe6 34.Qc8 Qd3+ 35.Kxa5 Qa3+ 36.Kb6 Qb2+ 37.Kc6 Qc3+ 38.Kd7 Qd4+ 39.Ke8 Qf6 40.Rh3 Qf7+ 41.Kd8 Qf6+ 42.Kd7 Qd4+ 43.Ke8"
+autowrap = true
+clip_text = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
