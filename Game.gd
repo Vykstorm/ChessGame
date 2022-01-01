@@ -123,17 +123,7 @@ func update_quality_advantage():
 
 
 func update_moves_display(algebra_moves: Array):
-	var i = 0
-	var text = ""
-	var k = len(algebra_moves)-1
-	var j = int(max(k-max_display_moves+1, 0))
-	for algebra_move in algebra_moves.slice(j, k):
-		text += String(j+i+1) + ". " + algebra_move
-		if i < len(algebra_moves):
-			text += "  "
-		i += 1
-	
-	moves_display.text = text
+	moves_display.text = Pgn.format_algebra(algebra_moves)
 
 
 func _on_piece_clicked(piece):
@@ -236,7 +226,7 @@ func save_game():
 		"White": "Victor",
 		"Black": "AI"
 	}
-#	Pgn.export_algebra_to_pgn_file(algebra, "match.pgn", headers)
+	Pgn.export_algebra_to_pgn_file(algebra, "match.pgn", headers)
 
 
 func load_game(pgn_file: String):
@@ -249,6 +239,10 @@ func load_game(pgn_file: String):
 	moves = Algebra.get_moves_from_algebra(pgn["moves"])
 	for move in moves:
 		board.do_move(move)
+	# Update decoratives
+	update_moves_display(pgn["moves"])
+	update_trophies()
+	update_quality_advantage()
 
 
 
