@@ -238,6 +238,7 @@ func load_game(pgn_file: String):
 	# Apply moves
 	moves = Algebra.get_moves_from_algebra(pgn["moves"])
 	for move in moves:
+		current_turn = game.get_opposite_color(current_turn)
 		board.do_move(move)
 	# Update decoratives
 	update_moves_display(pgn["moves"])
