@@ -135,6 +135,50 @@ func get_algebra_from_moves(moves):
 		algebra.append(get_algebra_for_last_move(table, table_after_move, moves_done))
 		table = table_after_move
 	return algebra
+	
+	
+func match_regex(pattern: String, text: String) -> RegExMatch:
+	# Matches the regex with the given text. Returns the match
+	var regex = RegEx.new()
+	regex.compile(pattern)
+	var result: RegExMatch = regex.search(text)
+	return result
+
+
+func get_source_cell_from_algebra(algebra: String):
+	# Nf3 -> null
+	# Nxf3  -> null
+	# Ng1f3 -> g1
+	# Nbd3  -> b*
+	# N1d7  -> *1
+	var result = match_regex("^[KQRNB]([a-h])[^1-8]", algebra)
+	if result:
+		return result.get_string(1) + "*"
+	
+	result = match_regex("^[KQRNB]([1-8])", algebra)
+	if result:
+		return "*" + result.get_string(1)
+	
+	result = match_regex("^[KQRNB]([a-h][1-8])[a-hx]", algebra)
+	if result:
+		return result.get_string(1)
+	
+	return null
+	
+
+func get_target_cell_from_algebra(algebra: String):
+	# Nf3 -> f3
+	# Nxf3  -> f3
+	# Ng1f3 -> f3
+	# Ng1xf3 -> f3
+	# Nbd3  -> d3
+	# Nbxd3 -> d3
+	# N1d7  -> d7
+	# N1xd7  -> d7
+	var result = match_regex("^[KQRNB][a-h1-8x]*([a-h][1-8])([^a-h1-8x]|$)", algebra)
+	assert(result)
+	return result.get_string(1)
+
 
 
 func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictionary:
@@ -173,34 +217,37 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 	if is_piece_id(algebra_move.substr(0,1)):
 		# Not a pawn move
 		kind = get_piece_name_from_id(algebra_move.substr(0,1))
-		# 4 syntaxis for source cell position:
-		# e, e4, 4 or not specified. e.g: Qd6 Qxd6
-		var target_offset
-		if (not capture and len(algebra_move) == 3) or (capture and len(algebra_move) == 4):
+		var source_pos_string = get_source_cell_from_algebra(algebra_move)
+		var target_pos_string = get_target_cell_from_algebra(algebra_move)
+		
+		if source_pos_string == null:
 			# Neither column nor row was specified.
 			source_pos = null
-			target_offset = 1
-			
-		elif algebra_move.substr(0,1).is_valid_integer():
+
+		elif source_pos_string.begins_with("*"):
 			# Only row was specified
 			# Find piece of the given kind in the specified row
-			# 4
-			source_pos = table.find_piece_on_row(kind, color, algebra_move.substr(0,1).to_int()).board_position
-			target_offset = 2
-		
-		elif algebra_move.substr(1,1).is_valid_integer():
-			# Both row and column was specified
-			# e4
-			source_pos = get_cell_from_name(algebra_move.substr(0,2))
-			target_offset = 3
-		else:
+			# e.g: N4b3
+			var row = source_pos_string.substr(1,1).to_int()
+			var piece = table.find_piece_on_row(kind, color, row)
+			assert(piece != null)
+			source_pos = piece.board_position
+
+		elif source_pos_string.ends_with("*"):
 			# Only column was specified
-			source_pos = table.find_piece_on_column(kind, color, get_column_from_name(algebra_move.substr(0,1)) ).board_position
-			target_offset = 2
-		
-		if capture:
-			target_offset += 1
-		target_pos = get_cell_from_name(algebra_move.substr(target_offset, 2))
+			# e.g: Nbc3
+			var column = get_column_from_name(source_pos_string.substr(0,1))
+			var piece = table.find_piece_on_column(kind, color, column )
+			var knights = table.get_pieces_of_kind(kind)
+			assert(piece != null)
+			source_pos = piece.board_position
+
+		else:
+			# Both row and column was specified
+			# e.g: Ne4f6
+			source_pos = get_cell_from_name(source_pos_string)
+
+		target_pos = get_cell_from_name(get_target_cell_from_algebra(algebra_move))
 		if source_pos == null:
 			var piece = game.find_piece_which_can_move_to(table, target_pos, kind, color)
 			assert(piece != null)
