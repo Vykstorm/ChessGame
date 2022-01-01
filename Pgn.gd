@@ -59,11 +59,18 @@ func get_lines_from_file(file_path: String) -> Array:
 
 
 func get_moves_from_text(text: String) -> Array:
-	var move_regex = RegEx.new()
-	move_regex.compile('\\d+\\.')
-	text = move_regex.sub(text, "|")
-	var tokens = text.split("|")
+	var moves_regex = RegEx.new()
+	moves_regex.compile("\\d+\\.([KQRNBa-h1-8xO\\-=]+[+#]?) ([KQRNBa-h1-8xO\\-=]+[+#]?)?")
 	var moves = []
+	for entry in moves_regex.search_all(text):
+		moves.append(entry.get_string(1))
+		moves.append(entry.get_string(2))
+	
+	var last_move_regex = RegEx.new()
+	last_move_regex.compile("\\d+\\.([KQRNBa-h1-8xO\\-=]+[+#]?)( [^Oa-hKQRNB]|$)")
+	var entry = last_move_regex.search(text)
+	if entry:
+		moves.append(entry.get_string(1))
 	return moves
 
 

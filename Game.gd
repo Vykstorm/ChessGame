@@ -305,5 +305,5 @@ func _on_piece_moved(_piece, _move):
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
-#	load_game("user://match.pgn")
-	new_game()
+	load_game("user://match.pgn")
+#	new_game()
