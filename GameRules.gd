@@ -922,6 +922,17 @@ func is_piece_being_theatened(table: Table, piece, attacker) -> bool:
 	# different colors.
 	return can_piece_move_to(table, attacker, piece.board_position)
 
+
+func find_piece_which_can_move_to(table: Table, target: Vector2, kind: String, color: String):
+	# Finds a piece with the specified kind / color which can move to the given target cell.
+	# It is assumed that the target cell is occupied by a piece of the oppositve color)
+	# Returns null if the search wasn't succesfull.
+	for piece in table.get_pieces_of_kind(kind):
+		if piece.color != color:
+			continue
+		if can_piece_move_to(table, piece, target):
+			return piece
+	return null
 	
 
 func _is_check(table: Table, color: String) -> bool:

@@ -164,7 +164,7 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 	
 	var source_pos
 	var target_pos
-	var piece
+	var kind
 	var promotion = null
 
 	var capture = algebra_move.find("x") != -1
@@ -172,18 +172,20 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 	# Get source cell position
 	if is_piece_id(algebra_move.substr(0,1)):
 		# Not a pawn move
-		piece = get_piece_name_from_id(algebra_move.substr(0,1))
+		kind = get_piece_name_from_id(algebra_move.substr(0,1))
 		# 4 syntaxis for source cell position:
 		# e, e4, 4 or not specified. e.g: Qd6 Qxd6
 		var target_offset
 		if (not capture and len(algebra_move) == 3) or (capture and len(algebra_move) == 4):
-			source_pos = table.find_piece(piece, color).board_position
+			# Neither column nor row was specified.
+			source_pos = null
 			target_offset = 1
 			
 		elif algebra_move.substr(0,1).is_valid_integer():
+			# Only row was specified
 			# Find piece of the given kind in the specified row
 			# 4
-			source_pos = table.find_piece_on_row(piece, color, algebra_move.substr(0,1).to_int()).board_position
+			source_pos = table.find_piece_on_row(kind, color, algebra_move.substr(0,1).to_int()).board_position
 			target_offset = 2
 		
 		elif algebra_move.substr(1,1).is_valid_integer():
@@ -193,16 +195,19 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 			target_offset = 3
 		else:
 			# Only column was specified
-			source_pos = table.find_piece_on_column(piece, color, get_column_from_name(algebra_move.substr(0,1)) ).board_position
+			source_pos = table.find_piece_on_column(kind, color, get_column_from_name(algebra_move.substr(0,1)) ).board_position
 			target_offset = 2
 		
 		if capture:
 			target_offset += 1
 		target_pos = get_cell_from_name(algebra_move.substr(target_offset, 2))
-
+		if source_pos == null:
+			var piece = game.find_piece_which_can_move_to(table, target_pos, kind, color)
+			assert(piece != null)
+			source_pos = piece.board_position
 	else:
 		# Pawn move
-		piece = "pawn"
+		kind = "pawn"
 		if not capture:
 			# Move without capture
 			# Notation: e4, f3, ...
@@ -221,7 +226,7 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 		"info": {
 			"source": source_pos,
 			"target": target_pos,
-			"piece": piece,
+			"piece": kind,
 			"capture": capture,
 			"promotion": promotion
 		}
