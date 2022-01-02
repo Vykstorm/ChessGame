@@ -58,6 +58,8 @@ func get_piece_in_cell(cell):
 	# Returns the piece which is in the specified cell or null
 	# if any piece is in there.
 	for piece in pieces.get_children():
+		if piece.is_queued_for_deletion():
+			continue
 		if piece.board_position == cell:
 			return piece
 	return null
@@ -117,6 +119,7 @@ func do_move(move):
 			piece_to_remove.queue_free()
 		piece_to_move.board_position = move.to
 		piece_to_move.update_position()
+	
 	
 func reset():
 	# Reset board cell colors and remove all the pieces
