@@ -274,7 +274,7 @@ func _on_promoted(kind):
 
 
 func _on_Restart_button_down():
-	new_game_test()
+	new_game()
 
 
 func _on_PromotionDialog_piece_selected(kind):
@@ -305,7 +305,7 @@ func _on_piece_moved(_piece, _move):
 
 
 func new_game_test():
-	load_game("user://match2.pgn")
+	load_game("user://match.pgn")
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():

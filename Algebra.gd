@@ -77,10 +77,12 @@ func get_algebra_for_last_move(table, table_after_move, moves) -> String:
 		
 	elif move is game.PromotionMove:
 		# Notation for promotion moves.
-		# e.g: e8=Q
+		# e.g: e8=Q, ebxc8=Q
 		var promotion = "queen" if move.promotion == null else move.promotion
-		notation = get_cell_name(target_pos) + "=" + get_piece_id(promotion)
-		
+		if source_pos.x == target_pos.x:
+			notation = get_cell_name(target_pos) + "=" + get_piece_id(promotion)
+		else:
+			notation = get_column_name(source_pos.x) + "x" + get_cell_name(target_pos) + "=" + get_piece_id(promotion)
 	
 	else:
 		if moving_piece == "pawn":
@@ -188,6 +190,16 @@ func get_target_cell_from_algebra(algebra: String):
 
 
 
+func get_promotion_from_algebra(algebra: String):
+	# e4 -> null
+	# e4=Q -> Q
+	# e5=R -> R
+	var result = match_regex("=([KQRNB])", algebra)
+	if not result:
+		return null
+	return result.get_string(1)
+
+
 func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictionary:
 	# * In case of a regular move...
 	# Returns a dictionary holding the next items:
@@ -199,7 +211,6 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 	# 	- capture: 		True if the movement is a capture. False otherwise
 	# 	- promotion: 	null if it is not a promotion move. Otherwise, indicates the kind of piece
 	# 					that replaces the pawn in the promotion move (kind=pawn)
-	# 					checkmate: In case this move is a chceckmate, it's set to True
 	# 	If type=castling...
 	# - info:
 	#		- kind: queenside/kingside
@@ -264,6 +275,7 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 		
 		var source_pos_string = get_source_cell_from_algebra("K"+algebra_move)
 		var target_pos_string = get_target_cell_from_algebra("K"+algebra_move)
+		
 		assert(source_pos_string == null or source_pos_string.ends_with("*"))
 		
 		target_pos = get_cell_from_name(get_target_cell_from_algebra("K"+algebra_move))
@@ -279,6 +291,11 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 		assert(pawn != null)
 		source_pos = pawn.board_position
 		
+		# Check if it's a promotion move
+		var promotion_piece_id = get_promotion_from_algebra(algebra_move)
+		if promotion_piece_id != null:
+			promotion = get_piece_name_from_id(promotion_piece_id)
+			pass
 	
 		
 	return {
