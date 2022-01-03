@@ -419,7 +419,7 @@ class Table:
 		# Find the leading pawn at the given column with the specified color.
 		# returns null if there aren't any.
 		for i in range(0, 8):
-			var y = i+1 if color == "white" else 8-i
+			var y = i+1 if color == "black" else 8-i
 			var pos = Vector2(column, y)
 			if self.get_color(pos) == color and self.get_kind(pos) == "pawn":
 				return self.get_piece(pos)

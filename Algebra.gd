@@ -1,8 +1,13 @@
 extends Node
 
+
 onready var game = get_node("../GameRules")
 
+
+
+
 func get_column_name(x) -> String:
+	# Converts column name to number. e.g: a -> 1, b -> 2, ...
 	return ["a", "b", "c", "d", "e", "f", "g", "h"][x-1]
 	
 func get_column_from_name(x: String) -> int:
@@ -28,7 +33,7 @@ func get_cell_from_name(name: String) -> Vector2:
 func desambiguate_source_cell_name(table, move) -> String:
 	# Parameters: The board and a move is passed. ( The moving piece cannot be a pawn )
 	# Returns:
-	# An empty string if only 1 piece of the same kind as the one that performs the move
+	# - An empty string if only 1 piece of the same kind as the one that performs the move
 	# can go to the target cell
 	# Otherwise, returns the source cell coordinates in algebra notation:
 	# - If the moving piece is placed in a different row than others, only the name of the row
@@ -53,6 +58,7 @@ func desambiguate_source_cell_name(table, move) -> String:
 	
 
 func get_algebra_for_last_move(table, table_after_move, moves) -> String:
+	# Given a move instance, converts it to algebra notation.
 	var move = moves[-1]
 	
 	var target_pos = move.to
@@ -126,6 +132,7 @@ func get_algebra_for_last_move(table, table_after_move, moves) -> String:
 
 
 func get_algebra_from_moves(moves):
+	# Returns the algebra notation of a sequence of movements.
 	var table = game.create_table(game.get_initial_pieces())
 	var algebra = []
 	var moves_done = []
