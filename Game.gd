@@ -240,6 +240,7 @@ func load_game(pgn_file: String):
 	for move in moves:
 		current_turn = game.get_opposite_color(current_turn)
 		board.do_move(move)
+
 	# Update decoratives
 	update_moves_display(pgn["moves"])
 	update_trophies()

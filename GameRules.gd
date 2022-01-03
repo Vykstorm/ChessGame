@@ -376,7 +376,7 @@ class Table:
 		# Returns a new table configuration as a result of applying the given movement
 		if move is CastlingMove:
 			var table_after_move = self.apply_move(Move.new(move.get_king_source_pos(), move.get_king_target_pos()))
-			table_after_move.apply_move(Move.new(move.get_rook_source_pos(), move.get_rook_target_pos()))
+			table_after_move = table_after_move.apply_move(Move.new(move.get_rook_source_pos(), move.get_rook_target_pos()))
 			return table_after_move
 		else:
 			var table_after_move = self.duplicate()
@@ -398,6 +398,7 @@ class Table:
 			if piece.color == color and piece.board_position.x == column:
 				return piece
 		return null
+		
 
 	func find_piece_on_row(kind: String, color: String, row):
 		# Return one piece which the color/kind specified in the given row or null if there aren't any
@@ -413,6 +414,16 @@ class Table:
 				return piece
 		return null
 	
+	
+	func find_leading_pawn_on_column(color: String, column):
+		# Find the leading pawn at the given column with the specified color.
+		# returns null if there aren't any.
+		for i in range(0, 8):
+			var y = i+1 if color == "white" else 8-i
+			var pos = Vector2(column, y)
+			if self.get_color(pos) == color and self.get_kind(pos) == "pawn":
+				return self.get_piece(pos)
+		return null
 	
 	
 func create_table(pieces: Array) -> Table:
@@ -843,26 +854,58 @@ func can_knight_move_to(knight, target: Vector2) -> bool:
 			return true
 	return false
 
-
-func can_pawn_move_to(pawn, target: Vector2) -> bool:
-	# Returns true if the pawn can move to the specified target. It is assumed that there is
-	# a piece of the opposite color in the target cell.
-	var target_cells
+func can_pawn_move_diagonally_to(table: Table, pawn, target: Vector2) -> bool:
+	# Assuming that there is a piece of the opposite color in the given target, returns true
+	# if the pawn can move diagonally to the target and take the piece.
 	var pos = pawn.board_position
-	if pawn.color == "white":
+	var color = pawn.color
+	
+	# Can pawn move diagonally?
+	var target_cells
+	if color == "white":
 		target_cells = [
 			pos+DIAG45,
-			pos+DIAG135
+			pos+DIAG135,
+			pos+FORWARD,
 		]
 	else:
 		target_cells = [
 			pos-DIAG45,
-			pos-DIAG135
+			pos-DIAG135,
+			pos-FORWARD
 		]
 	for target_cell in target_cells:
 		if target_cell == target:
 			return true
 	return false
+	
+func can_pawn_move_forward_to(table: Table, pawn, target: Vector2) -> bool:
+	# Returns true if the pawn can move forward:
+	# if target cell is not occupied by any other piece.
+	# if the distance to the target is 2 cells, only returns true if pawn is located at the
+	# starting position and the next 2 cells are empty.
+	var pos = pawn.board_position
+	var color = pawn.color
+	
+	# Can pawn move forward?
+	var move_direction = FORWARD if color == "white" else BACKWARD
+	if target == pos+move_direction:
+		return table.is_empty(target)
+	elif target == pos+2*move_direction and (color == "white" and pos.y == 2 or color == "black" and pos.y == 7):
+		return table.is_empty(pos+move_direction) and table.is_empty(pos+2*move_direction)
+	return false
+	
+
+func can_pawn_move_to(table: Table, pawn, target: Vector2) -> bool:
+	# Returns true if the pawn can move to the specified target. It is assumed that there is
+	# a piece of the opposite color in the target cell if target cell is in a different column.
+	
+	# Can pawn move diagonally?
+	if can_pawn_move_diagonally_to(table, pawn, target):
+		return true
+	
+	# Can pawn move forward?
+	return can_pawn_move_forward_to(table, pawn, target)
 	
 	
 func can_rook_move_to(table: Table, rook, target: Vector2) -> bool:
@@ -901,7 +944,7 @@ func can_piece_move_to(table: Table, piece, target):
 		return can_knight_move_to(piece, target)
 		
 	elif piece.kind == "pawn":
-		return can_pawn_move_to(piece, target)
+		return can_pawn_move_to(table, piece, target)
 
 	elif piece.kind == "rook":
 		return can_rook_move_to(table, piece, target)
@@ -933,6 +976,8 @@ func find_piece_which_can_move_to(table: Table, target: Vector2, kind: String, c
 		if can_piece_move_to(table, piece, target):
 			return piece
 	return null
+	
+	
 	
 
 func _is_check(table: Table, color: String) -> bool:

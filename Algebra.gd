@@ -237,8 +237,7 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 			# Only column was specified
 			# e.g: Nbc3
 			var column = get_column_from_name(source_pos_string.substr(0,1))
-			var piece = table.find_piece_on_column(kind, color, column )
-			var knights = table.get_pieces_of_kind(kind)
+			var piece = table.find_piece_on_column(kind, color, column)
 			assert(piece != null)
 			source_pos = piece.board_position
 
@@ -255,18 +254,25 @@ func parse_algebra_move_notation(table, color, algebra_move: String) -> Dictiona
 	else:
 		# Pawn move
 		kind = "pawn"
-		if not capture:
-			# Move without capture
-			# Notation: e4, f3, ...
-			target_pos = get_cell_from_name(algebra_move.substr(0, 2))
-			source_pos = table.find_piece_on_column("pawn", color, target_pos.x).board_position
-			
-		else:
-			# Move with capture
-			# exd5, fxg4, ...
-			target_pos = get_cell_from_name(algebra_move.substr(2, 2))
-			source_pos = table.find_piece_on_column("pawn", color, get_column_from_name(algebra_move.substr(0, 1))).board_position
 		
+		var source_pos_string = get_source_cell_from_algebra("K"+algebra_move)
+		var target_pos_string = get_target_cell_from_algebra("K"+algebra_move)
+		assert(source_pos_string == null or source_pos_string.ends_with("*"))
+		
+		target_pos = get_cell_from_name(get_target_cell_from_algebra("K"+algebra_move))
+		var column # column of the pawn
+		if source_pos_string == null:
+			# The column of the pawn was not specified (only target pos is given)
+			column = get_column_from_name(target_pos_string.substr(0, 1))
+		else:
+			# The column of the pawn was specified (as source position).
+			column = get_column_from_name(source_pos_string.substr(0,1))
+		
+		var pawn = table.find_leading_pawn_on_column(color, column)
+		assert(pawn != null)
+		source_pos = pawn.board_position
+		
+	
 		
 	return {
 		"type": "normal",
