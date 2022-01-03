@@ -63,14 +63,18 @@ func get_moves_from_text(text: String) -> Array:
 	moves_regex.compile("\\d+\\.([KQRNBa-h1-8xO\\-=]+[+#]?) ([KQRNBa-h1-8xO\\-=]+[+#]?)?")
 	var moves = []
 	for entry in moves_regex.search_all(text):
-		moves.append(entry.get_string(1))
-		moves.append(entry.get_string(2))
+		var white_move = entry.get_string(1)
+		var black_move = entry.get_string(2)
+		moves.append(white_move)
+		if black_move != "":
+			moves.append(black_move)
 	
-	var last_move_regex = RegEx.new()
-	last_move_regex.compile("\\d+\\.([KQRNBa-h1-8xO\\-=]+[+#]?)( [^Oa-hKQRNB]|$)")
-	var entry = last_move_regex.search(text)
-	if entry:
-		moves.append(entry.get_string(1))
+#	var last_move_regex = RegEx.new()
+#	last_move_regex.compile("\\d+\\.([KQRNBa-h1-8xO\\-=]+[+#]?)( [^Oa-hKQRNB]|$)")
+#	var entry = last_move_regex.search(text)
+#	if entry:
+#		var white_move = entry.get_string(1)
+#		moves.append(white_move)
 	return moves
 
 
