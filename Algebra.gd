@@ -339,6 +339,7 @@ func get_moves_from_algebra(algebra_moves: Array):
 				if promotion != null:
 					# Promotion move.
 					move = game.PromotionMove.new(source_pos, target_pos, promotion)
+					pass
 				else:
 					move = game.Move.new(source_pos, target_pos)
 					if is_capture and table.is_empty(target_pos):
