@@ -2,6 +2,7 @@ extends TileMap
 
 # Signal emitted when a cell is clicked.
 signal cell_clicked
+# Signal emitted when a piece is clicked.
 signal piece_clicked
 
 onready var pieces = $Pieces

@@ -25,6 +25,7 @@ __meta__ = {
 }
 
 [node name="Background" type="TextureRect" parent="."]
+visible = false
 modulate = Color( 0.235294, 0.235294, 0.235294, 1 )
 margin_right = 480.0
 margin_bottom = 720.0
