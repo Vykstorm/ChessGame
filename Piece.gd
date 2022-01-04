@@ -5,6 +5,7 @@ export var color = "black" setget set_color
 export (Vector2) var board_position setget set_board_position, get_board_position
 export (Color) var threat_color
 var _board_position = null
+var _display_color = "normal"
 var is_promotion = false
 
 onready var board = get_node("../../")
@@ -23,6 +24,8 @@ func update_picture():
 	var piece_kinds = [ "queen", "king", "rook", "knight", "bishop", "pawn" ]
 	var i = piece_kinds.find(kind)
 	var j = 0 if color == "black" else 1
+	if _display_color == "threat":
+		j += 2
 	texture.region.position.x = i * 60
 	texture.region.position.y = j * 60
 #	flip_v = true if color == "black" else false
@@ -37,12 +40,8 @@ func set_color(x):
 func set_display_color(kind):
 	# Set piece display color.
 	# kind can be "normal" or "threat"
-	if kind == "normal":
-		self.modulate = Color.white
-	elif kind == "threat":
-		self.modulate = threat_color
-		
- 
+	_display_color = kind
+	
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
