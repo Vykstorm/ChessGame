@@ -21,6 +21,7 @@ func hightlight_cell(cell):
 		highlighted_cells.set_cell(x, y, 0)
 	else:
 		piece.set_display_color("threat")
+		piece.update_picture()
 
 func highlight_cells(cells):
 	# Hightlight the given cells
@@ -32,6 +33,7 @@ func reset_highlighted_cells():
 	reset_cell_colors()
 	for piece in get_pieces():
 		piece.set_display_color("normal")
+		piece.update_picture()
 	
 func reset_cell_colors():
 	for y in range(0, 8):
