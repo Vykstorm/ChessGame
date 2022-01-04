@@ -10,3 +10,7 @@ lib/
 *.apk
 
 TODO.txt
+*.swp
+
+# Match files
+*.pgn
