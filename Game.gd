@@ -123,7 +123,17 @@ func update_quality_advantage():
 
 
 func update_moves_display(algebra_moves: Array):
-	moves_display.text = Pgn.format_algebra(algebra_moves)
+	var text: String
+	if len(algebra_moves) == 0:
+		text = ""
+	else:
+		var last_move = len(algebra_moves)-1
+		var first_move = int(max(0, last_move-max_display_moves+1))
+		var first_round = first_move/2
+		var last_round = last_move/2
+		text = Pgn.format_algebra(algebra_moves, first_round, last_round)
+	
+	moves_display.text = text
 
 
 func _on_piece_clicked(piece):

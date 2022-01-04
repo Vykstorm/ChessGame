@@ -6,22 +6,46 @@ extends Node
 #	return "26/12/2021 13:27"
 
 
-func format_algebra(algebra: Array) -> String:
+func format_algebra(algebra: Array, first_round=null, last_round=null) -> String:
+	# [ "e4", "e5", "Nf3", "Nc6" ] -> "1.e4 e5 2.Nf3 Nc6"
+	# first_round=1, [ "e4", "e5", "Nf3", "Nc6"  ] -> "... 2.Nf3 Nc6"
+	# last_round=1, [ "e4", "e5", "Nf3", "Nc6"  ] -> "1.e4 e5 ..."
+	
+	if len(algebra) == 0:
+		return ""
+	
+	assert((last_round == null or first_round == null) or first_round <= last_round)
+	var num_rounds = int(ceil(float(len(algebra))/2))
+	assert(last_round ==null or (last_round < num_rounds and last_round >= 0))
+	assert(first_round == null or (first_round < num_rounds and first_round >= 0))
+	
+	if first_round == null:
+		first_round = 0
+	if last_round == null:
+		last_round = num_rounds-1
+	
 	var moves = ""
-	var k = 0
-	while k < len(algebra)-1:
-		var move_index = int(k / 2) + 1
-		if move_index != 1:
+	
+	if first_round > 0:
+		moves += "... "
+	
+	var k = first_round
+	while k <= last_round:
+		var white_move_index = k*2
+		var black_move_index = white_move_index+1
+		if k != 1:
 			moves += " "
-		moves += String(move_index)+ "." + algebra[k] + " " + algebra[k+1]
-		k += 2
-		
-	if k < len(algebra):
-		var move_index = int(k / 2) + 1
-		if move_index != 1:
-			moves += " "
-		moves += String(move_index) + "." + algebra[k]
+			
+		moves += String(k+1)+ "." + algebra[white_move_index]
+		if black_move_index < len(algebra):
+			moves += " " + algebra[black_move_index]
+		k += 1
+	
+	if last_round < num_rounds-1:
+		moves += " ..."
+	
 	return moves
+
 
 func export_algebra_to_pgn_file(algebra: Array, file_path: String, headers: Dictionary):
 	var content = ""
