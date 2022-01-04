@@ -10,9 +10,6 @@ onready var Piece = preload("res://Piece.tscn")
 onready var game = preload("res://GameRules.gd")
 onready var highlighted_cells = $HighlightedCells
 
-# Current piece located under the user's mouse
-var current_piece_under_mouse = null
-
 
 
 func hightlight_cell(cell):
@@ -49,9 +46,6 @@ func paint_board_squares():
 			
 func add_piece(piece):
 	pieces.add_child(piece)
-	# Capture piece mouse enter/exit events
-	piece.get_node("Area2D").connect("mouse_entered", self, "_on_piece_mouse_entered", [ piece ])
-	piece.get_node("Area2D").connect("mouse_exited", self, "_on_piece_mouse_exited", [ piece ])
 	piece.update_position()
 
 
@@ -138,24 +132,18 @@ func _ready():
 	paint_board_squares()
 
 
-func _on_piece_mouse_entered(piece):
-	# Called when user pass the mouse over a piece
-	current_piece_under_mouse = piece
-
-func _on_piece_mouse_exited(piece):
-	# Called when user pass the mouse goes away from the piece
-	if current_piece_under_mouse == piece:
-		current_piece_under_mouse = null
-
-
 func _input(event):
 	if event is InputEventMouseButton and Input.is_mouse_button_pressed(BUTTON_LEFT):
 		var mouse_position = event.position
 		var cell = world_to_map(to_local(mouse_position))
 		var y = 8-cell.y
 		var x = cell.x+1
-		emit_signal("cell_clicked", Vector2(x, y))
+		var pos = Vector2(x, y)
+		if x < 1 or y < 1 or x > 8 or y > 8:
+			return
+		emit_signal("cell_clicked", pos)
 		
-	if event is InputEventMouseButton and Input.is_mouse_button_pressed(BUTTON_LEFT) and current_piece_under_mouse != null:
-		# A piece is clicked
-		emit_signal("piece_clicked", current_piece_under_mouse)
+		# Any piece clicked?
+		var piece = get_piece_in_cell(pos)
+		if piece != null:
+			emit_signal("piece_clicked", piece)
