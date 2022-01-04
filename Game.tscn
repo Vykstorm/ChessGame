@@ -659,11 +659,11 @@ __meta__ = {
 }
 
 [node name="White" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
-position = Vector2( 30, 452 )
+position = Vector2( 40, 452 )
 tile_data = PoolIntArray( 0, 0, 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 5, 0, 6, 5, 0, 7, 5, 0, 8, 5, 0, 65536, 5, 0 )
 
 [node name="Black" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
-position = Vector2( 400, -30 )
+position = Vector2( 390, -30 )
 scale = Vector2( -0.5, -0.5 )
 tile_set = SubResource( 1 )
 tile_data = PoolIntArray( 0, 0, 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 5, 0, 6, 5, 0, 7, 5, 0, 8, 5, 0, 65536, 5, 0 )
