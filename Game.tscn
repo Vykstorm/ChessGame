@@ -137,7 +137,7 @@ __meta__ = {
 max_display_moves = 30
 algebra_last_move_color = Color( 0, 0.811765, 0.741176, 1 )
 algebra_check_color = Color( 1, 0.65098, 0, 1 )
-algebra_checkmate_color = Color( 1, 0.1, 0.715, 1 )
+algebra_checkmate_color = Color( 0.290196, 0.0431373, 0.227451, 1 )
 
 [node name="GameRules" type="Node" parent="."]
 script = ExtResource( 1 )
