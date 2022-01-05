@@ -764,3 +764,4 @@ margin_bottom = 420.0
 [connection signal="cell_clicked" from="Board" to="." method="_on_board_cell_clicked"]
 [connection signal="piece_clicked" from="Board" to="." method="_on_piece_clicked"]
 [connection signal="piece_selected" from="PromotionDialog" to="." method="_on_PromotionDialog_piece_selected"]
+[connection signal="new_game" from="GameOverDialog" to="." method="_on_GameOverDialog_new_game"]

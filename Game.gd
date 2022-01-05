@@ -322,10 +322,17 @@ func _on_piece_moved(_piece, _move):
 	save_game()
 
 
+func _on_GameOverDialog_new_game():
+	# Called when user presses the "new game" button in the game over dialog.
+	new_game()
+
+
 func new_game_test():
 	load_game("user://match.pgn")
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	new_game_test()
-#	new_game()
+#	new_game_test()
+	new_game()
+
+
