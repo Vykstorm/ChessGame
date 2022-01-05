@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://GameRules.gd" type="Script" id=1]
 [ext_resource path="res://Algebra.gd" type="Script" id=2]
@@ -14,6 +14,7 @@
 [ext_resource path="res://Fonts/LibreBaskerville-Regular.ttf" type="DynamicFontData" id=12]
 [ext_resource path="res://Fonts/AdvantageMarkerFont.tres" type="DynamicFont" id=13]
 [ext_resource path="res://Fonts/BoardCellMarkerFont.tres" type="DynamicFont" id=14]
+[ext_resource path="res://Fonts/LibreBaskerville-Italic.ttf" type="DynamicFontData" id=15]
 
 [sub_resource type="TileSet" id=1]
 0/name = "pieces.png 0"
@@ -102,11 +103,16 @@
 5/z_index = 0
 
 [sub_resource type="DynamicFont" id=2]
-size = 15
+size = 17
+use_filter = true
+font_data = ExtResource( 15 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 17
 use_filter = true
 font_data = ExtResource( 12 )
 
-[sub_resource type="TileSet" id=3]
+[sub_resource type="TileSet" id=4]
 0/name = "board.png 0"
 0/texture = ExtResource( 7 )
 0/tex_offset = Vector2( 0, 0 )
@@ -129,6 +135,9 @@ __meta__ = {
 "_edit_lock_": true
 }
 max_display_moves = 30
+algebra_last_move_color = Color( 0, 0.811765, 0.741176, 1 )
+algebra_check_color = Color( 1, 0.65098, 0, 1 )
+algebra_checkmate_color = Color( 1, 0.1, 0.715, 1 )
 
 [node name="GameRules" type="Node" parent="."]
 script = ExtResource( 1 )
@@ -704,14 +713,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Moves" type="Label" parent="Decoratives"]
+[node name="Moves" type="RichTextLabel" parent="Decoratives"]
 margin_top = 516.0
 margin_right = 432.0
 margin_bottom = 684.0
-custom_fonts/font = SubResource( 2 )
-text = "1.d4 Nf6 2.c4 g6 3.Nc3 d5 4.cxd5 Nxd5 5.e4 Nxc3 6.bxc3 Bg7 7.Bc4 c5 8.Ne2 O-O 9.h4 cxd4 10.cxd4 Nc6 11.Be3 Qa5+ 12.Kf1 b5 13.Bb3 Bb7 14.h5 Rfd8 15.Rc1 e6 16.hxg6 hxg6 17.Bh6 Bxh6 18.Rxh6 Kg7 19.Rh3 Qb4 20.Rxc6 Bxc6 21.Qc1 Rh8 22.Qxc6 a5 23.Bxe6 Ra6 24.Qxa6 Qb1+ 25.Nc1 Qxc1+ 26.Ke2 Qc2+ 27.Kf3 Qd3+ 28.Kf4 Qxd4 29.Rxh8 Qxf2+ 30.Ke5 Qg3+ 31.Kd5 Qd3+ 32.Kc5 Qc3+ 33.Kxb5 fxe6 34.Qc8 Qd3+ 35.Kxa5 Qa3+ 36.Kb6 Qb2+ 37.Kc6 Qc3+ 38.Kd7 Qd4+ 39.Ke8 Qf6 40.Rh3 Qf7+ 41.Kd8 Qf6+ 42.Kd7 Qd4+ 43.Ke8"
-autowrap = true
-clip_text = true
+custom_fonts/italics_font = SubResource( 2 )
+custom_fonts/normal_font = SubResource( 3 )
+bbcode_enabled = true
+bbcode_text = "1.d4 Nf6 2.c4 g6 3.Nc3 d5 4.cxd5 Nxd5 5.e4 Nxc3 6.bxc3 Bg7 7.Bc4 c5 8.Ne2 O-O 9.h4 cxd4 10.cxd4 Nc6 11.Be3 Qa5+ 12.Kf1 b5 13.Bb3 Bb7 14.h5 Rfd8 15.Rc1 e6 16.hxg6 hxg6 17.Bh6 Bxh6 18.Rxh6 Kg7 19.Rh3 Qb4 20.Rxc6 Bxc6 21.Qc1 Rh8 22.Qxc6 a5 23.Bxe6 Ra6 24.Qxa6 Qb1+ 25.Nc1 Qxc1+ 26.Ke2 Qc2+ 27.Kf3 Qd3+ 28.Kf4 Qxd4 29.Rxh8 [color=#4ab3ff]Qxf2+[/color]"
+text = "1.d4 Nf6 2.c4 g6 3.Nc3 d5 4.cxd5 Nxd5 5.e4 Nxc3 6.bxc3 Bg7 7.Bc4 c5 8.Ne2 O-O 9.h4 cxd4 10.cxd4 Nc6 11.Be3 Qa5+ 12.Kf1 b5 13.Bb3 Bb7 14.h5 Rfd8 15.Rc1 e6 16.hxg6 hxg6 17.Bh6 Bxh6 18.Rxh6 Kg7 19.Rh3 Qb4 20.Rxc6 Bxc6 21.Qc1 Rh8 22.Qxc6 a5 23.Bxe6 Ra6 24.Qxa6 Qb1+ 25.Nc1 Qxc1+ 26.Ke2 Qc2+ 27.Kf3 Qd3+ 28.Kf4 Qxd4 29.Rxh8 Qxf2+"
+scroll_active = false
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -731,7 +742,7 @@ __meta__ = {
 cell_custom_transform = Transform2D( 60, 0, 0, 60, 0, 0 )
 
 [node name="HighlightedCells" type="TileMap" parent="Board"]
-tile_set = SubResource( 3 )
+tile_set = SubResource( 4 )
 cell_size = Vector2( 60, 60 )
 format = 1
 

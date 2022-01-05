@@ -6,7 +6,11 @@ extends Node
 #	return "26/12/2021 13:27"
 
 
-func format_algebra(algebra: Array, first_round=null, last_round=null) -> String:
+func set_bbcode_color(text: String, color: Color) -> String:
+	return "[color=#" + color.to_html(false) + "]" + text + "[/color]"
+
+
+func format_algebra(algebra: Array, first_round=null, last_round=null, add_bbcode=false, colors=null) -> String:
 	# [ "e4", "e5", "Nf3", "Nc6" ] -> "1.e4 e5 2.Nf3 Nc6"
 	# first_round=1, [ "e4", "e5", "Nf3", "Nc6"  ] -> "... 2.Nf3 Nc6"
 	# last_round=1, [ "e4", "e5", "Nf3", "Nc6"  ] -> "1.e4 e5 ..."
@@ -19,13 +23,23 @@ func format_algebra(algebra: Array, first_round=null, last_round=null) -> String
 	assert(last_round ==null or (last_round < num_rounds and last_round >= 0))
 	assert(first_round == null or (first_round < num_rounds and first_round >= 0))
 	
+	if colors == null:
+		colors = {}
+	if colors.get("last_move") == null:
+		colors["last_move"] = Color.aqua
+	if colors.get("check") == null:
+		colors["check"] = Color.yellow
+	if colors.get("checkmate" ) == null:
+		colors["checkmate"] = Color.red
+	
+
 	if first_round == null:
 		first_round = 0
 	if last_round == null:
 		last_round = num_rounds-1
 	
 	var moves = ""
-	
+
 	if first_round > 0:
 		moves += "... "
 	
@@ -33,12 +47,46 @@ func format_algebra(algebra: Array, first_round=null, last_round=null) -> String
 	while k <= last_round:
 		var white_move_index = k*2
 		var black_move_index = white_move_index+1
-		if k != 1:
+		if k > first_round:
 			moves += " "
 			
-		moves += String(k+1)+ "." + algebra[white_move_index]
+		moves += String(k+1)+ "."
+		
+		# Add white move
+		var move = algebra[white_move_index]
+		if add_bbcode:
+			# Add color to the notation if it's the last move.
+			var color
+			if white_move_index == len(algebra)-1:
+				if "+" in move:
+					color = colors["check"]
+				elif "#" in move:
+					color = colors["checkmate"]
+				else:
+					color = colors["last_move"]
+			else:
+				color = Color.white
+			move = set_bbcode_color(move, color)
+		moves += move
+		
+		# Add black move
 		if black_move_index < len(algebra):
-			moves += " " + algebra[black_move_index]
+			moves += " "
+			# Add color to the notation if it's the last move.
+			move = algebra[black_move_index]
+			if add_bbcode:
+				var color
+				if black_move_index == len(algebra)-1:
+					if "+" in move:
+						color = colors["check"]
+					elif "#" in move:
+						color = colors["checkmate"]
+					else:
+						color = colors["last_move"]
+				else:
+					color = Color.white
+				move = set_bbcode_color(move, color)
+			moves += move
 		k += 1
 	
 	if last_round < num_rounds-1:

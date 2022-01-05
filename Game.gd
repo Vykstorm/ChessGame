@@ -1,6 +1,9 @@
 extends Node2D
 
 export (int) var max_display_moves = 20
+export (Color) var algebra_last_move_color = Color.blue
+export (Color) var algebra_check_color = Color.orange
+export (Color) var algebra_checkmate_color = Color.red
 
 
 signal piece_selected
@@ -131,9 +134,14 @@ func update_moves_display(algebra_moves: Array):
 		var first_move = int(max(0, last_move-max_display_moves+1))
 		var first_round = first_move/2
 		var last_round = last_move/2
-		text = Pgn.format_algebra(algebra_moves, first_round, last_round)
+		var colors = {
+			"last_move": algebra_last_move_color,
+			"check": algebra_check_color,
+			"checkmate": algebra_checkmate_color
+		}
+		text = Pgn.format_algebra(algebra_moves, first_round, last_round, true, colors)
 	
-	moves_display.text = text
+	moves_display.bbcode_text = text
 
 
 func _on_piece_clicked(piece):
