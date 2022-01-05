@@ -5,7 +5,7 @@ signal cell_clicked
 # Signal emitted when a piece is clicked.
 signal piece_clicked
 
-onready var pieces = $Pieces
+onready var pieces = get_node("../Pieces")
 onready var Piece = preload("res://Piece.tscn")
 onready var game = preload("res://GameRules.gd")
 onready var highlighted_cells = $HighlightedCells

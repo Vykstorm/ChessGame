@@ -25,6 +25,8 @@ onready var quality_advantage = $Decoratives/QualityAdvantage
 onready var gameover_dialog = $GameOverDialog
 onready var Pgn = $Pgn
 onready var moves_display = $Decoratives/Moves
+onready var animation_player = $AnimationPlayer
+onready var fade_rect = $FadeRect
 
 # Current piece being dragged by user
 var current_piece_selected = null
@@ -325,6 +327,15 @@ func _on_piece_moved(_piece, _move):
 func _on_GameOverDialog_new_game():
 	# Called when user presses the "new game" button in the game over dialog.
 	new_game()
+	
+
+func _on_GameOverDialog_go_to_menu():
+	# Called when user presses "go to menu" button in the game over dialog.
+	animation_player.play("FadeOut")
+
+func _on_AnimationPlayer_animation_finished(anim_name):
+	if anim_name == "FadeOut":
+		get_tree().change_scene_to(load("res://Menu.tscn"))
 
 
 func new_game_test():
@@ -332,7 +343,14 @@ func new_game_test():
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	fade_rect.visible = true
 #	new_game_test()
 	new_game()
+	animation_player.play("FadeIn")
+	
+
+
+
+
 
 

@@ -8,7 +8,7 @@ var _board_position = null
 var _display_color = "normal"
 var is_promotion = false
 
-onready var board = get_node("../../")
+onready var board = get_node("../../Board")
 
 func set_board_position(pos):
 	_board_position = Vector2(pos.x-1,8-pos.y)
@@ -18,7 +18,7 @@ func get_board_position():
 	return board_position
 
 func update_position():
-	position = board.map_to_world(_board_position) * board.scale + board.to_global(board.position)
+	position = board.map_to_world(_board_position) * board.scale
 
 func update_picture():
 	var piece_kinds = [ "queen", "king", "rook", "knight", "bishop", "pawn" ]

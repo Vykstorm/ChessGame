@@ -1,7 +1,6 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Images/menu.png" type="Texture" id=1]
-[ext_resource path="res://Images/background.png" type="Texture" id=2]
 [ext_resource path="res://Menu.gd" type="Script" id=3]
 [ext_resource path="res://Fonts/MenuFont.tres" type="DynamicFont" id=4]
 
@@ -15,22 +14,42 @@
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
+[sub_resource type="Animation" id=7]
+resource_name = "FadeIn"
+tracks/0/type = "value"
+tracks/0/path = NodePath("FadeRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.8 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 1 ), Color( 0, 0, 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "FadeOut"
+tracks/0/type = "value"
+tracks/0/path = NodePath("FadeRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 1 ) ]
+}
+
 [node name="Menu" type="Control"]
 margin_right = 480.0
 margin_bottom = 720.0
 script = ExtResource( 3 )
 __meta__ = {
 "_edit_lock_": true,
-"_edit_use_anchors_": false
-}
-
-[node name="Background" type="TextureRect" parent="."]
-visible = false
-modulate = Color( 0.235294, 0.235294, 0.235294, 1 )
-margin_right = 480.0
-margin_bottom = 720.0
-texture = ExtResource( 2 )
-__meta__ = {
 "_edit_use_anchors_": false
 }
 
@@ -118,5 +137,22 @@ text = "Exit"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="FadeRect" type="ColorRect" parent="."]
+visible = false
+modulate = Color( 0.235294, 0.235294, 0.235294, 1 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_bottom = 80.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/FadeIn = SubResource( 7 )
+anims/FadeOut = SubResource( 6 )
 [connection signal="button_down" from="Layout/Options/NewGame" to="." method="_on_NewGame_button_down"]
 [connection signal="button_down" from="Layout/Options/Exit" to="." method="_on_Exit_button_down"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

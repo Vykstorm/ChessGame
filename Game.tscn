@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=22 format=2]
 
 [ext_resource path="res://GameRules.gd" type="Script" id=1]
 [ext_resource path="res://Algebra.gd" type="Script" id=2]
@@ -102,7 +102,7 @@
 5/shapes = [  ]
 5/z_index = 0
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=5]
 size = 17
 use_filter = true
 font_data = ExtResource( 15 )
@@ -127,6 +127,36 @@ font_data = ExtResource( 12 )
 0/shape_one_way_margin = 0.0
 0/shapes = [  ]
 0/z_index = 0
+
+[sub_resource type="Animation" id=6]
+resource_name = "FadeIn"
+tracks/0/type = "value"
+tracks/0/path = NodePath("FadeRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.6 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 1 ), Color( 0, 0, 0, 0 ) ]
+}
+
+[sub_resource type="Animation" id=7]
+resource_name = "FadeOut"
+tracks/0/type = "value"
+tracks/0/path = NodePath("FadeRect:color")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.6 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 0, 0, 0, 0 ), Color( 0, 0, 0, 1 ) ]
+}
 
 [node name="Game" type="Node2D"]
 position = Vector2( 24, 100 )
@@ -717,7 +747,7 @@ __meta__ = {
 margin_top = 516.0
 margin_right = 432.0
 margin_bottom = 684.0
-custom_fonts/italics_font = SubResource( 2 )
+custom_fonts/italics_font = SubResource( 5 )
 custom_fonts/normal_font = SubResource( 3 )
 bbcode_enabled = true
 bbcode_text = "1.d4 Nf6 2.c4 g6 3.Nc3 d5 4.cxd5 Nxd5 5.e4 Nxc3 6.bxc3 Bg7 7.Bc4 c5 8.Ne2 O-O 9.h4 cxd4 10.cxd4 Nc6 11.Be3 Qa5+ 12.Kf1 b5 13.Bb3 Bb7 14.h5 Rfd8 15.Rc1 e6 16.hxg6 hxg6 17.Bh6 Bxh6 18.Rxh6 Kg7 19.Rh3 Qb4 20.Rxc6 Bxc6 21.Qc1 Rh8 22.Qxc6 a5 23.Bxe6 Ra6 24.Qxa6 Qb1+ 25.Nc1 Qxc1+ 26.Ke2 Qc2+ 27.Kf3 Qd3+ 28.Kf4 Qxd4 29.Rxh8 [color=#4ab3ff]Qxf2+[/color]"
@@ -746,6 +776,8 @@ tile_set = SubResource( 4 )
 cell_size = Vector2( 60, 60 )
 format = 1
 
+[node name="Pieces" type="Node2D" parent="."]
+
 [node name="PromotionDialog" parent="." instance=ExtResource( 9 )]
 margin_left = 145.0
 margin_top = 300.0
@@ -753,6 +785,23 @@ margin_right = 335.0
 margin_bottom = 420.0
 
 [node name="GameOverDialog" parent="." instance=ExtResource( 10 )]
+
+[node name="FadeRect" type="ColorRect" parent="."]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -24.0
+margin_top = -100.0
+margin_right = 456.0
+margin_bottom = 700.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/FadeIn = SubResource( 6 )
+anims/FadeOut = SubResource( 7 )
 [connection signal="check" from="." to="." method="_on_check"]
 [connection signal="checkmate" from="." to="." method="_on_checkmate"]
 [connection signal="piece_deselected" from="." to="." method="_on_piece_deselected"]
@@ -764,4 +813,6 @@ margin_bottom = 420.0
 [connection signal="cell_clicked" from="Board" to="." method="_on_board_cell_clicked"]
 [connection signal="piece_clicked" from="Board" to="." method="_on_piece_clicked"]
 [connection signal="piece_selected" from="PromotionDialog" to="." method="_on_PromotionDialog_piece_selected"]
+[connection signal="go_to_menu" from="GameOverDialog" to="." method="_on_GameOverDialog_go_to_menu"]
 [connection signal="new_game" from="GameOverDialog" to="." method="_on_GameOverDialog_new_game"]
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

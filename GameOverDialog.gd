@@ -1,6 +1,7 @@
 extends WindowDialog
 
 signal new_game
+signal go_to_menu
 
 
 func _on_NewGameButton_pressed():
@@ -12,6 +13,6 @@ func _on_NewGameButton_pressed():
 func _on_GoToMenuButton_pressed():
 	hide()
 	# Go back to the menu
-	get_tree().change_scene_to(load("res://Menu.tscn"))
+	emit_signal("go_to_menu")
 
 
