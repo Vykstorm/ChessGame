@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://GameRules.gd" type="Script" id=1]
 [ext_resource path="res://Algebra.gd" type="Script" id=2]
@@ -16,7 +16,6 @@
 [ext_resource path="res://Fonts/BoardCellMarkerFont.tres" type="DynamicFont" id=14]
 [ext_resource path="res://Fonts/LibreBaskerville-Italic.ttf" type="DynamicFontData" id=15]
 [ext_resource path="res://Sounds.tscn" type="PackedScene" id=16]
-[ext_resource path="res://Sounds.gd" type="Script" id=17]
 
 [sub_resource type="TileSet" id=1]
 0/name = "pieces.png 0"
@@ -760,6 +759,7 @@ __meta__ = {
 }
 
 [node name="Restart" type="ToolButton" parent="."]
+visible = false
 margin_top = -100.0
 margin_right = 57.0
 margin_bottom = -78.0
@@ -806,7 +806,6 @@ anims/FadeIn = SubResource( 5 )
 anims/FadeOut = SubResource( 6 )
 
 [node name="Sounds" parent="." instance=ExtResource( 16 )]
-script = ExtResource( 17 )
 [connection signal="check" from="." to="." method="_on_check"]
 [connection signal="checkmate" from="." to="." method="_on_checkmate"]
 [connection signal="piece_deselected" from="." to="." method="_on_piece_deselected"]

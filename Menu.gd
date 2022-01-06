@@ -1,6 +1,7 @@
 extends Control
 
 onready var player = $AnimationPlayer
+onready var sound_player = $Sounds
 
 
 func create_new_game():
@@ -28,3 +29,9 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 		# When fade out animation finished...
 		# Create new game
 		create_new_game()
+
+
+func _on_button_down():
+	sound_player.play("Move")
+
+
