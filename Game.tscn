@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://GameRules.gd" type="Script" id=1]
 [ext_resource path="res://Algebra.gd" type="Script" id=2]
@@ -15,6 +15,8 @@
 [ext_resource path="res://Fonts/AdvantageMarkerFont.tres" type="DynamicFont" id=13]
 [ext_resource path="res://Fonts/BoardCellMarkerFont.tres" type="DynamicFont" id=14]
 [ext_resource path="res://Fonts/LibreBaskerville-Italic.ttf" type="DynamicFontData" id=15]
+[ext_resource path="res://Sounds.tscn" type="PackedScene" id=16]
+[ext_resource path="res://Sounds.gd" type="Script" id=17]
 
 [sub_resource type="TileSet" id=1]
 0/name = "pieces.png 0"
@@ -102,7 +104,7 @@
 5/shapes = [  ]
 5/z_index = 0
 
-[sub_resource type="DynamicFont" id=5]
+[sub_resource type="DynamicFont" id=2]
 size = 17
 use_filter = true
 font_data = ExtResource( 15 )
@@ -128,7 +130,7 @@ font_data = ExtResource( 12 )
 0/shapes = [  ]
 0/z_index = 0
 
-[sub_resource type="Animation" id=6]
+[sub_resource type="Animation" id=5]
 resource_name = "FadeIn"
 tracks/0/type = "value"
 tracks/0/path = NodePath("FadeRect:color")
@@ -143,7 +145,7 @@ tracks/0/keys = {
 "values": [ Color( 0, 0, 0, 1 ), Color( 0, 0, 0, 0 ) ]
 }
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=6]
 resource_name = "FadeOut"
 tracks/0/type = "value"
 tracks/0/path = NodePath("FadeRect:color")
@@ -747,7 +749,7 @@ __meta__ = {
 margin_top = 516.0
 margin_right = 432.0
 margin_bottom = 684.0
-custom_fonts/italics_font = SubResource( 5 )
+custom_fonts/italics_font = SubResource( 2 )
 custom_fonts/normal_font = SubResource( 3 )
 bbcode_enabled = true
 bbcode_text = "1.d4 Nf6 2.c4 g6 3.Nc3 d5 4.cxd5 Nxd5 5.e4 Nxc3 6.bxc3 Bg7 7.Bc4 c5 8.Ne2 O-O 9.h4 cxd4 10.cxd4 Nc6 11.Be3 Qa5+ 12.Kf1 b5 13.Bb3 Bb7 14.h5 Rfd8 15.Rc1 e6 16.hxg6 hxg6 17.Bh6 Bxh6 18.Rxh6 Kg7 19.Rh3 Qb4 20.Rxc6 Bxc6 21.Qc1 Rh8 22.Qxc6 a5 23.Bxe6 Ra6 24.Qxa6 Qb1+ 25.Nc1 Qxc1+ 26.Ke2 Qc2+ 27.Kf3 Qd3+ 28.Kf4 Qxd4 29.Rxh8 [color=#4ab3ff]Qxf2+[/color]"
@@ -800,8 +802,11 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/FadeIn = SubResource( 6 )
-anims/FadeOut = SubResource( 7 )
+anims/FadeIn = SubResource( 5 )
+anims/FadeOut = SubResource( 6 )
+
+[node name="Sounds" parent="." instance=ExtResource( 16 )]
+script = ExtResource( 17 )
 [connection signal="check" from="." to="." method="_on_check"]
 [connection signal="checkmate" from="." to="." method="_on_checkmate"]
 [connection signal="piece_deselected" from="." to="." method="_on_piece_deselected"]

@@ -27,6 +27,7 @@ onready var Pgn = $Pgn
 onready var moves_display = $Decoratives/Moves
 onready var animation_player = $AnimationPlayer
 onready var fade_rect = $FadeRect
+onready var sound_player = $Sounds
 
 # Current piece being dragged by user
 var current_piece_selected = null
@@ -64,25 +65,22 @@ func evaluate_board_state():
 	# "checkmate" if king of the opposite color is in a checkmate situation
 	# "check" if king of the oppositve color is in not in checkmate but in check.
 	# "stalemate" returned when king is in a stalemate situation.
-	# Otherwise, return true.
+	# Otherwise, return null
 	var pieces = board.get_pieces()
 	if game.is_check(pieces, game.get_opposite_color(current_turn)):
 		# Opposite king in check
 		
 		# Check mate?
 		if game.is_check_mate(pieces, moves, game.get_opposite_color(current_turn)):
-			emit_signal("checkmate", current_turn)
 			return "checkmate"
 		else:
-			emit_signal("check", current_turn)
 			return "check"
 	else:
 		# Opposite not in check
 		# Stale mate?
 		if game.is_stale_mate(pieces, moves, game.get_opposite_color(current_turn)):
-			emit_signal("stalemate", current_turn)
 			return "stalemate"
-	return true
+	return null
 	
 
 
@@ -92,23 +90,34 @@ func do_move(move):
 	moves.append(move)
 	
 	# If move is a promotion, ask the player the kind of piece to replace the pawn
+	var is_capture: bool = board.get_piece_in_cell(move.to) != null
 	if move is game.PromotionMove:
 		promotion_dialog.show_popup(current_turn)
 	
 	board.do_move(move)
-	emit_signal("piece_moved", current_piece_selected, move.to)
 	
-	# Query check/ check mate
-	if not (move is game.PromotionMove):
+	if move is game.PromotionMove:
+		# If a pawn is promoted, wait for the user to select the promotion piece.
+		pass
+	else:
+		
 		var board_state = evaluate_board_state()
+		emit_signal("piece_moved", current_piece_selected, move.to, is_capture, board_state)
+		if board_state != null:
+			if board_state == "check":
+				emit_signal("check", current_turn)
+			elif board_state == "checkmate":
+				emit_signal("checkmate", current_turn)
+			elif board_state == "stalemate":
+				emit_signal("stalemate", current_turn)
+		
+		# Query check/ stale mate
 		if board_state in ["checkmate", "stalemate"]:
 			return
-	
-	# If a pawn is promoted, wait for the user to select the promotion piece.
-	# Otherwise, next turn.
-	if not (move is game.PromotionMove):
 		# Change turn
 		next_turn()
+	
+	
 
 
 func update_trophies():
@@ -144,6 +153,10 @@ func update_moves_display(algebra_moves: Array):
 		text = Pgn.format_algebra(algebra_moves, first_round, last_round, true, colors)
 	
 	moves_display.bbcode_text = text
+
+
+
+
 
 
 func _on_piece_clicked(piece):
@@ -315,12 +328,21 @@ func _on_PromotionDialog_piece_selected(kind):
 	
 
 
-func _on_piece_moved(_piece, _move):
+func _on_piece_moved(_piece, _move, is_capture, board_state):
 	# Update trophies
 	update_trophies()
 	# Update quality advantages displays
 	update_quality_advantage()
+	# Play "move" sound
+	if board_state != null:
+		if board_state == "check":
+			sound_player.play("Capture")
+		elif board_state == "checkmate":
+			sound_player.play("GameOver")
+	else:
+		sound_player.play("Move" if not is_capture else "Capture")
 	
+	# Save game
 	save_game()
 
 

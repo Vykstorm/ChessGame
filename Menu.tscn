@@ -14,7 +14,7 @@
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
-[sub_resource type="Animation" id=7]
+[sub_resource type="Animation" id=6]
 resource_name = "FadeIn"
 tracks/0/type = "value"
 tracks/0/path = NodePath("FadeRect:color")
@@ -29,8 +29,7 @@ tracks/0/keys = {
 "values": [ Color( 0, 0, 0, 1 ), Color( 0, 0, 0, 0 ) ]
 }
 
-[sub_resource type="Animation" id=6]
-resource_name = "FadeOut"
+[sub_resource type="Animation" id=7]
 tracks/0/type = "value"
 tracks/0/path = NodePath("FadeRect:color")
 tracks/0/interp = 1
@@ -151,8 +150,8 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/FadeIn = SubResource( 7 )
-anims/FadeOut = SubResource( 6 )
+anims/FadeIn = SubResource( 6 )
+anims/FadeOut = SubResource( 7 )
 [connection signal="button_down" from="Layout/Options/NewGame" to="." method="_on_NewGame_button_down"]
 [connection signal="button_down" from="Layout/Options/Exit" to="." method="_on_Exit_button_down"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
