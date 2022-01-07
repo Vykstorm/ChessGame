@@ -556,6 +556,7 @@ func en_passant_move_on(table, prev_moves, pos, color):
 func get_valid_pawn_moves(table: Table, prev_moves, piece) -> Array:
 	# Get valid moves for a pawn
 	var pos = piece.board_position
+	
 	var moves = []
 	var diag_moves = []
 	if piece.color == "white":

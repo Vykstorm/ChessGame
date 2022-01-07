@@ -155,9 +155,9 @@ anims/FadeIn = SubResource( 6 )
 anims/FadeOut = SubResource( 7 )
 
 [node name="Sounds" parent="." instance=ExtResource( 2 )]
-[connection signal="button_down" from="Layout/Options/NewGame" to="." method="_on_button_down"]
 [connection signal="button_down" from="Layout/Options/NewGame" to="." method="_on_NewGame_button_down"]
+[connection signal="button_down" from="Layout/Options/NewGame" to="." method="_on_button_down"]
 [connection signal="button_down" from="Layout/Options/LoadGame" to="." method="_on_button_down"]
-[connection signal="button_down" from="Layout/Options/Exit" to="." method="_on_button_down"]
 [connection signal="button_down" from="Layout/Options/Exit" to="." method="_on_Exit_button_down"]
+[connection signal="button_down" from="Layout/Options/Exit" to="." method="_on_button_down"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]

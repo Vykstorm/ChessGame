@@ -89,18 +89,17 @@ func do_move(move):
 	# Move piece
 	moves.append(move)
 	
-	# If move is a promotion, ask the player the kind of piece to replace the pawn
 	var is_capture: bool = board.get_piece_in_cell(move.to) != null
-	if move is game.PromotionMove:
-		promotion_dialog.show_popup(current_turn)
 	
+	# Move the piece.
 	board.do_move(move)
 	
+	# If move is a promotion, ask the player the kind of piece to replace the pawn
+	# Then wait for the user to select the promotion piece.
 	if move is game.PromotionMove:
-		# If a pawn is promoted, wait for the user to select the promotion piece.
-		pass
+		promotion_dialog.show_popup(current_turn)
 	else:
-		
+		# Otherwise its a normal move, evaluate the game's current state and change player's turn.
 		var board_state = evaluate_board_state()
 		emit_signal("piece_moved", current_piece_selected, move.to, is_capture, board_state)
 		if board_state != null:
@@ -164,6 +163,10 @@ func _on_piece_clicked(piece):
 	
 	if piece.is_queued_for_deletion():
 		# Death pieces are no longer clickable.
+		return
+		
+	# Don't select anything if promotion dialog is popped up?
+	if promotion_dialog.visible or gameover_dialog.visible:
 		return
 	
 	# Any piece selected currently?
