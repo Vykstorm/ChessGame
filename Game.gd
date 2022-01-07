@@ -304,6 +304,7 @@ func _on_check(_color):
 
 func _on_promoted(kind):
 	print("Promoted to ", kind)
+	sound_player.play("Move")
 	update_quality_advantage()
 	save_game()
 
