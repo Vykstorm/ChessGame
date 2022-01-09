@@ -64,3 +64,5 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="board_clicked" from="Game" to="." method="_on_Game_board_clicked"]
+[connection signal="pressed" from="PrevGame" to="." method="_on_PrevGame_pressed"]
+[connection signal="pressed" from="NextGame" to="." method="_on_NextGame_pressed"]
