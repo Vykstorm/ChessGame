@@ -295,6 +295,11 @@ func do_moves(moves: Array):
 
 
 
+func go_to_menu():
+	# Loads the main menu
+	queue_free()
+	get_tree().change_scene_to(load("res://Menu.tscn"))
+
 
 func _on_checkmate(color):
 	$GameOverDialog/VBoxContainer/Message.text = color + " wins!"
@@ -366,7 +371,7 @@ func _on_GameOverDialog_go_to_menu():
 
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "FadeOut":
-		get_tree().change_scene_to(load("res://Menu.tscn"))
+		go_to_menu()
 
 
 
