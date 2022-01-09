@@ -4,6 +4,9 @@ export (int) var max_display_moves = 20
 export (Color) var algebra_last_move_color = Color.blue
 export (Color) var algebra_check_color = Color.orange
 export (Color) var algebra_checkmate_color = Color.red
+# Match file to be loaded when this node enters the tree.
+var match_file_to_load = "user://match.pgn"
+var enable_fade_animations: bool
 
 
 signal piece_selected
@@ -13,6 +16,7 @@ signal checkmate
 signal check
 signal piece_moved
 signal promoted
+signal board_clicked
 
 onready var board = $Board
 onready var game = $GameRules
@@ -212,6 +216,7 @@ func _on_piece_deselected(piece):
 
 func _on_board_cell_clicked(selected_cell):
 	# Called when user clicks a cell
+	emit_signal("board_clicked")
 
 	# Is any piece selected?
 	if current_piece_selected == null:
@@ -364,15 +369,17 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 		get_tree().change_scene_to(load("res://Menu.tscn"))
 
 
-func new_game_test():
-	load_game("user://match.pgn")
-	
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	fade_rect.visible = true
-#	new_game_test()
-	new_game()
-	animation_player.play("FadeIn")
+	if enable_fade_animations:
+		fade_rect.visible = true
+		animation_player.play("FadeIn")
+	if match_file_to_load:
+		load_game(match_file_to_load)
+	else:
+		new_game()
+	
 	
 
 

@@ -53,6 +53,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Background" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_right = 3.05176e-05
+margin_bottom = 80.0001
+color = Color( 0.301961, 0.301961, 0.301961, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Image" type="TextureRect" parent="."]
 modulate = Color( 1, 1, 1, 0.92549 )
 margin_top = 272.0
@@ -157,6 +167,7 @@ anims/FadeOut = SubResource( 7 )
 [node name="Sounds" parent="." instance=ExtResource( 2 )]
 [connection signal="button_down" from="Layout/Options/NewGame" to="." method="_on_NewGame_button_down"]
 [connection signal="button_down" from="Layout/Options/NewGame" to="." method="_on_button_down"]
+[connection signal="button_down" from="Layout/Options/LoadGame" to="." method="_on_LoadGame_button_down"]
 [connection signal="button_down" from="Layout/Options/LoadGame" to="." method="_on_button_down"]
 [connection signal="button_down" from="Layout/Options/Exit" to="." method="_on_Exit_button_down"]
 [connection signal="button_down" from="Layout/Options/Exit" to="." method="_on_button_down"]

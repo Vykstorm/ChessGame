@@ -3,16 +3,29 @@ extends Control
 onready var player = $AnimationPlayer
 onready var sound_player = $Sounds
 
+onready var tree: SceneTree = get_tree()
+onready var root: Node = tree.get_root()
 
 func create_new_game():
 	# Create a new game (change to main scene)
-	get_tree().change_scene_to(preload("res://Game.tscn"))
+	var gameScene = load("res://Game.tscn")
+	var gameInstance = gameScene.instance()
+	gameInstance.match_file_to_load = null
+	gameInstance.enable_fade_animations = true
+	root.remove_child(self)
+	root.add_child(gameInstance)
+	queue_free()
+
+func open_load_game_screen():
+	get_tree().change_scene_to(load("res://LoadGame.tscn"))
 	
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$FadeRect.visible = true
+	$FadeRect.color = Color.black
 	player.play("FadeIn")
+
 
 func _on_NewGame_button_down():
 	# Create new game
@@ -29,9 +42,17 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 		# When fade out animation finished...
 		# Create new game
 		create_new_game()
+	elif anim_name == "FadeIn":
+		pass
+
+
+func _on_LoadGame_button_down():
+	open_load_game_screen()
 
 
 func _on_button_down():
 	sound_player.play("Move")
+
+
 
 
