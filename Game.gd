@@ -6,7 +6,7 @@ export (Color) var algebra_check_color = Color.orange
 export (Color) var algebra_checkmate_color = Color.red
 # Match file to be loaded when this node enters the tree.
 var match_file_to_load = "user://match.pgn"
-var enable_fade_animations: bool
+var enable_fadein_animation: bool
 
 
 signal piece_selected
@@ -367,6 +367,8 @@ func _on_GameOverDialog_new_game():
 
 func _on_GameOverDialog_go_to_menu():
 	# Called when user presses "go to menu" button in the game over dialog.
+	fade_rect.visible = true
+	fade_rect.color = Color(1, 1, 1, 1)
 	animation_player.play("FadeOut")
 
 func _on_AnimationPlayer_animation_finished(anim_name):
@@ -377,7 +379,7 @@ func _on_AnimationPlayer_animation_finished(anim_name):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if enable_fade_animations:
+	if enable_fadein_animation:
 		fade_rect.visible = true
 		animation_player.play("FadeIn")
 	if match_file_to_load:

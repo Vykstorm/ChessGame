@@ -11,7 +11,7 @@ func create_new_game():
 	var gameScene = load("res://Game.tscn")
 	var gameInstance = gameScene.instance()
 	gameInstance.match_file_to_load = null
-	gameInstance.enable_fade_animations = true
+	gameInstance.enable_fadein_animation = true
 	root.remove_child(self)
 	root.add_child(gameInstance)
 	queue_free()

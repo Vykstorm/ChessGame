@@ -13,7 +13,7 @@ func play_current_selected_game():
 	
 	root.remove_child(self)
 	gameInstance.match_file_to_load = "user://match.pgn"
-	gameInstance.enable_fade_animations = false
+	gameInstance.enable_fadein_animation = false
 	root.add_child(gameInstance)
 	
 
