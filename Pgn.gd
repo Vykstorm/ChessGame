@@ -169,10 +169,12 @@ func load_algebra_from_pgn_file(file_path: String) -> Dictionary:
 		var value = result.get_string(2)
 		headers[key] = value
 		lines.pop_front()
-	assert(not lines.empty())
-	
-	# Get moves
-	var body = PoolStringArray(lines).join(" ")
-	
-	var moves = get_moves_from_text(body)
+		
+	var moves: Array
+	if lines.empty():
+		moves = []
+	else:
+		# Get moves
+		var body = PoolStringArray(lines).join(" ")
+		moves = get_moves_from_text(body)
 	return { "moves": moves, "headers": headers }

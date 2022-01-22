@@ -24,6 +24,13 @@ config/name="ChessGame"
 run/main_scene="res://Menu.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Pgn="*res://Pgn.gd"
+GameRules="*res://GameRules.gd"
+Algebra="*res://Algebra.gd"
+GameDatabase="*res://GameDatabase.gd"
+
 [display]
 
 window/size/width=480

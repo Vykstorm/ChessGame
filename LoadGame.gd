@@ -1,19 +1,15 @@
 extends Control
 
-
-func get_game_files():
-	# Returns a list of all game files sorted by date (the most recent first)
-	return [ "user://match.pgn", "user://match3.pgn" ]
-
-onready var game_files = get_game_files()
+onready var game_files = GameDatabase.get_games()
 onready var current_game_file_index = 0
 
-func get_current_game_file():
+func get_current_game():
 	return game_files[current_game_file_index]
 
 func update_game_view():
 	# Updates the view of the currently selected game.
-	$Game.load_game(get_current_game_file())
+	$Game.game_id = get_current_game()
+	$Game.load_game()
 	
 func show_next_game():
 	current_game_file_index += 1
@@ -38,7 +34,7 @@ func play_current_selected_game():
 	var gameInstance = gameScene.instance() 
 	
 	# Set game parameters.
-	gameInstance.match_file_to_load = get_current_game_file()
+	gameInstance.game_id = get_current_game()
 	gameInstance.enable_fadein_animation = false
 	
 	# Switch to the game scene.
@@ -50,13 +46,20 @@ func _ready():
 	update_game_view()
 	$PrevGame.disabled = false
 	$NextGame.disabled = false
+	
+func _input(event):
+	if event is InputEventScreenDrag:
+		var v = event.relative.normalized()
+		if v.dot(Vector2(1,0)) > 0:
+			show_next_game()
+		else:
+			show_prev_game()
 
 func _on_Game_board_clicked():
 	play_current_selected_game()
 
 func _on_NextGame_pressed():
 	show_next_game()
-
 
 func _on_PrevGame_pressed():
 	show_prev_game()

@@ -4,8 +4,9 @@ export (int) var max_display_moves = 20
 export (Color) var algebra_last_move_color = Color.blue
 export (Color) var algebra_check_color = Color.orange
 export (Color) var algebra_checkmate_color = Color.red
-# Match file to be loaded when this node enters the tree.
-var match_file_to_load = "user://match.pgn"
+
+
+var game_id = null # ID of this game
 var enable_fadein_animation: bool
 
 
@@ -19,15 +20,13 @@ signal promoted
 signal board_clicked
 
 onready var board = $Board
-onready var game = $GameRules
+onready var game = GameRules
 onready var Piece = preload("res://Piece.tscn")
-onready var Algebra = $Algebra
 onready var promotion_dialog = $PromotionDialog
 onready var white_trophies = $Decoratives/Trophies/White
 onready var black_trophies = $Decoratives/Trophies/Black
 onready var quality_advantage = $Decoratives/QualityAdvantage
 onready var gameover_dialog = $GameOverDialog
-onready var Pgn = $Pgn
 onready var moves_display = $Decoratives/Moves
 onready var animation_player = $AnimationPlayer
 onready var fade_rect = $FadeRect
@@ -267,14 +266,17 @@ func save_game():
 		"White": "Victor",
 		"Black": "AI"
 	}
-	Pgn.export_algebra_to_pgn_file(algebra, "match.pgn", headers)
+
+	Pgn.export_algebra_to_pgn_file(algebra, GameDatabase.get_game_pgn_file(game_id), headers)
 
 
-func load_game(pgn_file: String):
+func load_game():
+	# Load the game from the pgn file provided.
+	
 	# Initialize board
 	new_game()
 	# Load pgn file
-	var pgn = Pgn.load_algebra_from_pgn_file(pgn_file)
+	var pgn = Pgn.load_algebra_from_pgn_file(GameDatabase.get_game_pgn_file(game_id))
 	var headers = pgn["headers"]
 	# Apply moves
 	moves = Algebra.get_moves_from_algebra(pgn["moves"])
@@ -382,11 +384,9 @@ func _ready():
 	if enable_fadein_animation:
 		fade_rect.visible = true
 		animation_player.play("FadeIn")
-	if match_file_to_load:
-		load_game(match_file_to_load)
-	else:
-		new_game()
-	
+	if game_id != null:
+		load_game()
+
 	
 
 
