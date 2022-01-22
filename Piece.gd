@@ -26,6 +26,8 @@ func update_picture():
 	var j = 0 if color == "black" else 1
 	if _display_color == "threat":
 		j += 2
+	elif _display_color == "check":
+		j += 4
 	texture.region.position.x = i * 60
 	texture.region.position.y = j * 60
 #	flip_v = true if color == "black" else false
@@ -39,7 +41,7 @@ func set_color(x):
 	
 func set_display_color(kind):
 	# Set piece display color.
-	# kind can be "normal" or "threat"
+	# kind can be "normal", "threat" or "check" (for king)
 	_display_color = kind
 	
 

@@ -116,6 +116,7 @@ func do_move(move):
 		# Query check/ stale mate
 		if board_state in ["checkmate", "stalemate"]:
 			return
+			
 		# Change turn
 		next_turn()
 	
@@ -311,8 +312,13 @@ func _on_stalemate(_color):
 	$GameOverDialog/VBoxContainer/Message.text = "Draw!"
 	$GameOverDialog.popup()
 
-func _on_check(_color):
-	print("Check!")
+func _on_check(color):
+	# Highlight king which is in check
+	for piece in board.get_pieces():
+		if piece.kind == "king" and piece.color != color:
+			piece.set_display_color("check")
+			piece.update_picture()
+			break
 
 func _on_promoted(kind):
 	print("Promoted to ", kind)
@@ -357,6 +363,13 @@ func _on_piece_moved(_piece, _move, is_capture, board_state):
 			sound_player.play("GameOver")
 	else:
 		sound_player.play("Move" if not is_capture else "Capture")
+	
+	# Reset king display color
+	for piece in board.get_pieces():
+		if piece.kind == "king" and piece.color == current_turn:
+			piece.set_display_color("normal")
+			piece.update_picture()
+			break
 	
 	# Save game
 	save_game()

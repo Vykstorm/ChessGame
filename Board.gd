@@ -28,10 +28,12 @@ func highlight_cells(cells):
 	for cell in cells:
 		hightlight_cell(cell)
 		
-func reset_highlighted_cells():
+func reset_highlighted_cells(dont_reset_king_color=true):
 	# Unhighlight all the cells
 	reset_cell_colors()
 	for piece in get_pieces():
+		if piece.kind == "king" and dont_reset_king_color:
+			continue
 		piece.set_display_color("normal")
 		piece.update_picture()
 	
@@ -76,11 +78,11 @@ func get_pieces():
 	return result
 
 
-
 func clear_pieces():
 	# Removes all the pieces
 	for piece in pieces.get_children():
 		piece.queue_free()
+		
 		
 
 func do_move(move):
@@ -117,6 +119,7 @@ func do_move(move):
 			piece_to_remove.queue_free()
 		piece_to_move.board_position = move.to
 		piece_to_move.update_position()
+	
 	
 	
 func reset():
