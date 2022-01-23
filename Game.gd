@@ -399,6 +399,14 @@ func _on_GoBackToMenuButton_pressed():
 	fade_out_and_go_to_menu()
 
 
+func _on_SurrenderButton_pressed():
+	$SurrenderDialog.popup()
+
+func _on_SurrenderDialog_confirmed():
+	$GameOverDialog/VBoxContainer/Message.text = game.get_opposite_color(current_turn) + " wins!"
+	$GameOverDialog.popup()
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	if enable_fadein_animation:
@@ -406,5 +414,10 @@ func _ready():
 		animation_player.play("FadeIn")
 	if game_id != null:
 		load_game()
+
+
+
+
+
 
 
