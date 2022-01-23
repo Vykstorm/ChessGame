@@ -854,6 +854,7 @@ anims/FadeOut = SubResource( 6 )
 [node name="Sounds" parent="." instance=ExtResource( 16 )]
 [connection signal="check" from="." to="." method="_on_check"]
 [connection signal="checkmate" from="." to="." method="_on_checkmate"]
+[connection signal="gameover" from="." to="." method="_on_Game_gameover"]
 [connection signal="piece_deselected" from="." to="." method="_on_piece_deselected"]
 [connection signal="piece_moved" from="." to="." method="_on_piece_moved"]
 [connection signal="piece_selected" from="." to="." method="_on_piece_selected"]

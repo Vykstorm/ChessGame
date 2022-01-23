@@ -18,6 +18,7 @@ signal check
 signal piece_moved
 signal promoted
 signal board_clicked
+signal gameover
 
 onready var board = $Board
 onready var game = GameRules
@@ -311,10 +312,12 @@ func fade_out_and_go_to_menu():
 
 
 func _on_checkmate(color):
+	emit_signal("gameover")
 	$GameOverDialog/VBoxContainer/Message.text = color + " wins!"
 	$GameOverDialog.popup()
 	
 func _on_stalemate(_color):
+	emit_signal("gameover")
 	$GameOverDialog/VBoxContainer/Message.text = "Draw!"
 	$GameOverDialog.popup()
 
@@ -365,8 +368,6 @@ func _on_piece_moved(_piece, _move, is_capture, board_state):
 	if board_state != null:
 		if board_state == "check":
 			sound_player.play("Capture")
-		elif board_state == "checkmate":
-			sound_player.play("GameOver")
 	else:
 		sound_player.play("Move" if not is_capture else "Capture")
 	
@@ -403,8 +404,12 @@ func _on_SurrenderButton_pressed():
 	$SurrenderDialog.popup()
 
 func _on_SurrenderDialog_confirmed():
+	emit_signal("gameover")
 	$GameOverDialog/VBoxContainer/Message.text = game.get_opposite_color(current_turn) + " wins!"
 	$GameOverDialog.popup()
+
+func _on_Game_gameover():
+	sound_player.play("GameOver")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -414,6 +419,7 @@ func _ready():
 		animation_player.play("FadeIn")
 	if game_id != null:
 		load_game()
+
 
 
 
