@@ -127,13 +127,12 @@ font_data = ExtResource( 12 )
 0/shapes = [  ]
 0/z_index = 0
 
-[sub_resource type="DynamicFont" id=7]
+[sub_resource type="DynamicFont" id=5]
 size = 21
 use_filter = true
 font_data = ExtResource( 1 )
 
-[sub_resource type="Animation" id=5]
-resource_name = "FadeIn"
+[sub_resource type="Animation" id=6]
 tracks/0/type = "value"
 tracks/0/path = NodePath("FadeRect:color")
 tracks/0/interp = 1
@@ -147,8 +146,7 @@ tracks/0/keys = {
 "values": [ Color( 0, 0, 0, 1 ), Color( 0, 0, 0, 0 ) ]
 }
 
-[sub_resource type="Animation" id=6]
-resource_name = "FadeOut"
+[sub_resource type="Animation" id=7]
 tracks/0/type = "value"
 tracks/0/path = NodePath("FadeRect:color")
 tracks/0/interp = 1
@@ -815,7 +813,7 @@ __meta__ = {
 [node name="GoBackToMenuButton" type="ToolButton" parent="GUI"]
 margin_right = 172.0
 margin_bottom = 40.0
-custom_fonts/font = SubResource( 7 )
+custom_fonts/font = SubResource( 5 )
 custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "<- Go back to menu"
 __meta__ = {
@@ -826,7 +824,7 @@ __meta__ = {
 margin_left = 176.0
 margin_right = 269.0
 margin_bottom = 40.0
-custom_fonts/font = SubResource( 7 )
+custom_fonts/font = SubResource( 5 )
 custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "Surrender"
 __meta__ = {
@@ -848,8 +846,8 @@ __meta__ = {
 }
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/FadeIn = SubResource( 5 )
-anims/FadeOut = SubResource( 6 )
+anims/FadeIn = SubResource( 6 )
+anims/FadeOut = SubResource( 7 )
 
 [node name="Sounds" parent="." instance=ExtResource( 16 )]
 [connection signal="check" from="." to="." method="_on_check"]

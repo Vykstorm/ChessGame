@@ -17,6 +17,11 @@ func get_files_in_dir(path: String) -> Array:
 		file = directory.get_next()
 	return files
 	
+func remove_file(file_path: String):
+	var dir = Directory.new()
+	var err = dir.remove(file_path)
+	assert(err == OK)
+	
 func is_game_file(file_path: String) -> bool:
 	# Returns false if the given file path doesn't correspond to a game file.
 	var gameFilePathRegex = RegEx.new()
@@ -57,6 +62,12 @@ func new_game() -> String:
 	var id: String = String(OS.get_unix_time())
 	Pgn.export_algebra_to_pgn_file([], get_game_pgn_file(id), {})
 	return id
+	
+func delete_game(id: String):
+	# Delete the game with the given ID.
+	var file_path = get_file_path_for_game_id(id)
+	remove_file(file_path)
+	
 	
 func _sort_ids(a: String, b: String) -> bool:
 	return int(b) < int(a)

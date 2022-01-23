@@ -410,6 +410,9 @@ func _on_SurrenderDialog_confirmed():
 
 func _on_Game_gameover():
 	sound_player.play("GameOver")
+	if game_id != null:
+		# Delete the game from the database.
+		GameDatabase.delete_game(game_id)
 
 
 # Called when the node enters the scene tree for the first time.
