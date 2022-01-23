@@ -26,6 +26,9 @@ func open_load_game_screen():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	if len(GameDatabase.get_game_files()) == 0:
+		# No games to load yet.!
+		$Layout/Options/LoadGame.queue_free()
 	$FadeRect.visible = true
 	$FadeRect.color = Color.black
 	player.play("FadeIn")
