@@ -1,6 +1,6 @@
-[gd_scene load_steps=22 format=2]
+[gd_scene load_steps=21 format=2]
 
-[ext_resource path="res://Fonts/Harabara.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Fonts/GoBackToMenuFont.tres" type="DynamicFont" id=1]
 [ext_resource path="res://Images/pieces.png" type="Texture" id=3]
 [ext_resource path="res://Game.gd" type="Script" id=4]
 [ext_resource path="res://Trophies.tscn" type="PackedScene" id=5]
@@ -126,11 +126,6 @@ font_data = ExtResource( 12 )
 0/shape_one_way_margin = 0.0
 0/shapes = [  ]
 0/z_index = 0
-
-[sub_resource type="DynamicFont" id=5]
-size = 21
-use_filter = true
-font_data = ExtResource( 1 )
 
 [sub_resource type="Animation" id=6]
 tracks/0/type = "value"
@@ -762,18 +757,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Restart" type="ToolButton" parent="."]
-visible = false
-margin_top = -100.0
-margin_right = 57.0
-margin_bottom = -78.0
-text = "Restart"
-__meta__ = {
-"_edit_group_": true,
-"_edit_lock_": true,
-"_edit_use_anchors_": false
-}
-
 [node name="Board" parent="." instance=ExtResource( 11 )]
 cell_custom_transform = Transform2D( 60, 0, 0, 60, 0, 0 )
 
@@ -813,7 +796,7 @@ __meta__ = {
 [node name="GoBackToMenuButton" type="ToolButton" parent="GUI"]
 margin_right = 172.0
 margin_bottom = 40.0
-custom_fonts/font = SubResource( 5 )
+custom_fonts/font = ExtResource( 1 )
 custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "<- Go back to menu"
 __meta__ = {
@@ -824,7 +807,7 @@ __meta__ = {
 margin_left = 176.0
 margin_right = 269.0
 margin_bottom = 40.0
-custom_fonts/font = SubResource( 5 )
+custom_fonts/font = ExtResource( 1 )
 custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
 text = "Surrender"
 __meta__ = {
@@ -858,7 +841,6 @@ anims/FadeOut = SubResource( 7 )
 [connection signal="piece_selected" from="." to="." method="_on_piece_selected"]
 [connection signal="promoted" from="." to="." method="_on_promoted"]
 [connection signal="stalemate" from="." to="." method="_on_stalemate"]
-[connection signal="button_down" from="Restart" to="." method="_on_Restart_button_down"]
 [connection signal="cell_clicked" from="Board" to="." method="_on_board_cell_clicked"]
 [connection signal="piece_clicked" from="Board" to="." method="_on_piece_clicked"]
 [connection signal="piece_selected" from="PromotionDialog" to="." method="_on_PromotionDialog_piece_selected"]

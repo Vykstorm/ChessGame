@@ -40,7 +40,11 @@ func play_current_selected_game():
 	# Switch to the game scene.
 	root.remove_child(self)
 	root.add_child(gameInstance)
-	
+
+func go_to_menu():
+	# Loads the main menu
+	queue_free()
+	get_tree().change_scene_to(load("res://Menu.tscn"))
 
 func _ready():
 	# Disable internal game view GUI
@@ -65,3 +69,7 @@ func _on_NextGame_pressed():
 
 func _on_PrevGame_pressed():
 	show_prev_game()
+
+func _on_GoBackToMenuButton_pressed():
+	go_to_menu()
+	
