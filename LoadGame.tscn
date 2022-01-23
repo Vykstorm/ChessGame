@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Game.tscn" type="PackedScene" id=1]
-[ext_resource path="res://Fonts/LibreBaskerville-Italic.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://LoadGame.gd" type="Script" id=3]
 [ext_resource path="res://Fonts/LibreBaskerville-Regular.ttf" type="DynamicFontData" id=4]
 
@@ -9,11 +8,6 @@
 size = 15
 use_filter = true
 font_data = ExtResource( 4 )
-
-[sub_resource type="DynamicFont" id=2]
-size = 14
-use_filter = true
-font_data = ExtResource( 2 )
 
 [node name="LoadGame" type="Control"]
 anchor_right = 1.0
@@ -31,7 +25,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="."]
+[node name="LoadInfo" type="Label" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
 margin_left = -142.401
@@ -67,21 +61,6 @@ margin_top = 200.0
 margin_right = 472.0
 margin_bottom = 502.0
 text = ">"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Info" type="Label" parent="."]
-visible = false
-margin_left = 89.4095
-margin_top = 40.0
-margin_right = 391.409
-margin_bottom = 88.0
-custom_fonts/font = SubResource( 2 )
-text = "Tap in the board to continue the game. Drag left/right or use the buttons to see more saved matches"
-align = 1
-valign = 1
-autowrap = true
 __meta__ = {
 "_edit_use_anchors_": false
 }

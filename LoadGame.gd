@@ -43,6 +43,8 @@ func play_current_selected_game():
 	
 
 func _ready():
+	# Disable internal game view GUI
+	$Game.get_node("GUI").visible = false
 	update_game_view()
 	$PrevGame.disabled = false
 	$NextGame.disabled = false

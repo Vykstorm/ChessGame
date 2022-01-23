@@ -302,6 +302,12 @@ func go_to_menu():
 	# Loads the main menu
 	queue_free()
 	get_tree().change_scene_to(load("res://Menu.tscn"))
+	
+func fade_out_and_go_to_menu():
+	# Plays a fade out animation and then go to the main menu
+	fade_rect.visible = true
+	fade_rect.color = Color(1, 1, 1, 1)
+	animation_player.play("FadeOut")
 
 
 func _on_checkmate(color):
@@ -382,14 +388,15 @@ func _on_GameOverDialog_new_game():
 
 func _on_GameOverDialog_go_to_menu():
 	# Called when user presses "go to menu" button in the game over dialog.
-	fade_rect.visible = true
-	fade_rect.color = Color(1, 1, 1, 1)
-	animation_player.play("FadeOut")
+	fade_out_and_go_to_menu()
 
 func _on_AnimationPlayer_animation_finished(anim_name):
 	if anim_name == "FadeOut":
 		go_to_menu()
 
+
+func _on_GoBackToMenuButton_pressed():
+	fade_out_and_go_to_menu()
 
 
 # Called when the node enters the scene tree for the first time.
@@ -399,11 +406,5 @@ func _ready():
 		animation_player.play("FadeIn")
 	if game_id != null:
 		load_game()
-
-	
-
-
-
-
 
 

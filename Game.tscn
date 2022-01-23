@@ -1,5 +1,6 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=22 format=2]
 
+[ext_resource path="res://Fonts/Harabara.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://Images/pieces.png" type="Texture" id=3]
 [ext_resource path="res://Game.gd" type="Script" id=4]
 [ext_resource path="res://Trophies.tscn" type="PackedScene" id=5]
@@ -125,6 +126,11 @@ font_data = ExtResource( 12 )
 0/shape_one_way_margin = 0.0
 0/shapes = [  ]
 0/z_index = 0
+
+[sub_resource type="DynamicFont" id=7]
+size = 21
+use_filter = true
+font_data = ExtResource( 1 )
 
 [sub_resource type="Animation" id=5]
 resource_name = "FadeIn"
@@ -788,6 +794,36 @@ margin_bottom = 420.0
 
 [node name="GameOverDialog" parent="." instance=ExtResource( 10 )]
 
+[node name="GUI" type="HBoxContainer" parent="."]
+margin_left = -23.4299
+margin_top = -100.0
+margin_right = 324.57
+margin_bottom = -60.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GoBackToMenuButton" type="ToolButton" parent="GUI"]
+margin_right = 172.0
+margin_bottom = 40.0
+custom_fonts/font = SubResource( 7 )
+custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
+text = "<- Go back to menu"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SurrenderButton" type="ToolButton" parent="GUI"]
+margin_left = 176.0
+margin_right = 269.0
+margin_bottom = 40.0
+custom_fonts/font = SubResource( 7 )
+custom_colors/font_color_hover = Color( 0.992157, 0.254902, 0, 1 )
+text = "Surrender"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="FadeRect" type="ColorRect" parent="."]
 visible = false
 anchor_right = 1.0
@@ -796,6 +832,7 @@ margin_left = -24.0
 margin_top = -100.0
 margin_right = 456.0
 margin_bottom = 700.0
+mouse_filter = 2
 color = Color( 0, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -819,4 +856,5 @@ anims/FadeOut = SubResource( 6 )
 [connection signal="piece_selected" from="PromotionDialog" to="." method="_on_PromotionDialog_piece_selected"]
 [connection signal="go_to_menu" from="GameOverDialog" to="." method="_on_GameOverDialog_go_to_menu"]
 [connection signal="new_game" from="GameOverDialog" to="." method="_on_GameOverDialog_new_game"]
+[connection signal="pressed" from="GUI/GoBackToMenuButton" to="." method="_on_GoBackToMenuButton_pressed"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
