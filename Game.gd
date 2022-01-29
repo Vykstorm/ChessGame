@@ -322,6 +322,8 @@ func _on_stalemate(_color):
 	$GameOverDialog.popup()
 
 func _on_check(color):
+	# Play check sound
+	sound_player.play("Capture")
 	# Highlight king which is in check
 	for piece in board.get_pieces():
 		if piece.kind == "king" and piece.color != color:
@@ -329,11 +331,11 @@ func _on_check(color):
 			piece.update_picture()
 			break
 
-func _on_promoted(kind):
+func _on_promoted(kind, board_state):
 	print("Promoted to ", kind)
-	sound_player.play("Move")
+	if board_state == null:
+		sound_player.play("Move")
 	update_quality_advantage()
-	save_game()
 
 
 
@@ -349,10 +351,20 @@ func _on_PromotionDialog_piece_selected(kind):
 	piece.kind = kind
 	piece.update_picture()
 	
-	emit_signal("promoted", kind)
-	
 	# Re-evaluate board state
-	evaluate_board_state()
+	var board_state = evaluate_board_state()
+	
+	emit_signal("promoted", kind, board_state)
+	if board_state != null:
+		if board_state == "check":
+			emit_signal("check", current_turn)
+		elif board_state == "checkmate":
+			emit_signal("checkmate", current_turn)
+		elif board_state == "stalemate":
+			emit_signal("stalemate", current_turn)
+	save_game()
+	
+
 	
 	# Next turn!
 	next_turn()
@@ -365,10 +377,7 @@ func _on_piece_moved(_piece, _move, is_capture, board_state):
 	# Update quality advantages displays
 	update_quality_advantage()
 	# Play "move" sound
-	if board_state != null:
-		if board_state == "check":
-			sound_player.play("Capture")
-	else:
+	if board_state == null:
 		sound_player.play("Move" if not is_capture else "Capture")
 	
 	# Reset king display color
