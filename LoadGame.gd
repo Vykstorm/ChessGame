@@ -49,6 +49,7 @@ func go_to_menu():
 func _ready():
 	# Disable internal game view GUI
 	$Game.get_node("GUI").visible = false
+	# Put internal game view on "pause" mode.
 	update_game_view()
 	$PrevGame.disabled = false
 	$NextGame.disabled = false

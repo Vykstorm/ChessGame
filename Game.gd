@@ -8,6 +8,8 @@ export (Color) var algebra_checkmate_color = Color.red
 # Player's color.
 export (String) var player_color = "white"
 
+export (bool) var freeze_ia = false
+
 
 var game_id = null # ID of this game
 var enable_fadein_animation: bool
@@ -475,7 +477,7 @@ func _ready():
 		animation_player.play("FadeIn")
 	if game_id != null:
 		load_game()
-	if current_turn != player_color:
+	if not freeze_ia and current_turn != player_color:
 		# IA starts moving
 		do_ia_move()
 	
