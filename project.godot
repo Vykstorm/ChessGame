@@ -30,6 +30,7 @@ Pgn="*res://Pgn.gd"
 GameRules="*res://GameRules.gd"
 Algebra="*res://Algebra.gd"
 GameDatabase="*res://GameDatabase.gd"
+IA="*res://IA.gd"
 
 [display]
 

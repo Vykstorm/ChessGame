@@ -5,6 +5,9 @@ export (Color) var algebra_last_move_color = Color.blue
 export (Color) var algebra_check_color = Color.orange
 export (Color) var algebra_checkmate_color = Color.red
 
+# Player's color.
+export (String) var player_color = "white"
+
 
 var game_id = null # ID of this game
 var enable_fadein_animation: bool
@@ -61,6 +64,14 @@ func next_turn():
 		current_turn = "black"
 	else:
 		current_turn = "white"
+		
+	# It's IA turn?
+	if current_turn != player_color:
+		# Compute next move
+		var move = IA.get_next_move(moves, board.get_pieces(), current_turn)
+		
+		yield(get_tree().create_timer(rand_range(1, 1.5)), "timeout")
+		do_move(move)
 	
 
 func evaluate_board_state():
@@ -166,6 +177,10 @@ func update_moves_display(algebra_moves: Array):
 func _on_piece_clicked(piece):
 	# Called when a piece is clicked
 	
+	if current_turn != player_color:
+		# IA turn!
+		return
+	
 	if piece.is_queued_for_deletion():
 		# Death pieces are no longer clickable.
 		return
@@ -216,6 +231,11 @@ func _on_piece_deselected(piece):
 
 
 func _on_board_cell_clicked(selected_cell):
+	
+	if current_turn != player_color:
+		# IA turn!
+		return
+		
 	# Called when user clicks a cell
 	emit_signal("board_clicked")
 

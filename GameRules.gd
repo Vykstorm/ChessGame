@@ -837,6 +837,10 @@ func get_valid_moves(pieces, prev_moves, piece, check_pins:bool=true):
 #			if check_pins and is_pinned(table, piece):
 #				continue
 
+		# Check if piece is in bounds of the board
+		if not table.in_bounds(move.to):
+			continue
+
 		# The piece cannot do a move which leaves it's king threatened.
 		var table_after_move = table.apply_move(move)
 		if _is_check(table_after_move, piece.color):
