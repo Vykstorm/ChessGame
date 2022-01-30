@@ -23,10 +23,11 @@ signal promoted
 signal board_clicked
 signal gameover
 
-onready var board = $Board
+onready var board = $World/Board
 onready var game = GameRules
 onready var Piece = preload("res://Piece.tscn")
 onready var promotion_dialog = $PromotionDialog
+onready var trophies = $Decoratives/Trophies
 onready var white_trophies = $Decoratives/Trophies/White
 onready var black_trophies = $Decoratives/Trophies/Black
 onready var quality_advantage = $Decoratives/QualityAdvantage
@@ -35,6 +36,7 @@ onready var moves_display = $Decoratives/Moves
 onready var animation_player = $AnimationPlayer
 onready var fade_rect = $FadeRect
 onready var sound_player = $Sounds
+onready var world = $World
 
 # Current piece being dragged by user
 var current_piece_selected = null
@@ -56,6 +58,9 @@ func populate_board():
 		piece.board_position = piece_info.board_position
 		piece.color = piece_info.color
 		piece.kind = piece_info.kind
+		if player_color == "black":
+			piece.flip_h = true
+			piece.flip_v = true
 		board.add_piece(piece)
 
 func next_turn():
@@ -68,10 +73,8 @@ func next_turn():
 	# It's IA turn?
 	if current_turn != player_color:
 		# Compute next move
-		var move = IA.get_next_move(moves, board.get_pieces(), current_turn)
-		
-		yield(get_tree().create_timer(rand_range(1, 1.5)), "timeout")
-		do_move(move)
+		do_ia_move()
+
 	
 
 func evaluate_board_state():
@@ -98,6 +101,10 @@ func evaluate_board_state():
 	return null
 	
 
+func do_ia_move():
+	var move = IA.get_next_move(moves, board.get_pieces(), current_turn)
+	yield(get_tree().create_timer(rand_range(1, 1.5)), "timeout")
+	do_move(move)
 
 func do_move(move):
 	# Do the given piece movement (update the board and evaluate the checks, checkmate and stalemate situations)
@@ -444,13 +451,35 @@ func _on_Game_gameover():
 		GameDatabase.delete_game(game_id)
 
 
+func flip_player_view():
+	# Flip player's view so that it can play with black pieces.
+	world.position = Vector2(432, 432)
+	world.rotation_degrees = 180
+	trophies.rect_position = world.position
+	trophies.rect_rotation = 180
+	quality_advantage.rect_position = trophies.rect_position
+	quality_advantage.rect_rotation = 180
+	quality_advantage.get_node("White").rect_rotation = 180
+	quality_advantage.get_node("Black").rect_rotation = 180
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
+	
+	if player_color == "black":
+		flip_player_view()
+		
 	if enable_fadein_animation:
 		fade_rect.visible = true
 		animation_player.play("FadeIn")
 	if game_id != null:
 		load_game()
+	if current_turn != player_color:
+		# IA starts moving
+		do_ia_move()
+	
+	
 
 
 

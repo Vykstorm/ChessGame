@@ -43,7 +43,7 @@ func set_display_color(kind):
 	# Set piece display color.
 	# kind can be "normal", "threat" or "check" (for king)
 	_display_color = kind
-	
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

@@ -165,6 +165,7 @@ max_display_moves = 30
 algebra_last_move_color = Color( 0, 0.811765, 0.741176, 1 )
 algebra_check_color = Color( 1, 0.65098, 0, 1 )
 algebra_checkmate_color = Color( 0.290196, 0.0431373, 0.227451, 1 )
+player_color = "black"
 
 [node name="Background" type="ColorRect" parent="."]
 anchor_right = 1.0
@@ -691,15 +692,14 @@ __meta__ = {
 }
 
 [node name="Trophies" type="Control" parent="Decoratives"]
-margin_left = -0.28493
-margin_right = 39.7151
+margin_right = 40.0
 margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="White" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
-position = Vector2( 40, 452 )
+position = Vector2( 40, 462 )
 tile_data = PoolIntArray( 0, 0, 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 5, 0, 6, 5, 0, 7, 5, 0, 8, 5, 0, 65536, 5, 0 )
 
 [node name="Black" parent="Decoratives/Trophies" instance=ExtResource( 5 )]
@@ -717,9 +717,9 @@ __meta__ = {
 }
 
 [node name="White" type="Label" parent="Decoratives/QualityAdvantage"]
-margin_top = 452.0
+margin_top = 462.0
 margin_right = 30.0
-margin_bottom = 482.0
+margin_bottom = 492.0
 rect_pivot_offset = Vector2( 15, 15 )
 custom_fonts/font = ExtResource( 13 )
 text = "+4"
@@ -744,9 +744,9 @@ __meta__ = {
 }
 
 [node name="Moves" type="RichTextLabel" parent="Decoratives"]
-margin_top = 516.0
+margin_top = 526.0
 margin_right = 432.0
-margin_bottom = 684.0
+margin_bottom = 694.0
 custom_fonts/italics_font = SubResource( 2 )
 custom_fonts/normal_font = SubResource( 3 )
 bbcode_enabled = true
@@ -757,15 +757,17 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Board" parent="." instance=ExtResource( 11 )]
+[node name="World" type="Node2D" parent="."]
+
+[node name="Board" parent="World" instance=ExtResource( 11 )]
 cell_custom_transform = Transform2D( 60, 0, 0, 60, 0, 0 )
 
-[node name="HighlightedCells" type="TileMap" parent="Board"]
+[node name="HighlightedCells" type="TileMap" parent="World/Board"]
 tile_set = SubResource( 4 )
 cell_size = Vector2( 60, 60 )
 format = 1
 
-[node name="Pieces" type="Node2D" parent="."]
+[node name="Pieces" type="Node2D" parent="World"]
 
 [node name="PromotionDialog" parent="." instance=ExtResource( 9 )]
 margin_left = 145.0
@@ -841,8 +843,8 @@ anims/FadeOut = SubResource( 6 )
 [connection signal="piece_selected" from="." to="." method="_on_piece_selected"]
 [connection signal="promoted" from="." to="." method="_on_promoted"]
 [connection signal="stalemate" from="." to="." method="_on_stalemate"]
-[connection signal="cell_clicked" from="Board" to="." method="_on_board_cell_clicked"]
-[connection signal="piece_clicked" from="Board" to="." method="_on_piece_clicked"]
+[connection signal="cell_clicked" from="World/Board" to="." method="_on_board_cell_clicked"]
+[connection signal="piece_clicked" from="World/Board" to="." method="_on_piece_clicked"]
 [connection signal="piece_selected" from="PromotionDialog" to="." method="_on_PromotionDialog_piece_selected"]
 [connection signal="go_to_menu" from="GameOverDialog" to="." method="_on_GameOverDialog_go_to_menu"]
 [connection signal="new_game" from="GameOverDialog" to="." method="_on_GameOverDialog_new_game"]
